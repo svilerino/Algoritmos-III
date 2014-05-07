@@ -5,23 +5,22 @@ import java.util.Map.Entry;
 
 public class Juego {
 
-	/**
-	 * Nodo inicial
-	 */
+	//Nodo inicial
 	Nodo nodoInicial;
-	/**
-	 * Nodo destino
-	 */
+
+	// Nodo destino
 	Nodo nodoDestino;
 	
-	/**
-	 * Defino el grafo como un HashMap<Nodo, NodoMetadata> graph que entre otras cosas almacena <Nodo, adyacentes> para cada nodo
-	 * El grafo G = <V, E> puede obtenerse como V = HashMap.keySet() && E = Union(graph.get(V.each()).getAlcanzables())
-	 */
+	//Dada la matriz de valores de cada nodo (i,j) y el powerUpInicial
+	//Podemos definir el grafo(una matriz tridimensional de nodos) (i,j,k) donde 0<=k<=powerUpInicial
+	//Defino el grafo como un HashMap<Nodo, NodoMetadata> graph 
+	//que entre otras cosas almacena los nodos adyacentes para cada nodo
+	//El grafo G = <V, E> puede obtenerse como 
+	//V = HashMap.keySet() && E = Union(graph.get(V.each()).getAlcanzables())
 	HashMap<Nodo, NodoMetadata> graph;
 	
 	/**
-	 * Precalculo todos los adyacentes de todos los nodos y me armo el grafo para luego aplicar el algoritmo  
+	 * Precalculo todos los adyacentes de todos los nodos y me armo el grafo para luego aplicar el algoritmo que resuelve el problema  
 	 * 
 	 * Pre: (valoresNodos tiene dimension n*n con n natural > 0) && (0<=powerUpInicial) && (valoresNodos[i][j] = valorNodoIJ)
 	 * && (nodoInicial y nodoDestino tienen coord validas)
@@ -29,16 +28,13 @@ public class Juego {
 	 * @param powerUpInicial
 	 */
 	public Juego(int [][] valoresNodos, int powerUpInicial, int filaInicial, int columnaInicial, int filaDestino, int columnaDestino){
-		//como no nos piden ninguna restriccion ni optimizacion sobre la ultilizacion de powerup
-		//los niveles de estos nodos no son tenidos en cuenta en el algoritmo de busqueda
-		this.nodoInicial = new Nodo(filaInicial, columnaInicial, powerUpInicial/*dummy level*/);
-		this.nodoDestino = new Nodo(filaDestino, columnaDestino, 0/*dummy level, puede ser cualquiera entre [0..powerUpInicial]*/);
+		//inicializo estructuras y atributos
+		this.nodoInicial = new Nodo(filaInicial, columnaInicial, powerUpInicial);
+		this.nodoDestino = new Nodo(filaDestino, columnaDestino, 0/*dummy level l, l puede ser cualquiera entre [0..powerUpInicial]*/);
 		this.graph = new HashMap<Nodo, NodoMetadata>();
-		//Dada la matriz de valores de cada nodo (i,j) y el powerUpInicial
-		//Podemos definir el grafo(una matriz tridimensional de nodos) (i,j,k) donde 0<=k<=powerUpInicial
 		
+		//genero el grafo que modela el problema
 		int dimension = valoresNodos.length;
-		
 		for(int level=powerUpInicial;level>=0;level--){
 			for(int i=0;i<dimension;i++){
 				for(int j=0;j<dimension;j++){
@@ -87,17 +83,14 @@ public class Juego {
 		int potenciaIntrinseca = nodoValue;
 		LinkedList<Nodo> alcanzables = new LinkedList<Nodo>();
 		
-		//armo los alcanzables directos en el eje X
+		//armo los alcanzables directo
 		for(int j=-potenciaIntrinseca;j<=potenciaIntrinseca;j++){
 			//validacion de bordes y que no sea el mismo
 			if(validarBordes(dimensionMatriz, currentX, j)){
 				Nodo alcanzableDirecto = new Nodo(currentX + j, currentY, currentLevel);
 				alcanzables.add(alcanzableDirecto);
 			}
-		}
-		
-		//armo los alcanzables directo en el eje Y
-		for(int j=-potenciaIntrinseca;j<=potenciaIntrinseca;j++){
+
 			//validacion de bordes y que no sea el mismo
 			if(validarBordes(dimensionMatriz, currentY, j)){
 				Nodo alcanzableDirecto = new Nodo(currentX, currentY + j, currentLevel);
@@ -139,11 +132,11 @@ public class Juego {
 	/**
 	 * Modificacion de bfs que busca un camino entre inicial y target(sin importar la coordenada level)
 	 * es decir, cuando bfs encuentra un nodo w tal que las primeras 2 coordenadas de w coinciden con target, termina el algoritmo
-	 * Teniendo en cuenta que bfs encuentra el camino mas corto en cantidad de aristas entre 2 nodos, esto resuelve nuestro problema
-	 * @return
+	 * y reconstruye el camino en base a los predecesores, que se van guardando a medida que se realiza la expansion en anchura
+	 * Teniendo en cuenta que bfs encuentra el camino mas corto en cantidad de aristas entre 2 nodos, esto resuelve nuestro problema.
+	 * @return Devuelve una lista de nodos indicando (posX, posY, gasto de PowerUp en el salto del predecesor de este nodo al actual)
 	 */
-	public List<Nodo> caminoMinimo(){
-		LinkedList<Nodo> camino = new LinkedList<Nodo>();
+	public List<Nodo> caminoMinimo(){		
 		LinkedList<Nodo> queue = new LinkedList<Nodo>();
 		
 		queue.addLast(nodoInicial);
@@ -152,16 +145,10 @@ public class Juego {
 		while(!queue.isEmpty()){
 			Nodo current = queue.removeFirst();			
 			if(esDestino(current)){
-				//llegue a destino, termino la busqueda.
-				System.out.print("Encontre camino: ");
+				//llegue a destino, termino la busqueda y devuelvo el resultado.
+				//System.out.println("Camino c <(origen),...(x, y, powerUtilizado)...,(destino)>");
 				//armo el camino con los predecesores
-				Nodo nodo = current;
-				while(damePredecesor(nodo) != null){
-					camino.addFirst(nodo);
-					nodo = damePredecesor(nodo);
-				}
-				camino.addFirst(nodo);
-				return camino;
+				return construirCaminoConPredecesores(current);				
 			}
 			List<Nodo> alcanzables = obtenerAlcanzables(current);
 			for(Nodo alcanzable : alcanzables){				
@@ -174,6 +161,31 @@ public class Juego {
 		}
 		//como bfs recorre todos los nodos, llegamos a este punto unicamente si no existe nodo destino en el grafo
 		return null;
+	}
+
+	private LinkedList<Nodo> construirCaminoConPredecesores(Nodo current) {
+		//Tengamos en cuenta que en esta lista hay tuplas(x,y,z), x,y son las
+		//posiciones en el plano z, que indica, la cantidad de powerup disponible.
+		//Haciendo la resta entre el valor level de dos nodos v->w, se calcula el
+		//powerup utilizado para dicho salto entre v y w
+		//Definamos powerUpUsado(u,v) = level(v) - level(u)
+		//Asumamos que powerUpUsado(null, v) = 0;				
+		//powerUpInicial - level(destino) te da la cantidad de powerUp disponible al salir del laberinto.
+		LinkedList<Nodo> camino = new LinkedList<Nodo>();
+		//armo una lista de nodos que indican el camino de origen a destino.
+		//como tengo el predecesor para cada nodo, puedo ir de atras hacia adelante encadenandolo.
+		Nodo nodo = current;
+		while(damePredecesor(nodo) != null){
+			Nodo predecesor = damePredecesor(nodo);
+			nodo.setLevel(predecesor.getLevel() - nodo.getLevel());
+			camino.addFirst(nodo);
+
+			//avanzo en el camino
+			nodo = predecesor;
+		}
+		nodo.setLevel(0);
+		camino.addFirst(nodo);
+		return camino;
 	}
 	
 	private Nodo damePredecesor(Nodo nodo) {
@@ -188,16 +200,18 @@ public class Juego {
 		return graph.get(nodo).fueVisitado();
 	}
 
-	private boolean esDestino(Nodo current) {
-		return (current.getX() == nodoDestino.getX()) && (current.getY() == nodoDestino.getY());
-	}
-
 	private void marcarVisitado(Nodo nodo){
 		graph.get(nodo).marcarVisitado();
 	}
 	
 	private List<Nodo> obtenerAlcanzables(Nodo nodo){
 		return graph.get(nodo).getAlcanzables();
+	}
+
+	private boolean esDestino(Nodo current) {
+		//como no nos piden ninguna restriccion ni optimizacion sobre la ultilizacion de powerup
+		//los niveles de estos nodos no son tenidos en cuenta en el algoritmo de busqueda para distinguir cuando llego a destino
+		return (current.getX() == nodoDestino.getX()) && (current.getY() == nodoDestino.getY());
 	}
 	
 }

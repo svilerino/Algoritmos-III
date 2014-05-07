@@ -1,14 +1,20 @@
 public class Nodo {
-	/**
-	 * El grafo de puede ver como una matriz tridimensional de ejes (x,y,level)
-	 */
 	//posicion x en el grafo
 	private int x;
+	
 	//posicion y en el grafo
 	private int y;
+	
 	//posicion z en el grafo
 	private int level;
 
+	public Nodo(int x, int y, int level) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.level = level;
+	}	
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -60,13 +66,6 @@ public class Nodo {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-
-	public Nodo(int x, int y, int level) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.level = level;
-	}	
 
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
