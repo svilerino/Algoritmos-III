@@ -1,0 +1,66 @@
+\documentclass[a4paper,11pt]{article}
+\pagestyle{plain}
+
+\usepackage[spanish]{babel}
+\usepackage [T1]{fontenc}
+\usepackage [latin1]{inputenc}
+\usepackage{amsthm}
+\usepackage{amsmath}
+%\usepackage[lined,spanish,boxed,linesnumbered]{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[conEntregas]{caratula}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{listings}
+\lstset{breaklines=true}
+\usepackage[usenames,dvipsnames]{xcolor}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.97,0.97,0.97}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{tikz}
+\usetikzlibrary{babel}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linktocpage}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\newtheorem{Ejemplo}{Ejemplo}
+
+\begin{document}
+
+\titulo{Trabajo Pr\'actico 1}
+
+\fecha{\today}
+
+\materia{Algoritmos y Estructuras de Datos III}
+
+\integrante{Chapresto, Mat\'ias}{201/12}{matiaschapresto@gmail.com}
+\integrante{Dato, Nicol\'as}{676/12}{nico\_dato@hotmail.com}
+\integrante{Fattori, Ezequiel}{280/11}{ezequieltori@hotmail.com}
+\integrante{Vileri\~no, Silvio}{106/12}{svilerino@gmail.com}
+
+\maketitle
+
+\tableofcontents
+
+\include{introduccion}
+\include{informe_ej1}
+\include{informe_ej2}
+\include{informe_ej3}
+
+\section{Generaci\'on de casos de prueba} \label{casos_de_prueba}
+Para el testeo de los algoritmos y la medici\'on de tiempos en funci\'on de la entrada, se program\'o una utilidad para generar los casos de prueba.
+
+El programa recibe como par\'ametro el ejercicio del cual se quieren generar los casos, y las variables, como el tama\~no de la entrada o en el ejercicio 1 la cantidad de d\'ias que estaba disponible el inspector.
+
+Los n\'umeros aleatorios que se generaron en los casos, se hizo con la funci\'on \emph{random()} de C ( \href{http://linux.die.net/man/3/random}{http://linux.die.net/man/3/random} ) usando como semilla el tiempo en microsegundos.
+
+Para el ejercicio 1, dada una cantidad n y la cantidad de d\'ias del inspector, genera n n\'umeros aleatorioscorrespondiente a los camiones, \'este valor se puede acotar para que vengan entre el d\'ia 0 y un d\'ia x - 1 como m\'aximo qued\'andose con el resto de dividir el valor aleatorio de \emph{random()} por x,
+y se utiliz\'o x = n * 3 para que los camiones vengan en un rango de n * 3 dias. Para el ejercicio 2 se le indica la cantidad de piezas y el valor del tiempo y la p\'erdida es n\'umero aleatorio se le indica como m\'aximo sea i + 20, siendo i el n\'umero del test a ejecutar. Y para el ejercicio 3, se le indica la cantidad de filas y columnas y de colores, y crea fichas con colores aeatorios.
+
+As\'i se crearon muchos casos donde se fue incrementando el tama\~no de la entrada y ejecutando varios tests de un mismo tama\~no y varias veces el mismo test para obtener un promedio del tiempo que tarda en resolvero y descartar algunas imperfecciones que puedan surgir por el entorno donde se est\'a midiendo los tiempos, como puede ser que justo se ejecute otra tarea.
+
+\include{tests_mediciones}
+\include{codigo}
+\include{entregable}
+
+\end{document}
+

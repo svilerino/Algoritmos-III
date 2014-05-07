@@ -1,0 +1,30 @@
+
+\begin{algorithmic}[1]
+	
+	\Statex
+	\Procedure{maximizarCamiones}{int diasInspector, int[] tablaDiaCantidad, int $\sharp$camiones}
+	\State $Ordenar (tablaDiaCantidad)$
+	\Comment{Paso 1}
+	\State $AgruparYAcumular (tablaDiaCantidad)$
+	\Comment{Paso 2}
+	\State $int \:  maximo \gets -1$
+	\State $int \: diaAContratar \gets -1$
+	\For{$i \gets 0; i < tablaDiaCantidad.size; i++$}
+	\Comment{Ciclo Principal}
+		\State $tupla<int, \,int> \, inicio \gets tablaDiaCantidad[i]$
+		\Comment{Paso 3}
+		\State $int \: diaFinal \gets inicio.first + diasInspector -1$
+		\State $tupla<int, int> final \gets tDC[BusquedaBinaria(tDC,i, diaFinal, tDC.size())]$
+		\Comment{Paso 4}
+		\State $int \sharp camionesDelIntervalo \gets final.second - tablaDiaCantidad[i-1].second$
+		\Comment{Paso 5}
+		\If{$\sharp camionesDelIntervalo > maximo$}
+		\Comment{Paso 6}
+			\State $maximo \gets camionesDelIntervalo$
+			\State $diaAContratar \gets inicio.first$
+		\EndIf
+	\EndFor
+	\State $return <diaAContratar, \, maximo>$
+	\EndProcedure
+	\Statex
+	\end{algorithmic}

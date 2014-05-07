@@ -1,0 +1,147 @@
+\begin{algorithm}
+	\caption{maximizarTablero} \label{ej_3:pseudo}
+\end{algorithm} %sino no divide el codigo en paginas
+\begin{algorithmic}[1]
+	\Require \emph{tablero}: el tablero donde se ir\'an colocando las fichas
+	\Require \emph{n, m}: filas y columnas del tablero
+	\Require \emph{fichas\_disponibles}: array con las fichas aun diponibles por poner
+	\Require \emph{i\_actual, j\_actual}: la posici\'on que se tiene que procesar
+	\Require \emph{casilleros\_calculados}: cantidad de casilleros que ya se procesaron
+	\Require \emph{fichas\_colocadas}: cantidad de fichas colocadas (no se cuentan los casilleros vac\'ios dejados)
+	\Require \emph{tablero\_optimo}: el optimo encontrado hasta el momento
+	\Require \emph{fichas\_maximas}: cantidad m\'axima de fichas que se pudieron colocar en el tablero\_optimo
+	\Ensure La funci\'on va a dejar en \emph{tablero\_optimo} y en \emph{fichas\_maximas} la mejor combinaci\'on que pudo encontrar de fichas tal que las fichas adyacentes comparten el color en el borde que tienen en com\'un, y es la combinaci\'on en la que m\'as fichas se pudo colocar
+	\Statex
+	\Procedure{maximizarTablero}{tablero, n, m, fichas\_disponibles, i\_actual, j\_actual, casilleros\_calculados, fichas\_colocadas, tablero\_optimo, fichas\_maximas}
+	\State $total\_casilleros \gets n*m$
+	\State $n\_fichas \gets total\_casilleros$
+	\If{$casilleros\_calculados = total\_casilleros$} \label{ej_3:pseudo:base}
+		\If{$fichas\_colocadas > fichas\_maximas$}
+			\State copiarTablero(tablero\_optimo, tablero)
+			\State $fichas\_maximas \gets fichas\_colocadas$
+		\EndIf
+		\State return
+	\EndIf \label{ej_3:pseudo:base_end}
+	\If{$total\_casilleros - casilleros\_calculados + fichas\_colocadas <= fichas\_maxima$} \label{ej_3:pseudo:poda}
+		\State return
+	\EndIf
+	\State $proximo\_i \gets i\_actual$ \label{ej_3:pseudo:proximo}
+	\State $proximo\_j \gets j\_actual$
+	\If{$i\_actual = n - 1$}
+		\State $proximo\_i \gets 0$
+		\State $proximo\_j++$
+	\Else
+		\State $proximo\_i++$
+	\EndIf \label{ej_3:pseudo:proximo_end}
+	\For{$f \in fichas\_disponibles$} \label{ej_3:pseudo:fichas} \label{ej_3:pseudo:disponible}
+		\If{validaColocar(f, tablero, i\_actual, j\_actual)} \label{ej_3:pseudo:valida}
+			\State $tablero[i\_actual][j\_actual] = f$ \label{ej_3:pseudo:coloca}
+			\If{$\neg f->vacia$} \label{ej_3:pseudo:vacia}
+				\State $fichas\_nuevas \gets fichas\_disponibles - f$
+				\State $fichas\_colocadas++$
+			\Else
+				\State $fichas\_nuevas \gets fichas\_disponibles$
+			\EndIf
+			\State maximizarTablero(tablero, n, m, fichas\_nuevas, i\_proximo, j\_proximo, casilleros\_calculados + 1, fichas\_colocadas, tablero\_optimo, fichas\_maximas) \label{ej_3:pseudo:recursion}
+			\If{$\neg f->vacia$}
+				\State $fichas\_colocadas--$
+			\EndIf
+		\EndIf
+	\EndFor \label{ej_3:pseudo:fichas_end}
+	\EndProcedure
+	\Statex
+	\Procedure{bool validaColocar}{ficha, tablero, i, j} \label{ej_3:pseudo:validaColocar}
+		\If{$ficha->vacia$}
+			\State $return \gets true$
+		\EndIf
+		\If{$j > 0$}
+			\If{$\neg tablero[i][j - 1]->vacia$}
+				\If{$tablero[i][j - 1]->derecha \neq fichas->izquierda$}
+					\State $return \gets false$
+				\EndIf
+			\EndIf
+		\EndIf
+		\If{$i > 0$}
+			\If{$\neg tablero[i - 1][j]->vacia$}
+				\If{$tablero[i- 1][j]->abajo \neq fichas->arriba$}
+					\State $return \gets false$
+				\EndIf
+			\EndIf
+		\EndIf
+		\State $return \gets true$
+	\EndProcedure
+\end{algorithmic}
+
+%\begin{procedure}
+%	\SetKwProg{Fn}{}{}{}
+%	\SetStartEndCondition{ (}{)}{)}\SetAlgoBlockMarkers{\{}{\}}
+%	\SetKwFunction{maximizarTablero}{maximizarTablero}
+%	\SetKwFunction{copiarTablero}{copiarTablero}
+%	\KwIn{\emph{tablero}: el tablero donde se ir\'an colocando las fichas}
+%	\KwIn{\emph{n, m}: filas y columnas del tablero}
+%	\KwIn{\emph{fichas\_disponibles}: array con las fichas aun diponibles por poner}
+%	\KwIn{\emph{i\_actual, j\_actual}: la posici\'on que se tiene que procesar}
+%	\KwIn{\emph{casilleros\_calculados}: cantidad de casilleros que ya se procesaron}
+%	\KwIn{\emph{fichas\_colocadas}: cantidad de fichas colocadas (no se cuentan los casilleros vac\'ios dejados)}
+%	\KwIn{\emph{tablero\_optimo}: el optimo encontrado hasta el momento}
+%	\KwIn{\emph{fichas\_maximas}: cantidad m\'axima de fichas que se pudieron colocar en el tablero\_optimo}
+%	\KwOut{La funci\'on va a dejar en \emph{tablero\_optimo} y en \emph{fichas\_maximas} la mejor combinaci\'on que pudo encontrar de fichas tal que las fichas adyacentes comparten el color en el borde que tienen en com\'un, y es la combinaci\'on en la que m\'as fichas se pudo colocar}
+%	\Fn(){void \maximizarTablero{tablero, n, m, fichas\_disponibles, i\_actual, j\_actual, casilleros\_calculados, fichas\_colocadas, tablero\_optimo, fichas\_maximas}}{
+%		$total\_casilleros \leftarrow n*m$\;
+%		$n\_fichas \leftarrow total\_casilleros$\;
+%		\If{$casilleros\_calculados = total\_casilleros$}{
+%			\If{$fichas\_colocadas > fichas\_maximas$}{
+%				\copiarTablero{tablero\_optimo, tablero}
+%				$fichas\_maximas \leftarrow fichas\_colocadas$\;
+%			}
+%			\KwRet
+%		}
+%		\If{$total\_casilleros - casilleros\_calculados + fichas\_colocadas <= fichas\_maxima$}{
+%			\KwRet;
+%		}
+%		$proximo\_i \leftarrow i\_actual$\;
+%		$proximo\_j \leftarrow j\_actual$\;
+%		\uIf{$j\_actual = m - 1$}{
+%			$proximo\_j = 0$\;
+%			$proximo\_i++$\;
+%		}
+%		\Else{
+%			$proximo\_j++$\;
+%		}
+%		\For{$i \leftarrow 0; i < n\_fichas; i++$}{
+%			\If{$fichas\_disponibles[i]$}{
+%				\If{$fichas\_disponibles[i]->numero >= 0$}{
+%					\If{$j\_actual > 0$}{
+%						\If{$tablero[i\_actual][j\_actual - 1]->numero >= 0$}{
+%							\If{$tablero[i\_actual][j\_actual - 1]->derecha \neq fichas\_disponibles[i]->izquierda$}{
+%								$continue$\;
+%							}
+%						}
+%					}
+%					\If{$i\_actual > 0$}{
+%						\If{$tablero[i\_actual - 1][j\_actual]->numero >= 0$}{
+%							\If{$tablero[i\_actual - 1][j\_actual]->abajo \neq fichas\_disponibles[i]->arriba$}{
+%								$continue$\;
+%							}
+%						}
+%					}
+%				}
+%				$tablero[i\_actual][j\_actual] = fichas\_disponibles[i]$\;
+%				\If{$fichas\_disponibles[i]->numero >= 0$}{
+%					$fichas\_disponibles[i] \leftarrow NULL$\;
+%					$fichas\_en\_tablero++$\;
+%				}
+%				$casilleros\_tablero++$\;
+%				\maximizarTablero{tablero, n, m, fichas\_disponibles, i\_proximo, j\_proximo, casilleros\_calculados, fichas\_colocadas, tablero\_optimo, fichas\_maximas}
+%				\If{$fichas[i].numero >= 0$}{
+%					$fichas\_disponibles[i] \leftarrow \&fichas[i]$\;
+%					$fichas\_en\_tablero--$\;
+%				}
+%				$casilleros\_tablero--$\;
+%			}
+%		}
+%		\KwRet
+%	}
+%	\caption{maximizarTablero()} \label{ej_3:pseudo}
+%\end{procedure}
+

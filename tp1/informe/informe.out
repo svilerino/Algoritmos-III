@@ -1,0 +1,49 @@
+\BOOKMARK [1][-]{section.1}{Introducci\363n}{}% 1
+\BOOKMARK [1][-]{section.2}{Ejercicio 1}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Descripci\363n del problema}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Funcionamiento del algoritmo}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Preliminares}{subsection.2.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.2}{Ciclo Principal}{subsection.2.2}% 6
+\BOOKMARK [2][-]{subsection.2.3}{Demostraci\363n de correctitud}{section.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Correctitud de la acumulaci\363n}{subsection.2.3}% 8
+\BOOKMARK [3][-]{subsubsection.2.3.2}{Correctitud de la reducci\363n del dominio}{subsection.2.3}% 9
+\BOOKMARK [3][-]{subsubsection.2.3.3}{Correctitud del c\341lculo de los camiones de un intervalo}{subsection.2.3}% 10
+\BOOKMARK [3][-]{subsubsection.2.3.4}{Correctitud del c\341lculo del m\341ximo}{subsection.2.3}% 11
+\BOOKMARK [2][-]{subsection.2.4}{Cota de complejidad}{section.2}% 12
+\BOOKMARK [1][-]{section.3}{Ejercicio 2}{}% 13
+\BOOKMARK [2][-]{subsection.3.1}{Descripci\363n del problema}{section.3}% 14
+\BOOKMARK [2][-]{subsection.3.2}{Formalizaci\363n Matem\341tica}{section.3}% 15
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Ejemplos}{subsection.3.2}% 16
+\BOOKMARK [2][-]{subsection.3.3}{Ideas para la resoluci\363n}{section.3}% 17
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Ejemplos}{subsection.3.3}% 18
+\BOOKMARK [2][-]{subsection.3.4}{Correctitud}{section.3}% 19
+\BOOKMARK [3][-]{subsubsection.3.4.1}{Notaci\363n}{subsection.3.4}% 20
+\BOOKMARK [3][-]{subsubsection.3.4.2}{Demostraci\363n}{subsection.3.4}% 21
+\BOOKMARK [2][-]{subsection.3.5}{Correctitud del ciclo de acumulaci\363n}{section.3}% 22
+\BOOKMARK [2][-]{subsection.3.6}{Cota de complejidad}{section.3}% 23
+\BOOKMARK [1][-]{section.4}{Ejercicio 3}{}% 24
+\BOOKMARK [2][-]{subsection.4.1}{Descripci\363n del problema}{section.4}% 25
+\BOOKMARK [2][-]{subsection.4.2}{Ideas para la resoluci\363n}{section.4}% 26
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Algoritmo para la resoluci\363n propuesta}{subsection.4.2}% 27
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Ejemplo de la resoluci\363n propuesta}{subsection.4.2}% 28
+\BOOKMARK [2][-]{subsection.4.3}{Correctitud}{section.4}% 29
+\BOOKMARK [2][-]{subsection.4.4}{Cota de complejidad}{section.4}% 30
+\BOOKMARK [2][-]{subsection.4.5}{Comentarios y conclusiones}{section.4}% 31
+\BOOKMARK [1][-]{section.5}{Generaci\363n de casos de prueba}{}% 32
+\BOOKMARK [1][-]{section.6}{Mediciones, tests y experimentos}{}% 33
+\BOOKMARK [2][-]{subsection.6.1}{Tests de correctitud}{section.6}% 34
+\BOOKMARK [2][-]{subsection.6.2}{Forma de medici\363n}{section.6}% 35
+\BOOKMARK [2][-]{subsection.6.3}{Porciones cr\355ticas de c\363digo a medir de los ejercicios}{section.6}% 36
+\BOOKMARK [2][-]{subsection.6.4}{Ejercicio 1}{section.6}% 37
+\BOOKMARK [3][-]{subsubsection.6.4.1}{Caso Promedio}{subsection.6.4}% 38
+\BOOKMARK [3][-]{subsubsection.6.4.2}{Mejor Caso}{subsection.6.4}% 39
+\BOOKMARK [3][-]{subsubsection.6.4.3}{Peor Caso}{subsection.6.4}% 40
+\BOOKMARK [2][-]{subsection.6.5}{Ejercicio 2}{section.6}% 41
+\BOOKMARK [2][-]{subsection.6.6}{Ejercicio 3}{section.6}% 42
+\BOOKMARK [1][-]{section.7}{Ap\351ndice: C\363digo fuente relevante}{}% 43
+\BOOKMARK [2][-]{subsection.7.1}{Ejercicio 1}{section.7}% 44
+\BOOKMARK [2][-]{subsection.7.2}{Ejercicio 2}{section.7}% 45
+\BOOKMARK [2][-]{subsection.7.3}{Ejercicio 3}{section.7}% 46
+\BOOKMARK [1][-]{section.8}{Ap\351ndice: Entregable e instrucciones de compilacion y testing}{}% 47
+\BOOKMARK [2][-]{subsection.8.1}{Estructura de directorios}{section.8}% 48
+\BOOKMARK [2][-]{subsection.8.2}{Compilaci\363n}{section.8}% 49

@@ -1,0 +1,22 @@
+
+\begin{algorithmic}[1]
+	
+	\Statex
+	\Procedure{agruparYAcumular}{int entrada[]}	
+	\State$vector<pair<int, int> > \: tablaDiaCantidad;$
+	\State$int \: longuitud = entrada.size();$
+	\State$tablaDiaCantidad.reserve(longuitud)$
+	\State$int \: i=0;$
+	\State$int \: acumulador = 0;$
+	\While{$i < longuitud$}
+		\State $acumulador++;$
+		\If{$(entrada[i] != entrada[i+1]) || (i==longuitud-1)$}
+			\State $pair<int, int> par = make\_pair(entrada[i], acumulador);$
+			\State $tablaDiaCantidad.push\_back(par);$
+		\EndIf
+		\State$i++;$
+	\EndWhile
+	\EndProcedure
+	\Statex
+	\end{algorithmic}
+

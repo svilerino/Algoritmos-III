@@ -1,0 +1,26 @@
+\section{Ap\'endice: Entregable e instrucciones de compilacion y testing}
+\subsection{Estructura de directorios}
+En esta secci\'on se explicar\'a brevemente como esta organizado el codigo, los tests, los resultados y el informe en la estructura en la carpeta.
+La estructura de directorios es la siguiente:
+\begin{itemize}
+	\item \textbf{Raiz: } Aqu\'i se encuentra el Makefile que engloba la compilaci\'on y generaci\'on de archivos necesaria para el tp.		
+	\item \textbf{ej1:} Contiene el c\'odigo fuente del ejercicio correspondiente junto a su Makefile, estos cuentan con targets 'all' y 'clean' para compilaci\'on individual de este m\'odulo.
+	\item \textbf{ej2:} Contiene el c\'odigo fuente del ejercicio correspondiente junto a su Makefile, estos cuentan con targets 'all' y 'clean' para compilaci\'on individual de este m\'odulo.
+	\item \textbf{ej3:} Contiene el c\'odigo fuente del ejercicio correspondiente junto a su Makefile, estos cuentan con targets 'all' y 'clean' para compilaci\'on individual de este m\'odulo.
+	\item \textbf{common}:
+		\begin{itemize}
+			\item \textbf{common/plotting:} Contiene scripts y c\'odigo en python para realizar gr\'aficos automatizados sobre los resultados. \textbf{Estos gr\'aficos podr\'ian no ser correctos pues se abandon\'o el uso de estos luego de decidirnos a utilizar graficos de google docs por cuestiones de mejor integraci\'on para trabajar en equipo. La documentaci\'on de la generaci\'on de gr\'aficos es meramente informativa.}
+			\item \textbf{common/random\_testcase\_builder}: Aqu\'i se encuentra una aplicaci\'on capaz de generar entradas aleatorias usando un generador de numeros aleatorios con distribuci\'on uniforme para los 3 ejercicios del trabajo respetando el formato pedido en el enunciado.
+			\item \textbf{common/testcases:} Aqui se encuentran los casos de prueba aleatorios generados por el programa automatico de generaci\'on de tests, para cada ejercicio, y adem\'as sus salidas asociadas y su tiempo insumido en microsegundos, acompa\~nado por el numero de repeticiones utilizado para calcular el promedio de las ejecuciones.
+			\item \textbf{common/testing:} En esta carpeta se encuentran los scripts encargados de generar los casos de prueba y ejecutarlos, en el script de ejecuci\'on adem\'as se realiza una transformacion y intercalaci\'on de los datos de los tiempos consumidos para generar un archivo plot.out conteniendo en cada linea descripcion sobre los parametros de entrada, tiempo consumido y cantidad de repeticiones para el c\'alculo del promedio.
+			\item \textbf{common/timing:} En esta carpeta se encuentra la macro para tomar tiempos utilizada para la experimentaci\'on.
+		\end{itemize}
+\end{itemize}
+\subsection{Compilaci\'on}
+Basta ejecutar make <target> sobre el directorio ra\'iz eligiendo alguno de los targets mencionados a continuaci\'on.
+\begin{itemize}
+	\item \textbf{clean:} Elimina todos los binarios, el informe compilado, archivos auxiliares, los tests aleatorios y sus resultados y los gr\'aficos generados.
+	\item \textbf{all:} Compila todos los ejercicios, el generador de casos aleatorios, crea los tests aleatorios, y compila el informe en latex a pdf.
+	\item \textbf{run-tests:} Depende de all y luego ejecuta todos los tests aleatorios generados.
+	\item \textbf{graphics:} Depende de run-tests y luego genera gr\'aficos sobre los resultados. \textbf{Estos gr\'aficos podr\'ian no ser correctos pues se abandon\'o el uso de estos luego de decidirnos a utilizar graficos de google docs por cuestiones de mejor integraci\'on para trabajar en equipo. La documentaci\'on de la generaci\'on de gr\'aficos es meramente informativa.}
+\end{itemize}

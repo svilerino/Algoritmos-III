@@ -1,0 +1,50 @@
+\select@language {spanish}
+\contentsline {section}{\numberline {1}Introducci\'on}{3}{section.1}
+\contentsline {section}{\numberline {2}Ejercicio 1}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Descripci\'on del problema}{4}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Funcionamiento del algoritmo}{4}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Preliminares}{4}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Ciclo Principal}{4}{subsubsection.2.2.2}
+\contentsline {subsection}{\numberline {2.3}Demostraci\'on de correctitud}{6}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Correctitud de la acumulaci\'on}{7}{subsubsection.2.3.1}
+\contentsline {subsubsection}{\numberline {2.3.2}Correctitud de la reducci\'on del dominio}{9}{subsubsection.2.3.2}
+\contentsline {subsubsection}{\numberline {2.3.3}Correctitud del c\'alculo de los camiones de un intervalo}{10}{subsubsection.2.3.3}
+\contentsline {subsubsection}{\numberline {2.3.4}Correctitud del c\'alculo del m\'aximo}{10}{subsubsection.2.3.4}
+\contentsline {subsection}{\numberline {2.4}Cota de complejidad}{11}{subsection.2.4}
+\contentsline {section}{\numberline {3}Ejercicio 2}{12}{section.3}
+\contentsline {subsection}{\numberline {3.1}Descripci\'on del problema}{12}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Formalizaci\'on Matem\'atica}{12}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Ejemplos}{12}{subsubsection.3.2.1}
+\contentsline {subsection}{\numberline {3.3}Ideas para la resoluci\'on}{12}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Ejemplos}{13}{subsubsection.3.3.1}
+\contentsline {subsection}{\numberline {3.4}Correctitud}{13}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Notaci\'on}{13}{subsubsection.3.4.1}
+\contentsline {subsubsection}{\numberline {3.4.2}Demostraci\'on}{13}{subsubsection.3.4.2}
+\contentsline {subsection}{\numberline {3.5}Correctitud del ciclo de acumulaci\'on}{14}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}Cota de complejidad}{14}{subsection.3.6}
+\contentsline {section}{\numberline {4}Ejercicio 3}{15}{section.4}
+\contentsline {subsection}{\numberline {4.1}Descripci\'on del problema}{15}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Ideas para la resoluci\'on}{15}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Algoritmo para la resoluci\'on propuesta}{16}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Ejemplo de la resoluci\'on propuesta}{18}{subsubsection.4.2.2}
+\contentsline {subsection}{\numberline {4.3}Correctitud}{20}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Cota de complejidad}{21}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Comentarios y conclusiones}{22}{subsection.4.5}
+\contentsline {section}{\numberline {5}Generaci\'on de casos de prueba}{24}{section.5}
+\contentsline {section}{\numberline {6}Mediciones, tests y experimentos}{25}{section.6}
+\contentsline {subsection}{\numberline {6.1}Tests de correctitud}{25}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Forma de medici\'on}{25}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Porciones cr\'iticas de c\'odigo a medir de los ejercicios}{25}{subsection.6.3}
+\contentsline {subsection}{\numberline {6.4}Ejercicio 1}{25}{subsection.6.4}
+\contentsline {subsubsection}{\numberline {6.4.1}Caso Promedio}{28}{subsubsection.6.4.1}
+\contentsline {subsubsection}{\numberline {6.4.2}Mejor Caso}{28}{subsubsection.6.4.2}
+\contentsline {subsubsection}{\numberline {6.4.3}Peor Caso}{28}{subsubsection.6.4.3}
+\contentsline {subsection}{\numberline {6.5}Ejercicio 2}{29}{subsection.6.5}
+\contentsline {subsection}{\numberline {6.6}Ejercicio 3}{31}{subsection.6.6}
+\contentsline {section}{\numberline {7}Ap\'endice: C\'odigo fuente relevante}{35}{section.7}
+\contentsline {subsection}{\numberline {7.1}Ejercicio 1}{35}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Ejercicio 2}{37}{subsection.7.2}
+\contentsline {subsection}{\numberline {7.3}Ejercicio 3}{38}{subsection.7.3}
+\contentsline {section}{\numberline {8}Ap\'endice: Entregable e instrucciones de compilacion y testing}{41}{section.8}
+\contentsline {subsection}{\numberline {8.1}Estructura de directorios}{41}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.2}Compilaci\'on}{41}{subsection.8.2}

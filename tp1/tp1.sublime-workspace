@@ -1,0 +1,892 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"grap",
+				"graphic_y"
+			],
+			[
+				"graphic",
+				"graphic_x"
+			],
+			[
+				"tests",
+				"tests_out"
+			],
+			[
+				"ma",
+				"mat_cant_colores"
+			],
+			[
+				"mat",
+				"mat_m"
+			],
+			[
+				"max",
+				"max_random"
+			],
+			[
+				"cant",
+				"cant_joyas"
+			],
+			[
+				"ca",
+				"cantidad_camiones"
+			],
+			[
+				"total",
+				"totalPerdido"
+			],
+			[
+				"seri",
+				"serializarSalida"
+			],
+			[
+				"cantid",
+				"cantidadPiezas"
+			],
+			[
+				"el",
+				"elif	elif …"
+			],
+			[
+				"lon",
+				"longuitud"
+			],
+			[
+				"tabla",
+				"tablaDiaCantidad"
+			],
+			[
+				"can",
+				"cantCamiones"
+			],
+			[
+				"dias",
+				"diasInspector"
+			],
+			[
+				"TEST",
+				"TESTING_DIR"
+			],
+			[
+				"build",
+				"build_informe"
+			],
+			[
+				"clean",
+				"clean_informe"
+			],
+			[
+				"modul",
+				"modulo_ejercicio_3"
+			],
+			[
+				"modu",
+				"modulo_ejercicio_2"
+			],
+			[
+				"clea",
+				"clear_screen"
+			],
+			[
+				"ej1",
+				"EJ1_DIR"
+			],
+			[
+				"clock",
+				"clocksTotales"
+			],
+			[
+				"clo",
+				"clocksTotales"
+			],
+			[
+				"si",
+				"size"
+			],
+			[
+				"acumul",
+				"acumulacionParcial"
+			],
+			[
+				"longu",
+				"longuitud-1"
+			],
+			[
+				"aps",
+				"stage2ApStartup"
+			],
+			[
+				"sta",
+				"startKernel64_APMODE"
+			],
+			[
+				"gru",
+				"grubInfoStruct"
+			],
+			[
+				"stage",
+				"stage2ApStartup"
+			],
+			[
+				"ap",
+				"apStage2StartupEntry"
+			],
+			[
+				"multib",
+				"multiboot_header"
+			],
+			[
+				"protec",
+				"protected_mode"
+			],
+			[
+				"run",
+				"run-bochs"
+			],
+			[
+				"load",
+				"loader"
+			],
+			[
+				"end",
+				"end_section_bss"
+			],
+			[
+				"sec",
+				"start_section_data"
+			],
+			[
+				"multi",
+				"multiboot_header"
+			],
+			[
+				"VIDEO",
+				"VIDEO_FILS"
+			],
+			[
+				"FAIL",
+				"fail_unless"
+			],
+			[
+				"uint",
+				"uint64_t"
+			],
+			[
+				"console",
+				"console_printf"
+			],
+			[
+				"del",
+				"delimiter"
+			],
+			[
+				"strlen",
+				"strlength"
+			],
+			[
+				"pos",
+				"posX"
+			],
+			[
+				"impr",
+				"imprimir_texto_ml"
+			],
+			[
+				"g",
+				"GDT_DESC"
+			],
+			[
+				"gdt",
+				"gdt64_desc"
+			],
+			[
+				"G",
+				"GDT_DESC"
+			],
+			[
+				"idt",
+				"idt_inicializar"
+			],
+			[
+				"band",
+				"banderaPtrFisica"
+			],
+			[
+				"banderas",
+				"banderasEjecutadas"
+			],
+			[
+				"notifica",
+				"notificarRelojIdle"
+			],
+			[
+				"jmp",
+				"jmpToTask"
+			],
+			[
+				"tarea",
+				"tarea_actual"
+			],
+			[
+				"TSS_TAS",
+				"TSS_TASK_ENTRY"
+			],
+			[
+				"forma",
+				"formatoEscritura"
+			],
+			[
+				"MASK",
+				"MASK_BLUE"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "ej1/ej1.cpp",
+			"settings":
+			{
+				"buffer_size": 4553,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "common/plotting/plot_tests.sh",
+			"settings":
+			{
+				"buffer_size": 172,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "common/testing/create_tests.sh",
+			"settings":
+			{
+				"buffer_size": 2422,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "common/plotting/plotter.py",
+			"settings":
+			{
+				"buffer_size": 792,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 54.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"gdb",
+				"SublimeGDB: Start Debugging"
+			],
+			[
+				"setsc+",
+				"Set Syntax: C++"
+			],
+			[
+				"setsla",
+				"Set Syntax: LaTeX"
+			],
+			[
+				"setsc",
+				"Set Syntax: C"
+			],
+			[
+				"sets",
+				"Set Syntax: NASM"
+			],
+			[
+				"SETS",
+				"Set Syntax: NASM"
+			],
+			[
+				"setsn",
+				"Set Syntax: NASM"
+			],
+			[
+				"setsm",
+				"Set Syntax: Makefile"
+			],
+			[
+				"setn",
+				"Set Syntax: NASM"
+			],
+			[
+				"set",
+				"Set Syntax: NASM"
+			],
+			[
+				"setnas",
+				"Set Syntax: NASM"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"add",
+				"Package Control: Add Repository"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"setnasm",
+				"Set Syntax: NASM"
+			],
+			[
+				"addre",
+				"Package Control: Add Repository"
+			],
+			[
+				"packins",
+				"Package Control: Install Package"
+			],
+			[
+				"packinst",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/svilerino/devel/cv/moderncv/examples/template.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/Makefile",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testing/run_tests.sh",
+		"/home/svilerino/devel/tps-algo3/tp1/common/plotting/file.txt",
+		"/home/svilerino/devel/tps-algo3/tp1/common/plotting/plot_tests.sh",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testing/create_tests.sh",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/Makefile",
+		"/home/svilerino/devel/tps-algo3/tp1/ej2/ej2.cpp",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/plot.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests_out/result_.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/verificador_ej2.cpp",
+		"/home/svilerino/devel/tps-algo3/tp1/ej3/ej3.c",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio3/tests-6.ej3",
+		"/home/svilerino/devel/tps-algo3/tp1/ej1/ej1.cpp",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/crear_casos.c",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests-1.ej1",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests-9.ej1",
+		"/home/svilerino/devel/tps-algo3/tp1/common/timing/timing.h",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests_out/DIFF_EJ1_SOLVED_1.tests-1.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/solucionar_ej1.c",
+		"/home/svilerino/devel/tps-algo3/tp1/ej1/test.txt",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests_out/result_tests-1.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/ej1/Makefile",
+		"/home/svilerino/devel/intel_multicore/bytal_kernel_silvio/src/tss.c",
+		"/home/svilerino/devel/intel_multicore/bytal_kernel_silvio/src/tss.h",
+		"/home/svilerino/devel/tps-algo3/tp1/informe/informe.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/informe/informe_ej2.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/informe/correctitud-ej2.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/informe-oc2/Makefile",
+		"/home/svilerino/devel/tps-algo3/tp1/informe/Makefile",
+		"/home/svilerino/devel/svilerino-orga2tp2/informe/informe.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/informe-oc2/conclusion.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/informe-oc2/desarrollo.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/timing_tests-1.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/timing_tests-2.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/crear_casos",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/crear_casos.h",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/result_tests-3.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/result_tests-2.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/result_tests-1.ej1.out",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests-ej1.1",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/ejercicio1/tests-ej1.2",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testing/tester.cpp",
+		"/home/svilerino/devel/svilerino-orga2tp2/solucion/src/tiempo.h",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testing/tester.h",
+		"/home/svilerino/devel/tps-algo3/tp1/common/timing/tester.cpp",
+		"/home/svilerino/devel/tps-algo3/tp1/common/timing/tester.h",
+		"/home/svilerino/devel/tps-algo3/tp1/common/timing/timing.cpp",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/tests-ej1.2",
+		"/home/svilerino/devel/tps-algo3/tp1/common/testcases/tests-ej1.1",
+		"/home/svilerino/devel/tps-algo3/tp1/common/random_testcase_builder/prueba1",
+		"/home/svilerino/devel/tps-algo3/tp1/ej3/Makefile",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/informe/informe.tex",
+		"/home/svilerino/devel/tps-algo3/tp1/ej2/Makefile",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/grub-init/Makefile",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/run.sh",
+		"/home/svilerino/devel/tps-algo3/tp1/tp1.sublime-project",
+		"/home/svilerino/devel/tps-algo3/tp1/tp1.sublime-build",
+		"/home/svilerino/.config/sublime-text-2/Packages/SublimeGDB/SublimeGDB.sublime-settings",
+		"/home/svilerino/.config/sublime-text-2/Packages/User/tp1.sublime-build",
+		"/home/svilerino/.config/sublime-text-2/Packages/User/SublimeGDB.sublime-settings",
+		"/home/svilerino/devel/tps-algo3/tp1/tp1.sublime-workspace",
+		"/home/svilerino/devel/repo-orga2tp2/solucion/src/tp2.c",
+		"/home/svilerino/Escritorio/Enlace hacia devel/svilerino-algo3tps/tp1/tp1-ej1/ej1.cpp",
+		"/home/svilerino/devel/repo-orga2tp2/solucion/src/tiempo.h",
+		"/home/svilerino/Escritorio/Enlace hacia devel/svilerino-algo3tps/tp1/tp1-ej1/testData.txt",
+		"/home/svilerino/Escritorio/Enlace hacia devel/svilerino-algo3tps/tp1/utils/tiempo.h",
+		"/home/svilerino/Escritorio/Enlace hacia devel/svilerino-algo3tps/tp1/tp1.sublime-project",
+		"/home/svilerino/devel/svilerino-algo3tps/tp1-ej2/Makefile",
+		"/home/svilerino/devel/svilerino-algo3tps/tp1-ej1-cpp/Makefile",
+		"/home/svilerino/devel/svilerino-algo3tps/tp1-ej1-cpp/ej1.cpp",
+		"/home/svilerino/Escritorio/Enlace hacia devel/svilerino-orga2tpfinal/informe/resultados.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/orga2-tpfinal-informe/informe/informe.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/orga2-tpfinal-informe/informe/sorting.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/orga2-tpfinal-informe/informe/bsp.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/orga2-tpfinal-informe/informe/grub.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/orga2-tpfinal-informe/informe/vectorsum.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/bsp.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/ap_boot.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/sorting.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/grub.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/ap_startup_code/Makefile",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/multiboot.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/informe.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/bsp_code/kernel.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/introduccion.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/boot.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/grub-init/src/kmain.c",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/ap_startup_code/ap_startup_code.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/ap_code/ap_full_code.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/common_code/gdt.c",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/include/defines.h",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/bsp_code/linker_script.ld",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/grub-init/src/loader.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/resultados.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/conclusion.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/vectorsum.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/informe/fft.tex",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/common_code/multicore_common.c",
+		"/home/svilerino/Escritorio/fix-teclado.sh",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/multicore.c",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/kernel.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/kmain64.c",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/include/multicore.h",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/linker_script.ld",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/ap_startup_code.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/juampi_os/build/grub_modules_build/Makefile",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/juampi_os/build/grub_modules_build/ap_startup_code.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/src/kmain.c",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/Makefile",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/make_kernel_binary.sh",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/run/bochsdbg.txt",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/build/menu.lst",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/include/multiboot.h",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/src/loader.asm",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/src/asm_screen_utils.mac",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/run/bochsrc.txt",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/Makefile",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/build/linker_script.ld",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/src/Makefile",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/src/bochsrc",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/macros/real_mode_macros.mac",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/DeliriOS_64bits/macros/asm_screen_utils.mac",
+		"/home/svilerino/Escritorio/Enlace hacia devel/intel_multicore/grub-init/src/kmain.d",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/kernel.asm",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/Makefile",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/linker_script.ld",
+		"/home/svilerino/devel/intel_multicore/DeliriOS_64bits/loader.asm"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"",
+			"<open files>",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"CASE_TESTER_DIR",
+			"1000",
+			"graphic_ejercicio",
+			"PLOT_EJERCICIO1_DIR",
+			">",
+			"rm -F",
+			"*.ej",
+			"ej",
+			"sort tmp_plot.out -k1,1 --numeric-sort > plot.out",
+			"TESTS_OUTPUT",
+			"plot",
+			"$i",
+			"test-$i",
+			">\n",
+			"solucionValida",
+			",",
+			"solucionar_ej1",
+			"$timeElapsed ms",
+			"REPETICIONES_CALCULAR_TIEMPO",
+			" = ",
+			"1)0",
+			"$i+",
+			"J2",
+			"file]...\"",
+			"out\"",
+			"printf",
+			"$10",
+			"$",
+			"TESTS",
+			"CANT_TESTS_PER_EXERCISE",
+			"random_maximo",
+			"maximo_random_v1_i",
+			"10",
+			"=",
+			"-1",
+			"max_j",
+			"const",
+			"parsearInstancia",
+			"parsingDeLaEntrada",
+			"Ejecutando test ejercicio ",
+			"Ejecutando test ejercicio 1",
+			"echo \"BAD TEST...\"",
+			"echo \"Ejecutando",
+			"int",
+			"serializacionDelResultado",
+			"../../../ej",
+			"NUM_REPEAT_INSTANCE",
+			"*.ej",
+			"ej",
+			"/*.",
+			"\"result",
+			"promedio",
+			"TSS",
+			"section",
+			"INFORME_DIR",
+			"no existe",
+			"not exist",
+			">2",
+			"> \"timing_$file.out\"",
+			"> \"result_$file.out\"",
+			"\"$TESTS_DIR\"",
+			"ejercicio1",
+			"gettimeofday",
+			"gett",
+			"MEDIR_TIEMPO",
+			"#define MEDIR_TIEMPO",
+			"__TIEMPO_H__",
+			"../testcases/",
+			"creartests",
+			"715/13",
+			"_modulo_",
+			"modulo_ejercicio_",
+			"modulo_",
+			"modulo",
+			"MEDIR_TIEMPO_START",
+			"tp1_",
+			"eje",
+			"ej",
+			"EJ",
+			"ej",
+			"=",
+			"EJERCICIOS",
+			"pushd",
+			"popd",
+			"rm e",
+			"rm ej",
+			"ej1",
+			"clocksTotales",
+			"NUM_REPEAT_INSTANCE",
+			"clockstot",
+			"start",
+			"START",
+			"start",
+			"START",
+			"start",
+			"aplicar_decode",
+			"MAX_TESTS",
+			"obtenerDiasInspector",
+			"idxFinalIntervaloOptimo",
+			"myfunction",
+			"ej1",
+			"diasInspector",
+			"aparicionesAcumuladas",
+			"apariciones",
+			"target",
+			"cmp",
+			"mypair",
+			"> ",
+			"target",
+			";\n",
+			"*/\n",
+			"endl",
+			"%",
+			"xeon",
+			".",
+			"	",
+			"g2030",
+			".",
+			"	",
+			"21896",
+			"15452	21896",
+			"	",
+			"21896",
+			"15452	21896",
+			"	",
+			"21896",
+			"15452	21896",
+			"	"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"",
+			"uint8_t",
+			"startKernel64_BSPMODE",
+			"asm_screen_utils.mac",
+			"screen.asm",
+			""
+		],
+		"reverse": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "ej1/ej1.cpp",
+					"settings":
+					{
+						"buffer_size": 4553,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1020,
+								1020
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 204.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		},
+		{
+			"sheets":
+			[
+				{
+					"buffer": 1,
+					"file": "common/plotting/plot_tests.sh",
+					"settings":
+					{
+						"buffer_size": 172,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								66,
+								66
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "common/testing/create_tests.sh",
+					"settings":
+					{
+						"buffer_size": 2422,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								214,
+								214
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "common/plotting/plotter.py",
+					"settings":
+					{
+						"buffer_size": 792,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								422,
+								422
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 34.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.5,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 112.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"utils",
+				"include/utils.h"
+			],
+			[
+				"list",
+				"solucion/lista_colgante.asm"
+			],
+			[
+				"handy",
+				"tex/recursos/handy.sty"
+			],
+			[
+				"sislabrep",
+				"tex/modulos/sistemaLaboral/sistemaLaboral-rep.tex"
+			],
+			[
+				"tempalg",
+				"tex/modulos/temporada/temporada-alg.tex"
+			],
+			[
+				"acuerdoalg",
+				"tex/modulos/acuerdo/acuerdo-alg.tex"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 225.0,
+	"status_bar_visible": true
+}

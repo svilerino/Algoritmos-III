@@ -1,0 +1,24 @@
+{
+	"folders":
+	[
+		{
+			"path": "/home/svilerino/devel/tps-algo3/tp1"
+		}
+	],
+	"settings":
+     {
+          "sublimegdb_workingdir": "${folder:${project_path:solucion/main}}",//aca va el wd de gdb, el ejecutable en mi caso esta en tp1bundle(project_path):solucion/main
+          "sublimegdb_commandline": "gdb --interpreter=mi main", // main es el nombre del ejecutable a debugear, pongan el que quieran, tiene que ser el mismo que arriba
+          "ctags_command": "ctags -R --langmap=c:.c.h --languages=+C,+Asm,-C++,-Make -f .tags" // comando para ctags para que genere tags solo con los archivos de C y ASM
+     },
+    "build_systems":
+    [
+        {
+    		"name": "BUILD_TP1",
+        "cmd": ["gcc","-Wall","-Werror","-pedantic","--std=c99","-ggdb","-O0","${file}","lista_colgante.o","-o", "main"], //Este es el comando para buildear el ejecutable de la catedra a partir del .c
+    		"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
+    		"working_dir": "${file_path}",
+    		"selector": "source.c"
+        }
+    ]
+}

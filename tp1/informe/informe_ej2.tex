@@ -1,0 +1,146 @@
+\section{Ejercicio 2}
+\newtheorem{Teo}{Teorema}
+
+\subsection{Descripci\'on del problema}
+
+Un joyero recibe un encargo de una serie de piezas de orfebrer\'ia para fabricar. Cada pieza posee una cantidad de d\'ias que tarda el joyero en fabricarla (s\'olo puede fabricar una al mismo tiempo), y un valor de depreciaci\'on, esto es, la cantidad de dinero que el joyero pierde diariamente mientras esa pieza no sea entregada. Se pide realizar un algoritmo que calcule el orden \'optimo de fabricaci\'on de las piezas, esto es, el orden en el que el joyero debe fabricar cada una de forma de que se minimize la p\'erdida que sufre. 
+
+\vspace{2mm}
+
+La entrada del algoritmo, por cada instancia son $n$ lineas $di \: ti$, donde $di$ representa el valor de depreciaci\'on y $ti$ la cantidad de dias que tarda la fabricaci\'on de esa pieza.
+
+\subsection{Formalizaci\'on Matem\'atica}
+
+Para formalizar, es an\'alogo decir que se recibe una entrada compuesta por dos arrays no vacios de numeros enteros positivos de igual longitud, T y D. El problema consiste en encontrar la ordenacion (la misma aplicada a ambos arrays de entrada) que minimiza el valor de la siguiente funcion:\\
+\begin{algorithmic}
+%\PRINT f(T,D)
+\Loop
+	\State $n \leftarrow long(T)$
+	\State $ret \leftarrow 0$
+	\For{ i = 0 to n-1 }
+		\State $a \leftarrow 0$
+		\For{ j = 0 to i-1 }
+			\State $a \leftarrow a + T[j]$
+		\EndFor
+		\State $ret \leftarrow ret + a.D[i]$
+	\EndFor
+	\State return ret
+\EndLoop
+\end{algorithmic}
+
+En otras palabras: $$ f(T,D) = \sum_{i=0}^{n-1} \bigg (D[i] \sum_{j=0}^{i-1} T[i] \bigg) $$
+
+\subsubsection{Ejemplos}
+
+\begin{Ejemplo}
+$T = [1 , 1 , 1 , 1 , 1]$,
+$D = [2 , 2 , 2 , 2 , 2]$,
+$f(T,D) =  [1 , 2 , 3 , 4 , 5]$.
+En este caso cualquier ordanacion vale.
+\end{Ejemplo}
+
+\begin{Ejemplo}
+$T = [1 , 1]$,
+$D = [1 , 2]$,
+$f(T,D) =  [2 , 1]$.
+En este caso el mas costoso se hace primero.
+\end{Ejemplo}
+
+\begin{Ejemplo}
+$T = [3 , 1, 2]$,
+$D = [1 , 1, 1]$,
+$f(T,D) =  [2 , 3, 1]$.
+En este caso se hacen primero los que llevan menos tiempo.
+\end{Ejemplo}
+
+\begin{Ejemplo}
+$T = [3 , 3, 1]$,
+$D = [5 , 4, 4]$,
+$f(T,D) =  [3 , 1, 2]$.
+Un caso general.
+\end{Ejemplo}
+
+\subsection{Ideas para la resoluci\'on}
+
+Se construye un array $A$ de tuplas $( i , a_i )$ con $ a_i = T[i] / D[i] $. Luego se ordena el array $A$ de menor a mayor por su segunda componente. Se devuelve el array $A_1$, la proyecci\'on de $A$ en la primer componente.\\
+
+\begin{algorithmic}
+%\PRINT Op(T,D)
+\Loop
+	\State $n \leftarrow long(T)$
+	\For { i = 0 to n-1 }
+		\State $A[i] \leftarrow ( i , T[i] / D[i] )$
+	\EndFor
+	\State ordenar($A$,2) \Comment{Ordenar $A$ por la componente 2. El sorting es O(n log n)}
+	
+	\For { i = 0 to n-1 }
+	\State $ret[i] \leftarrow A[i]$.$1$ \Comment{Me quedo con la primer componente}
+	\EndFor
+	\State return ret
+\EndLoop
+\end{algorithmic}
+
+Se puede ver una implementaci\'on del algoritmo en la secci\'on \ref{codigo_2}.
+\subsubsection{Ejemplos}
+
+\begin{Ejemplo}
+$T = [3 , 3, 1]$,
+$D = [5 , 4, 4]$.\\
+Antes del sorting $A = [ ( 1 , 3/5 ) , ( 2 , 3/4 ) , ( 3 , 1/4 ) ]$.\\
+Despues del sorting $A = [ ( 3 , 1/4 ) , ( 1 , 3/5 ) , ( 2 , 3/4 ) ]$.\\
+$Op(T,D) =  [3 , 1, 2]$.
+\end{Ejemplo}
+
+\subsection{Correctitud}
+
+\subsubsection{Notaci\'on}
+Siendo $t_i$ y $d_i$ los tiempos y p\'erdidas por d\'ia de cada manufactura, se define $a_i = t_i / d_i$. La funci\'on ``p\'erdida total'' asocia a cada orden (permutaci\'on) de los objetos fabricados el dinero total perdido seg\'un la f\'ormula (\ref{notacion})
+\begin{equation}
+f(\tau) = \sum_{i=1}^{n}( d_{\tau(i)} \sum_{j=1}^{i} t_{\tau(i)} ) \label{notacion}
+\end{equation}
+
+\subsubsection{Demostraci\'on}
+\begin{Teo}
+Sea $(i \ i+1)$ una transposici\'on. Entonces $f((i \ i+1)\circ\tau) = f(\tau)$ si $a_{\tau(i)} = a_{\tau(i+1)}$, $f((i \ i+1)\circ\tau) > f(\tau)$ si $a_{\tau(i)} < a_{\tau(i+1)}$ y $f((i \ i+1)\circ\tau) < f(\tau)$ si $a_{\tau(i)} > a_{\tau(i+1)}$.
+\end{Teo}
+\begin{proof}
+
+Se puede ver por c\'alculo directo que $f((i \ i+1)\circ\tau) - f(\tau) = t_{\tau(i+1)} d_{\tau(i)} - t_{\tau(i)} d_{\tau(i+1)}$.\\ Se cumple que $$ t_{\tau(i+1)} d_{\tau(i)} - t_{\tau(i)} d_{\tau(i+1)} > 0 \iff a_{\tau(i)} < a_{\tau(i+1)}$$ $$ t_{\tau(i+1)} d_{\tau(i)} - t_{\tau(i)} d_{\tau(i+1)} < 0 \iff a_{\tau(i)} > a_{\tau(i+1)}$$ $$ t_{\tau(i+1)} d_{\tau(i)} - t_{\tau(i)} d_{\tau(i+1)} = 0 \iff a_{\tau(i)} = a_{\tau(i+1)}$$
+\end{proof}
+\begin{Teo}
+Sea $\tau$ cualquier permutaci\'on con la propiedad de que $i \leq j \Rightarrow a_{\tau (i)} \leq a_{\tau (j)}$. Entonces la funci\'on $f$ alcanza su m\'inimo en $\tau$.
+\end{Teo}
+\begin{proof}
+
+Dado que el dominio de $f$ es finito existe una permutaci\'on $\tau'$ en donde la funci\'on alcanza el m\'inimo.
+
+Para tal permutaci\'on se cumple la propiedad citada en el enunciado, ya que de lo contrario existir\'ia un \'indice $i$ tal que $a_{\tau'(i)}>a_{\tau'(i+1)}$ lo cual por el teorema anterior implicar\'ia que $f((i \ i+1)\circ\tau') < f(\tau')$ contradiciendo la minimalidad de $\tau'$.
+Que $f(\tau)=f(\tau')$ se puede deducir de que como ambas permutaciones cumplen la propiedad, una se puede transformar en la otra por composici\'on de transposiciones $(i \ i+1)$ con $a_{\tau(i)} = a_{\tau(i+1)}$, y por el teorema anterior la $f$ se mantiene invariante en cada una de ellas.
+\end{proof}
+
+\subsection{Correctitud del ciclo de acumulaci\'on}
+
+Nuestro c\'odigo fuente calcula el monto total perdido mediante un ciclo lineal de atr\'as hacia adelante para mejorar la ejecuci\'on. Recordemos que dado un vector $A$ de tuplas  $< depreciacion, tiempo>$, el monto total perdido es:
+
+\begin{align*}
+Depreciacion(A) = \sum_{i=0}^{n-1}(i_2)*(\sum_{j=i}^{n-1}(j_1))
+\end{align*}
+
+Veamos el ciclo:
+
+\begin{algorithmic}
+\State $i = n-1$
+\While{$i \geq 0$}
+	
+		\State $depreciaciones = depreciaciones + (piezas[i])_1;$
+		\State $totalPerdido = totalPerdido + (piezas[i])_2*depreciaciones;$
+		\State $i--;$
+	\EndWhile
+\end{algorithmic}
+
+Podemos ver que en cada iteraci\'on, $depreciaciones$ contiene la sumatoria de las depreciaciones de las piezas de $[i..n-1].$,o sea, $\sum_{j=i}^{n-1}(piezas[i]_1)$.Por otro lado $totalPerdido$ se suma en cada iteraci\'on a si mismo + $piezas[i]_2*depreciaciones$. Con lo cual en cada iteraci\'on posee la sumatoria $\sum_{k=i}^{n-1}(piezas[i]_2*\sum_{j=i}^{n-1}(piezas[i]_1))$. Como estamos hablando del mismo indice $i$, como  $k=i$ podemos reemplazar en la segunda sumatoria $j=i$ por $j=k$, ya que esto es cierto en cada iteraci\'on.  Cuando se llega al final del ciclo, $i= 0$ queda la f\'ormula de $Depreciacion(piezas).$
+
+
+\subsection{Cota de complejidad}
+
+Siendo $n=long(T)$, el primer bucle tarda $O(n)$, el sorting $O(n$ $log (n))$ (esto es un requerimiento) y el segundo bucle $O(n)$. El tiempo total es $O(n$ $log (n))$.

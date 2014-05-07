@@ -1,0 +1,9 @@
+
+\begin{algorithmic}[1]
+	
+	\State $tupla<int, \,int> \, inicio \gets dias[i]$
+	\State $int \: diaFinal \gets inicio.first + diasInspector -1$
+	\State $tupla<int, \, int> final \gets dias[BusquedaBinaria(dias,i, diaFinal, dias.size())]$
+	\State $int \sharp camionesDelIntervalo \gets final.second - dias[i-1]$
+	
+	\end{algorithmic}
