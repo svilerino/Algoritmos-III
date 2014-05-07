@@ -1,0 +1,54 @@
+\begin{algorithm}[!h]
+\caption{minimizarTuberias} \label{ej_2:pseudo}
+\end{algorithm}
+\begin{algorithmic}[1]
+	\Require \emph{centrales}: cantidad de centrales disponibles, mayor que 0
+	\Require \emph{ciudades}: las ciudades con sus posiciones
+	\Require \emph{n}: cantidad de ciudades en el par\'ametro \emph{ciudades}
+	\Statex
+	\Ensure Retorna el grafo tal que hay tanas componentes conexas como \emph{centrales}, y que la arista m\'as larga es la m\'as corta posible
+	\Statex
+	\Procedure{minimizarTuberias}{Entero: centrales, Array: ciudades, Entero: n}{$\to$ Grafo}
+		\State Grafo g $\gets$ \Call{NuevoGrafo}{$n$} \Comment{Creo un grafo con $n$ nodos, sin aristas}
+		\State <bool agregado, entero distancia, entero nodo>  nodos[n] \Comment{La distancia es desde $n$ (\'indice del array) hasta nodos[$n$].nodo}
+		\State <nodo1, nodo2, distancia> aristas[n - 1]
+		\Statex
+		\State nodos[0] $\gets$ <true, 0, 0> \label{ej_2:pseudo:inicializa}
+		\For{i $\gets$ 1; i $<$ n; i$++$} \label{ej_2:pseudo:distancia}
+			\State nodos[i] $\gets$ <false, \Call{Distancia}{ciudades[i], ciudades[0]}, 0>
+		\EndFor \label{ej_2:pseudo:fin_inicializa}
+		\Statex
+		\For{agregados $\gets$ 0; agregados < n - 1; agregados$++$} \label{ej_2:pseudo:crea_arbol}
+			\State distancia\_minima $\gets$ $\infty$
+			\State nodo\_minimo $\gets$ 0
+			\For{i $\gets$ 0; i $<$ n; i$++$} \Comment{Busco el nodo mas cercano al \'arbol que ya tenemos} \label{ej_2:pseudo:mas_cerca}
+				\If{nodos[i].agregado = false}
+					\If{nodos[i].distancia $<$ distancia\_minima}
+						\State distancia\_minima $\gets$ nodos[i].distancia
+						\State nodo\_minimo $\gets$ i
+					\EndIf
+				\EndIf
+			\EndFor \label{ej_2:pseudo:fin_mas_cerca}
+			\Statex
+			\State nodos[nodo\_minimo].agregado $\gets$ true \label{ej_2:pseudo:nodo}
+			\State aristas[agregados] $\gets$ <nodo\_minimo, nodo[nodo\_minimo].nodo, distancia\_minima> \Comment{Agrego el nodo encontrado} \label{ej_2:pseudo:arista}
+			\Statex
+			\For{i $\gets$ 0; i $<$ n; i$++$} \Comment{Actualizo la distancia de los nodos no agregados a\'un} \label{ej_2:pseudo:actualiza}
+				\If{nodos[i].agregado = false}
+					\If{nodos[i].distancia $>$ \Call{Distancia}{ciudades[i], ciudades[nodo\_minimo]}}
+						\State nodo[i].distancia $\gets$ \Call{Distancia}{ciudades[i], ciudades[nodo\_minimo}
+						\State nodo[i].nodo $\gets$ nodo\_minimo
+					\EndIf
+				\EndIf
+			\EndFor \label{ej_2:pseudo:fin_actualiza}
+		\EndFor \label{ej_2:pseudo:fin_crea_arbol}
+		\Statex
+		\State \Call{Ordenar}{aristas} \Comment{Ordeno las aristas por la distancia} \label{ej_2:pseudo:sort}
+		\Statex
+		\For{componentes $\gets$ n; componentes $>$ centrales; componentes$--$} \label{ej_2:pseudo:componentes}
+			\State \Call{AgregarArista}{g, aristas[n - componentes].nodo1, aristas[n - componentes].nodo2}
+		\EndFor \label{ej_2:pseudo:fin_componentes}
+		\State retornar $\gets$ g
+	\EndProcedure
+\end{algorithmic}
+
