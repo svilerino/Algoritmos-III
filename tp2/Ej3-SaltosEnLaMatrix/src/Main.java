@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 public class Main {
 
+	private static final int CANT_REPETICIONES = 100;
 	private static int powerUpInicial;	
 	private static int filaInicial;
 	private static int columnaInicial;
@@ -52,12 +53,23 @@ public class Main {
 	
 	public static void main(String[] args) {
 		parseInput();
-		//matrix = {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
-		//matrix = {{1, 1}, {1, 1}};
 		
-		Juego juego = new Juego(matrix, powerUpInicial, filaInicial, columnaInicial, filaDestino, columnaDestino);
-		//System.out.println(juego.getGraphString());
-		System.out.println(serializeOutput(juego.caminoMinimo()));
+
+		List<Nodo> res = null;
+		double promedioNanoSeconds = 0;
+		for(int k=0;k<CANT_REPETICIONES;k++){
+			Juego juego = new Juego(matrix, powerUpInicial, filaInicial, columnaInicial, filaDestino, columnaDestino);
+			long start = System.nanoTime();
+			res = juego.caminoMinimo();
+			long stop = System.nanoTime();
+			long elapsed = stop - start;
+			promedioNanoSeconds += elapsed;
+		}
+		promedioNanoSeconds/=CANT_REPETICIONES;
+		
+		System.out.println(serializeOutput(res));
+		System.err.println("Tamanio entrada(dim*powerUpInicial) | Tiempo promedio en nanosegundos");
+		System.err.println(matrixDim * powerUpInicial + " " + promedioNanoSeconds);
 	}
 
 }
