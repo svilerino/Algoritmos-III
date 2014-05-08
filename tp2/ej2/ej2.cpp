@@ -107,6 +107,34 @@ Nodo *nodos_de_componentes(Grafo *g)
 	return nodos;
 }
 
+int distancia(Ciudad *c1, Ciudad *c2)
+{
+	if(!c1 || !c2)
+		return 0;
+
+	return (c1->x - c2->x) * (c1->x - c2->x) + (c1->y - c2->y) * (c1->y - c2->y); //el cuadrado de la distancia euclidiana
+}
+
+Ciudad *cargar_datos(FILE *f, int *n_ciudades, int *k_centrales)
+{
+	int i;
+	Ciudad *ciudades = NULL;
+
+	if(!f || !n_ciudades || !k_centrales)
+		return NULL;
+
+	fscanf(f, "%d %d", n_ciudades, k_centrales);
+	if(*n_ciudades <= 0)
+		return NULL;
+
+	ciudades = (Ciudad *)malloc(sizeof(Ciudad) *(*n_ciudades));
+	for(i = 0; i < *n_ciudades; i++){
+		fscanf(f, "%d %d", &(ciudades[i].x), &(ciudades[i].y));
+		ciudades[i].nodo = i;
+	}
+	return ciudades;
+}
+
 int resolver(void)
 {
 	return 0;
@@ -116,15 +144,25 @@ int main(int argc, char **argv)
 {
 	int n_ciudades = 0;
 	int k_centrales = 0;
+	Ciudad *ciudades = NULL;
 
 	if(argc > 1)
 		calcular_tiempo = 1;
+
+
+	ciudades = cargar_datos(stdin, &n_ciudades, &k_centrales);
+	if(ciudades == NULL){
+		fprintf(stderr, "Error al cargar la instancia del problema\n");
+		return -1;
+	}
 
 	if(calcular_tiempo){
 		double promedio = 0.0;
 		MEDIR_TIEMPO_PROMEDIO(resolver();, REPETICIONES_CALCULAR_TIEMPO, &promedio);
 		cerr << n_ciudades << " " << k_centrales << " " << promedio << " " << REPETICIONES_CALCULAR_TIEMPO << endl;
 	}
+
+	free(ciudades);
 
 	return 0;
 }

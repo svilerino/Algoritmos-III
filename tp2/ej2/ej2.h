@@ -26,6 +26,12 @@ struct GrafoMatrizAdyacencia{
 
 typedef struct GrafoMatrizAdyacencia Grafo;
 
+typedef struct Ciudad {
+	Nodo nodo;
+	int x;
+	int y;
+} Ciudad;
+
 //nodos = cantidad de nodos del grafo. crea el grafo con nodos que van de 0 a nodos - 1
 Grafo *crear_grafo(int nodos);
 void liberar_grafo(Grafo *g);
@@ -34,6 +40,11 @@ int agregar_arista(Grafo *g, Nodo nodo1, Nodo nodo2);
 int cantidad_componentes_conexas(Grafo *g);
 //retorna un vector con tantos nodos en el grafo como elementos elementos, en cada iesimo elemento, hay un nodo correspondiente a la componente iesima. si esa componente conexa ya no existe, se pone el valor -1. liberar el resultado con free()
 Nodo *nodos_de_componentes(Grafo *g);
+
+int distancia(Ciudad *c1, Ciudad *c2);
+
+//liberar con free()
+Ciudad *cargar_datos(FILE *f, int *n_ciudades, int *k_centrales);
 
 int resolver(void);
 
