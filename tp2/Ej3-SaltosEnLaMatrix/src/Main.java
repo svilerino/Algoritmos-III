@@ -52,7 +52,7 @@ public class Main {
 		return sb.toString();
 	}
 	
-	public static void main(String[] args) {		
+	public static void main(String[] args) {
 		if(args.length>0){
 			for(int i=0;i<args.length;i++){
 				if("--generate-tests".equals(args[i])){
@@ -105,7 +105,7 @@ public class Main {
 		}		
 	}
 
-	private static void generateTest(String args[]) {
+	private static void generateTest(String args[]) {		
 		Integer randMinDimension = 0;
 		Integer randMaxDimension = 0;
 		Integer randMinPowerUp = 0;
@@ -127,21 +127,21 @@ public class Main {
 		}
 		
 		matrixDim = randomInt(randMinDimension, randMaxDimension);
-		filaInicial = randomInt(randMinDimension-1, randMaxDimension-1);
-		columnaInicial = randomInt(randMinDimension-1, randMaxDimension-1);
+		filaInicial = randomInt(0, matrixDim-1);
+		columnaInicial = randomInt(0, matrixDim-1);
 		
 		do{
-			filaDestino = randomInt(randMinDimension-1, randMaxDimension-1);
-			columnaDestino = randomInt(randMinDimension-1, randMaxDimension-1);
-		}while(filaDestino!=filaInicial || columnaDestino!=columnaInicial);
-		
+			filaDestino = randomInt(0, matrixDim-1);
+			columnaDestino = randomInt(0, matrixDim-1);
+		}while(filaDestino==filaInicial && columnaDestino==columnaInicial);
+
 		powerUpInicial = randomInt(randMinPowerUp, randMaxPowerUp);
 		
 		matrix = new int[matrixDim][matrixDim];
-		System.out.println(matrixDim + " " + filaInicial + " " + columnaInicial + " " + filaDestino + " " + columnaDestino);
+		System.out.println(matrixDim + " " + filaInicial + " " + columnaInicial + " " + filaDestino + " " + columnaDestino + " " + powerUpInicial);
 		for(int i=0;i<matrixDim;i++){
 			for(int j=0;j<matrixDim;j++){
-				matrix[i][j] = randomInt(randMinDimension-1, randMaxDimension-1);
+				matrix[i][j] = randomInt(0, matrixDim-1);
 				System.out.print(matrix[i][j]);
 				if(j!=matrixDim-1){
 					System.out.print(" ");
