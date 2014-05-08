@@ -1,7 +1,7 @@
 #ifndef __EJ2_H__
 #define __EJ2_H__
 
-#define REPETICIONES_CALCULAR_TIEMPO (100)
+#define REPETICIONES_CALCULAR_TIEMPO (20)
 
 #ifndef NULL
 #define NULL ((void *)0)

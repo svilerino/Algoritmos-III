@@ -1,7 +1,7 @@
 CC=g++
 RM=rm
 LDFLAGS=
-CFLAGS=-g -Wall -std=c++0x
+CFLAGS=-g -Wall -std=c++0x -O2
 
 SALIDA=ej2
 OBJETOS=ej2.o
