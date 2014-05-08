@@ -313,9 +313,7 @@ int main(int argc, char **argv)
 
 	if(calcular_tiempo){
 		double promedio = 0.0;
-		MEDIR_TIEMPO_PROMEDIO(solucion = resolver(k_centrales, ciudades, n_ciudades, &centrales);, REPETICIONES_CALCULAR_TIEMPO, &promedio);
-		free(centrales);
-		liberar_grafo(solucion);
+		MEDIR_TIEMPO_PROMEDIO(solucion = resolver(k_centrales, ciudades, n_ciudades, &centrales); free(centrales); liberar_grafo(solucion);, REPETICIONES_CALCULAR_TIEMPO, &promedio);
 		cerr << n_ciudades << " " << k_centrales << " " << promedio << " " << REPETICIONES_CALCULAR_TIEMPO << endl;
 	}
 	else{
