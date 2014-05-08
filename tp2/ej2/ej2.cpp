@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 #include "timing.h"
 #include "ej2.h"
 
@@ -159,16 +160,120 @@ Ciudad *cargar_datos(FILE *f, int *n_ciudades, int *k_centrales)
 	return ciudades;
 }
 
-Grafo *resolver(void)
+void ordenar_aristas(Arista *aristas, int n)
 {
-	return 0;
+	int m, i, j, k;
+	Arista *aux;
+
+	if(n <= 1)
+		return;
+	m = n / 2;
+	ordenar_aristas(aristas, m);
+	ordenar_aristas(aristas + m, n - m);
+	aux = (Arista *)malloc(sizeof(Arista) * n);
+	i = 0;
+	j = 0;
+	k = 0;
+	while(i < m || j < (n - m)){
+		if(j >= (n - m)){
+			memcpy(&(aux[k]), &(aristas[i]), sizeof(Arista));
+			i++;
+			k++;
+			continue;
+		}
+		if(i >= m){
+			memcpy(&(aux[k]), &(aristas[m + j]), sizeof(Arista));
+			j++;
+			k++;
+			continue;
+		}
+		if(aristas[i].distancia < aristas[m + j].distancia){
+			memcpy(&(aux[k]), &(aristas[i]), sizeof(Arista));
+			i++;
+			k++;
+			continue;
+		}
+		else{
+			memcpy(&(aux[k]), &(aristas[m + j]), sizeof(Arista));
+			j++;
+			k++;
+			continue;
+		}
+	}
+	memcpy(aristas, aux, n * sizeof(Arista));
+	free(aux);
+}
+
+Grafo *resolver(int k_centrales, Ciudad *ciudades, int n_ciudades, Nodo **centrales)
+{
+	Grafo *g = NULL;
+	NodoDistancia *nodos = NULL;
+	Arista *aristas = NULL;
+	int i, agregados, distancia_minima = -1, nodo_minimo = -1, componentes;
+
+	if(k_centrales <= 0 || ciudades == NULL || n_ciudades <= 0 || centrales == NULL){
+		return NULL;
+	}
+
+	g = crear_grafo(n_ciudades);
+	nodos = (NodoDistancia *)malloc(sizeof(NodoDistancia) * n_ciudades);
+	aristas = (Arista *)malloc(sizeof(Arista) * (n_ciudades - 1));
+
+	nodos[0].agregado = 1;
+	nodos[0].distancia = 0;
+	nodos[0].nodo = 0;
+	for(i = 1; i < n_ciudades; i++){
+		nodos[i].agregado = 0;
+		nodos[i].distancia = distancia(&(ciudades[i]), &(ciudades[0]));
+		nodos[i].nodo = 0;
+	}
+
+	for(agregados = 0; agregados < n_ciudades - 1; agregados++){
+		distancia_minima = -1;
+		nodo_minimo = 0;
+		for(i = 0; i < n_ciudades; i++){
+			if(!nodos[i].agregado){
+				if(distancia_minima == -1 || nodos[i].distancia < distancia_minima){
+					distancia_minima = nodos[i].distancia;
+					nodo_minimo = i;
+				}
+			}
+		}
+
+		nodos[nodo_minimo].agregado = 1;
+		aristas[agregados].nodo1 = nodo_minimo;
+		aristas[agregados].nodo2 = nodos[nodo_minimo].nodo;
+		aristas[agregados].distancia = distancia_minima;
+
+		for(i = 0; i < n_ciudades; i++){
+			if(!nodos[i].agregado){
+				if(nodos[i].distancia > distancia(&(ciudades[i]), &(ciudades[nodo_minimo]))){
+					nodos[i].distancia = distancia(&(ciudades[i]), &(ciudades[nodo_minimo]));
+					nodos[i].nodo = nodo_minimo;
+				}
+			}
+		}
+	}
+
+	ordenar_aristas(aristas, n_ciudades - 1);
+
+	for(componentes = n_ciudades; componentes > k_centrales; componentes--){
+		agregar_arista(g, aristas[n_ciudades - componentes].nodo1, aristas[n_ciudades - componentes].nodo2);
+	}
+
+	*centrales = nodos_de_componentes(g);
+
+	free(nodos);
+	free(aristas);
+
+	return g;
 }
 
 void imprimir_solucion(Grafo *solucion, Nodo *nodo_central)
 {
 	int centrales = 0, aristas = 0, nodos = 0, i, j;
 
-	if(!solucion || !centrales)
+	if(!solucion || !nodo_central)
 		return;
 
 	centrales = cantidad_componentes_conexas(solucion);
@@ -208,16 +313,20 @@ int main(int argc, char **argv)
 
 	if(calcular_tiempo){
 		double promedio = 0.0;
-		MEDIR_TIEMPO_PROMEDIO(resolver();, REPETICIONES_CALCULAR_TIEMPO, &promedio);
+		MEDIR_TIEMPO_PROMEDIO(solucion = resolver(k_centrales, ciudades, n_ciudades, &centrales);, REPETICIONES_CALCULAR_TIEMPO, &promedio);
+		free(centrales);
+		liberar_grafo(solucion);
 		cerr << n_ciudades << " " << k_centrales << " " << promedio << " " << REPETICIONES_CALCULAR_TIEMPO << endl;
 	}
 	else{
-		solucion = resolver();
+		solucion = resolver(k_centrales, ciudades, n_ciudades, &centrales);
 		if(solucion == NULL){
 			fprintf(stderr, "Error al obtener la solucion\n");
 			return -1;
 		}
 		imprimir_solucion(solucion, centrales);
+		free(centrales);
+		liberar_grafo(solucion);
 	}
 
 	free(ciudades);

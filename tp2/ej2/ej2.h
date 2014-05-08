@@ -1,7 +1,7 @@
 #ifndef __EJ2_H__
 #define __EJ2_H__
 
-#define REPETICIONES_CALCULAR_TIEMPO (200)
+#define REPETICIONES_CALCULAR_TIEMPO (100)
 
 #ifndef NULL
 #define NULL ((void *)0)
@@ -33,6 +33,18 @@ typedef struct Ciudad {
 	int y;
 } Ciudad;
 
+typedef struct NodoDistancia {
+	int agregado;
+	int distancia;
+	Nodo nodo;
+} NodoDistancia;
+
+typedef struct Arista{
+	Nodo nodo1;
+	Nodo nodo2;
+	int distancia;
+} Arista;
+
 //nodos = cantidad de nodos del grafo. crea el grafo con nodos que van de 0 a nodos - 1
 Grafo *crear_grafo(int nodos);
 void liberar_grafo(Grafo *g);
@@ -51,7 +63,8 @@ int distancia(Ciudad *c1, Ciudad *c2);
 //liberar con free()
 Ciudad *cargar_datos(FILE *f, int *n_ciudades, int *k_centrales);
 
-Grafo *resolver(void);
+void ordenar_aristas(Arista *aristas, int n);
+Grafo *resolver(int k_centrales, Ciudad *ciudades, int n_ciudades, Nodo **centrales);
 
 #endif //__EJ2_H__
 
