@@ -21,6 +21,7 @@ Grafo *crear_grafo(int nodos)
 	g->nodos = nodos;
 	g->componente_conexa_nodos = (int *)calloc(nodos, sizeof(int));
 	g->componentes_conexas = nodos;
+	g->aristas = 0;
 	g->adyacencia = (int **)malloc(sizeof(int *) * nodos);
 
 	for(i = 0; i < nodos; i++) {
@@ -60,6 +61,7 @@ int agregar_arista(Grafo *g, Nodo nodo1, Nodo nodo2)
 
 	g->adyacencia[nodo1][nodo2] = 1;
 	g->adyacencia[nodo2][nodo1] = 1;
+	g->aristas++;
 
 	if(g->componente_conexa_nodos[nodo1] != g->componente_conexa_nodos[nodo2]){
 		if(g->componente_conexa_nodos[nodo1] <= g->componente_conexa_nodos[nodo2]){
@@ -86,6 +88,28 @@ int cantidad_componentes_conexas(Grafo *g)
 	if(!g)
 		return -1;
 	return g->componentes_conexas;
+}
+
+int cantidad_aristas(Grafo *g)
+{
+	if(!g)
+		return -1;
+	return g->aristas;
+}
+
+int cantidad_nodos(Grafo *g)
+{
+	if(!g)
+		return -1;
+	return g->nodos;
+}
+
+int son_adyacentes(Grafo *g, Nodo nodo1, Nodo nodo2)
+{
+	if(!g)
+		return 0;
+
+	return g->adyacencia[nodo1][nodo2];
 }
 
 //retorna un vector con cantidad_componentes_conexas() elementos, en cada iesimo elemento, hay un nodo correspondiente a la componente iesima. liberar el resultado con free()
@@ -135,9 +159,33 @@ Ciudad *cargar_datos(FILE *f, int *n_ciudades, int *k_centrales)
 	return ciudades;
 }
 
-int resolver(void)
+Grafo *resolver(void)
 {
 	return 0;
+}
+
+void imprimir_solucion(Grafo *solucion, Nodo *nodo_central)
+{
+	int centrales = 0, aristas = 0, nodos = 0, i, j;
+
+	if(!solucion || !centrales)
+		return;
+
+	centrales = cantidad_componentes_conexas(solucion);
+	aristas = cantidad_aristas(solucion);
+	nodos = cantidad_nodos(solucion);
+	printf("%d %d\n", centrales, aristas);
+	for(i = 0; i < nodos; i++){ //en centrales tenemos todas las posibles componentes conexas, y en cada iesimo elemento tenemos un nodo que pertenece a la componente conexa iesima, excepto que sea menor a 0, en ese caso no existe esa componente conexa
+		if(nodo_central[i] >= 0)
+			printf("%d\n", nodo_central[i] + 1); //la solucion va de 1 a n, pero el programa usa los nodos de 0 a n-1
+	}
+	for(i = 0; i < nodos; i++){
+		for(j = i + 1; j < nodos; j++){
+			if(son_adyacentes(solucion, i, j)){
+				printf("%d %d\n", i + 1, j + 1); //la solucion va de 1 a n, pero el programa usa los nodos de 0 a n-1
+			}
+		}
+	}
 }
 
 int main(int argc, char **argv)
@@ -145,6 +193,8 @@ int main(int argc, char **argv)
 	int n_ciudades = 0;
 	int k_centrales = 0;
 	Ciudad *ciudades = NULL;
+	Grafo *solucion = NULL;
+	Nodo *centrales = NULL;
 
 	if(argc > 1)
 		calcular_tiempo = 1;
@@ -160,6 +210,14 @@ int main(int argc, char **argv)
 		double promedio = 0.0;
 		MEDIR_TIEMPO_PROMEDIO(resolver();, REPETICIONES_CALCULAR_TIEMPO, &promedio);
 		cerr << n_ciudades << " " << k_centrales << " " << promedio << " " << REPETICIONES_CALCULAR_TIEMPO << endl;
+	}
+	else{
+		solucion = resolver();
+		if(solucion == NULL){
+			fprintf(stderr, "Error al obtener la solucion\n");
+			return -1;
+		}
+		imprimir_solucion(solucion, centrales);
 	}
 
 	free(ciudades);

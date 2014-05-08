@@ -22,6 +22,7 @@ struct GrafoMatrizAdyacencia{
 	int *componente_conexa_nodos; //array para asignar componentes conexas
 	int componentes_conexas;
 	int **adyacencia; //la matriz ed adyacencia
+	int aristas; //aristas colocadas
 };
 
 typedef struct GrafoMatrizAdyacencia Grafo;
@@ -38,6 +39,10 @@ void liberar_grafo(Grafo *g);
 //nodo1 y nodo2 tienen que ir de 0 a nodos - 1
 int agregar_arista(Grafo *g, Nodo nodo1, Nodo nodo2);
 int cantidad_componentes_conexas(Grafo *g);
+int cantidad_aristas(Grafo *g);
+int cantidad_nodos(Grafo *g);
+//retorna 0 si no son adyacentes, 1 si son adyacentes
+int son_adyacentes(Grafo *g, Nodo nodo1, Nodo nodo2);
 //retorna un vector con tantos nodos en el grafo como elementos elementos, en cada iesimo elemento, hay un nodo correspondiente a la componente iesima. si esa componente conexa ya no existe, se pone el valor -1. liberar el resultado con free()
 Nodo *nodos_de_componentes(Grafo *g);
 
@@ -46,7 +51,7 @@ int distancia(Ciudad *c1, Ciudad *c2);
 //liberar con free()
 Ciudad *cargar_datos(FILE *f, int *n_ciudades, int *k_centrales);
 
-int resolver(void);
+Grafo *resolver(void);
 
 #endif //__EJ2_H__
 
