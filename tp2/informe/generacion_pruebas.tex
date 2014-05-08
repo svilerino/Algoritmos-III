@@ -1,2 +1,12 @@
 \section{Ap\'endice: Generaci\'on de casos de prueba} \label{casos_de_prueba}
 
+Para el testeo de los algoritmos y la medici\'on de tiempos en funci\'on de la entrada, se program\'o una utilidad para generar los casos de prueba.
+
+El programa recibe como par\'ametro el ejercicio del cual se quieren generar los casos, y las variables, como el tama\~no de la entrada o en el ejercicio 1 la cantidad de d\'ias que estaba disponible el inspector.
+
+Los n\'umeros aleatorios que se generaron en los casos, se hizo con la funci\'on \emph{random()} de C ( \href{http://linux.die.net/man/3/random}{http://linux.die.net/man/3/random} ) usando como semilla el tiempo en microsegundos.
+
+Para el ejercucio 2, se le indica al programa la cantidad de ciudades, la cual se fue incrementando para la medici\'on del tiempo, y la cantidad de centrales se indicaba como un n\'umero aleatorio entre 1 y la cantidad de ciudades.
+
+As\'i se crearon muchos casos donde se fue incrementando el tama\~no de la entrada y ejecutando varios tests de un mismo tama\~no y varias veces el mismo test para obtener un promedio del tiempo que tarda en resolvero y descartar algunas imperfecciones que puedan surgir por el entorno donde se est\'a midiendo los tiempos, como puede ser que justo se ejecute otra tarea.
+
