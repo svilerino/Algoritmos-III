@@ -126,7 +126,7 @@ Nodo *nodos_de_componentes(Grafo *g)
 	for(i = 0; i < g->nodos; i++){
 		nodos[i] = -1;
 	}
-	for(i = 0; i < g->componentes_conexas; i++){
+	for(i = 0; i < g->nodos; i++){
 		nodos[g->componente_conexa_nodos[i]] = i;
 	}
 	return nodos;
