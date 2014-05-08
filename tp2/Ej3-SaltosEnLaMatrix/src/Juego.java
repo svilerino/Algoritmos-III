@@ -2,7 +2,59 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-
+/**
+ * 
+ * @author svilerino
+ *	Implementacion:
+ *	El algoritmo consta de varias etapas principales
+ *		1- Generacion del grafo a partir de los datos de entrada(Constructor de la clase Juego)
+ *		2- Busqueda del camino minimo(en cantidad de pasos) con un BFS.(metodo caminoMinimo)
+ *		3- Construccion del camino a través de los predecesores del destino indicados por BFS y
+ *			calculo de powerup utilizado en cada salto. (metodo construirCaminoConPredecesores)
+ *
+ *	Complejidad:
+ *		1- Los 3 for anidados indican una complejidad de O(k.pow(n,2)), adentro de estos ciclos
+ *			se realizan operaciones, todas toman O(1) salvo la llamada a alcanzables(...) de la que hablaremos
+ *			mas abajo, pero toma O(n), dandonos un total de O(k.pow(n,3) en la construccion del grafo para nuestro modelo.
+ *			En el informe se detallara mas acerca de esto, pero veamos que cada nodo puede tener a lo sumo 2n alcanzables.
+ *			Asumiendo que acotamos potencia(v) <= dimensionMatriz de aqui en adelante tenemos:
+ *			Dado que podemos particionar alcanzables(v) = {alcanzables con potTotal <= +-potencia(v)} 
+ *			U disj {alcanzables con potTotal = potencia(v) + powerUpK1} U disj {alcanzables con potTotal = potencia(v) + powerUpK2}
+ *			...U disj {alcanzables con potTotal = potencia(v) + powerUpKn}, en el mejor de los casos para este analisis, toda la fila y columna
+ *			de un nodo seran alcanzables sin utilizar powerup, lo cual nos dara el primer conjunto union conjuntos vacios, el cardinal de
+ *			alcanzables(v) es entonces 2n, en otros casos, veamos que si no es alcanzado por la potencia intrinseca de la torre, todos los
+ *			conjuntos que se unen tienen distinta potencia total e incluyen a los nodos que son alcanzables estrictamente con esa potenciaTotal.
+ *			En el mejor de los casos, de nuevo, usando powerup, entre todos los conjuntos, se pueden alcanzar 2n nodos, con lo cual
+ *			viendo los ciclos en el metodo calcularAlcanzables y asumiendo que la operacion put de hashmap es O(1) amortizada, nos da
+ *			una complejidad total de O(n).
+ *	
+ *		2- Sea n = {dimension de la matriz cuadrada de entrada}, k = unidades de powerUp Disponibles al inicio del algoritmo + 1(hay capas [0..k] en el grafo)
+ *			El while principal del ciclo recorre todos los nodos en el peor caso(cuando la busqueda no se detiene en el if(esDestino(...))
+ *			Veamos porque: En cada iteracion, se visita un nodo, se lo marca para no visitarlo nuevamente, y se verifica que no sea
+ *			el nodo que estamos buscando(nodo destino), si lo es, termina el algoritmo de busqueda y se llama a la funcion construirCaminoConPredecesores
+ *			Caso contrario, se agregan a la cola todos los nodos adyacentes(alcanzables) NO visitados, ademas se indicarse quien es el precedesor, en este paso.
+ *			Veamos ciertos detalles tecnicos, obtener los adyacentes de un nodo es O(1) amortizado(acceder al hashmap por key) y O(n) para encolar todos los adyacentes
+ *			(cada nodo tenia 2n alcanzables como maximo). Sea f(G, i) = {cantidad de nodos sin visitar en G en la iteracion i}, esta funcion tiene un valor inicial f(G, 0) = pow(n,2)*k y
+ *			en cada iteracion esta funcion decrece y toma el valor cero en f(G, pow(n,2)*k) = f(G, cantNodosG) = 0, en este momento, no hay mas nodos no visitados para agregar 
+ *			a la cola. Luego, se procesaran todos los elementos encolados y terminara el algoritmo. Juntando todas estas observaciones vemos que el 
+ *			while(!queue.isEmpty()) esta asociado a la funcion f(G, i), que decrece en cada iteracion al menos una unidad, en el peor de los casos, 
+ *			tomara O(f(G,0)) = O(pow(n,2)*k) = {cantNodos de G al comenzar} en recorrer todos los nodos.
+ *			la funcion esDestino(...) toma tiempo constante, de ingresar en este if, termina el algoritmo con un costo O(f(G, 0)) adicional por armar
+ *			el camino con la funcion construirCaminoConPredecesores. La lista de alcanzables se obtenia en O(1), iterar sobre los alcanzables(adyacentes)
+ *			realizando operaciones de tiempo constante adentro de este subciclo	era O(n). En total, este metodo tiene una complejidad temporal
+ *			{iterar sobre todos los nodos O(k*pow(n, 2))}*({esDestino O(1)} + {obtenerAlzancables O(1} + {encolarAlcanzables O(n}) + {al finalizar armar camino O(k*pow(n, 2))}
+ *			= O(k*pow(n, 2))*O(n) + O(k*pow(n, 2)) = O(k*pow(n, 3)) 
+ *
+ *		3- Asumiendo que BFS funciona correctamente, la lista de nodos del camino sera a lo sumo pow(n,2) (todos los nodos), dandonos
+ *			una complejidad de O(ṕow(n,2)) dado el while que arma el camino en base a los predecesores. Adentro del ciclo se realizan
+ *			operaciones de tiempo constante, dandonos una complejidad temporal total de O(pow(n, 2))			
+ *
+ *		Complejidad total: {1- armar el grafo O(k*pow(n, 3))} + {2,3- Algoritmo de busqueda en anchura con armado de camino O(k*pow(n, 3))} = O(k*pow(n, 3))
+ *
+ *			Referencias de estructuras utilizadas:
+ *			http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html
+ *			...This implementation provides constant-time performance for the basic operations (get and put)...
+ */
 public class Juego {
 
 	//Nodo inicial
@@ -170,7 +222,8 @@ public class Juego {
 		//powerup utilizado para dicho salto entre v y w
 		//Definamos powerUpUsado(u,v) = level(v) - level(u)
 		//Asumamos que powerUpUsado(null, v) = 0;				
-		//powerUpInicial - level(destino) te da la cantidad de powerUp disponible al salir del laberinto.
+		//powerUpInicial - level(destino) te da la cantidad de powerUp usado total y
+		//level(destino) la cantidad de powerup disponible al salir del laberinto.
 		LinkedList<Nodo> camino = new LinkedList<Nodo>();
 		//armo una lista de nodos que indican el camino de origen a destino.
 		//como tengo el predecesor para cada nodo, puedo ir de atras hacia adelante encadenandolo.
