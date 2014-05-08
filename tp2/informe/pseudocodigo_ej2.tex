@@ -10,7 +10,7 @@
 	\Statex
 	\Procedure{minimizarTuberias}{Entero: centrales, Array: ciudades, Entero: n}{$\to$ Grafo}
 		\State Grafo g $\gets$ \Call{NuevoGrafo}{$n$} \Comment{Creo un grafo con $n$ nodos, sin aristas}
-		\State $<$bool agregado, entero distancia, entero nodo>  nodos[n] \Comment{La distancia es desde $n$ (\'indice del array) hasta nodos[$n$].nodo}
+		\State $<$bool agregado, entero distancia, entero nodo$>$  nodos[n] \Comment{La distancia es desde $n$ (\'indice del array) hasta nodos[$n$].nodo}
 		\State $<$nodo1, nodo2, distancia$>$ aristas[n - 1]
 		\Statex
 		\State nodos[0] $\gets$ $<$true, 0, 0$>$ \label{ej_2:pseudo:inicializa}
