@@ -395,16 +395,12 @@ Esto nos asegura llegar al nodo destino usando el menor m\'inimo de aristas posi
 
 \subsection{Tests de correctitud}
 
-Para comprobar la correctitud de forma emp\'irica de nuestro programa, construimos unos casos de prueba, un caso promedio, un peor caso y un mejor caso. A continuaci\'on se listan los casos.
+Para comprobar la correctitud de forma emp\'irica de nuestro programa, construimos unos casos de prueba, un caso promedio, un peor caso y un mejor caso. A continuaci\'on se listan los casos y sus resultados.
 
-Caso Promedio:
+\begin{center}
+\includegraphics[scale=0.6]{images/casosListed}
+\end{center}
 
-5 0 0 1 2 0
-3 4 1 1 1
-1 1 1 1 3
-2 4 2 2 2
-1 2 1 1 4
-1 2 2 1 1
 
 \begin{center}
 \includegraphics[scale=0.5]{images/casosej3}
@@ -417,7 +413,7 @@ Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma es
 
 Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $R$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$. Referencia: http://www.excelsior-usa.com/jetcs00007.html
 
-\vspace{2mm}
+\vspace{200mm}
 
 Con k = 0
 
