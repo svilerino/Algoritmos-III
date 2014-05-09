@@ -116,6 +116,9 @@ Por lo tanto la complejidad temporal total del algoritmo es $O(n^3)$
 \subsection{Verificaci\'on de correctitud}
 Para la verificaci\'on se emplearon las mismas instancias que fueron dadas como ejemplo del problema y su resoluci\'on. \'Estas fueron calculadas a mano, y luego se verific\'o que efectivamente el algoritmo daba el mismo resultado (la misma diferencia de puntos a favor) en cada caso.
 
+%\subsection{Mejor y peor caso}
+%El mejor caso que puede venir como entrada es cuando vienen todos los n\'umeros positivos, por lo que hay una sola jugada para el jugador 1 que maximiza la diferencia contra el jugador 2 , agarrar todos los n\'umeros, lo cual se realiza en un solo paso.
+
 \subsection{An\'alisis de performance}
 \subsubsection{Consideraciones de compilacion en el analisis de performance}
 Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
