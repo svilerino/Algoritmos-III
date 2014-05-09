@@ -153,6 +153,15 @@ public class Juego {
 		//adiciono los alcanzables indirectos que surgen de utilizas unidadesDePowerUpAdicionadas unidades de powerup
 		for(int unidadesDePowerUpAdicionadas=1;unidadesDePowerUpAdicionadas<=currentLevel;unidadesDePowerUpAdicionadas++){
 			int potenciaTotal = potenciaIntrinseca + unidadesDePowerUpAdicionadas;
+			
+			if(potenciaTotal>dimensionMatriz){							
+				//fix para complejidad, de esta forma es O(dimension) todo el metodo.
+				//si potenciaTotal > dimensionMatriz, validarBordes va a dar false, asi que ni hace falta revisarlas			
+				//veamos que como potenciaIntrinseca > 0 para cualquier nodo, entonces si unidadesDePowerUpAdicionadas > n-1
+				//entonces potenciaTotal > dimensionMatriz lo cual no tiene sentido, porque se podria saltar por fuera de los limites de la matriz
+				break;			
+			}			
+			
 			if(validarBordes(dimensionMatriz, currentY, potenciaTotal)){
 				Nodo alcanzableIndirecto = new Nodo(currentX, currentY + potenciaTotal, currentLevel - unidadesDePowerUpAdicionadas);
 				alcanzables.add(alcanzableIndirecto);
