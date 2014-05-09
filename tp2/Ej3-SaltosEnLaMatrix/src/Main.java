@@ -95,7 +95,7 @@ public class Main {
 				}
 				promedioNanoSeconds/=CANT_REPETICIONES;
 				double promedioMicroSeconds = Math.round(promedioNanoSeconds)/(double)1000;
-				System.err.println(matrixDim * powerUpInicial + " " + promedioMicroSeconds + " " + CANT_REPETICIONES);
+				System.err.println(matrixDim * (powerUpInicial + 1) + " " + promedioMicroSeconds + " " + CANT_REPETICIONES);
 			}else{
 				Juego juego = new Juego(matrix, powerUpInicial, filaInicial, columnaInicial, filaDestino, columnaDestino);
 				res = juego.caminoMinimo();
@@ -106,27 +106,21 @@ public class Main {
 	}
 
 	private static void generateTest(String args[]) {		
-		Integer randMinDimension = 0;
-		Integer randMaxDimension = 0;
-		Integer randMinPowerUp = 0;
-		Integer randMaxPowerUp = 0;
+		Integer dimensionParam = 0;
+		Integer powerUpParameter = 0;
 		try{
-			randMinDimension = Integer.parseInt(args[1]);
-			if(randMinDimension<=1) throw new Exception("RandMinDimension <=1");
+			dimensionParam = Integer.parseInt(args[1]);
+			if(dimensionParam<=1) throw new Exception("dimension <=1");
 			
-			randMaxDimension = Integer.parseInt(args[2]);
-
-			randMinPowerUp = Integer.parseInt(args[3]);
-			if(randMinPowerUp<0) throw new Exception("randMinPowerUp negativo!");
-			
-			randMaxPowerUp = Integer.parseInt(args[4]);				
+			powerUpParameter = Integer.parseInt(args[2]);
+			if(powerUpParameter<0) throw new Exception("powerUp negativo!");
 		}catch(Exception e){
-			System.out.println("[Bad Parameters] --generate-tests randMinDimension randMaxDimension randMinPowerUp randMaxPowerUp");
+			System.out.println("[Bad Parameters] --generate-tests dimension powerUp");
 			System.out.println("Error!:" + e.getMessage());
 			System.exit(-1);
 		}
 		
-		matrixDim = randomInt(randMinDimension, randMaxDimension);
+		matrixDim = dimensionParam;
 		filaInicial = randomInt(0, matrixDim-1);
 		columnaInicial = randomInt(0, matrixDim-1);
 		
@@ -135,7 +129,7 @@ public class Main {
 			columnaDestino = randomInt(0, matrixDim-1);
 		}while(filaDestino==filaInicial && columnaDestino==columnaInicial);
 
-		powerUpInicial = randomInt(randMinPowerUp, randMaxPowerUp);
+		powerUpInicial = powerUpParameter;
 		
 		matrix = new int[matrixDim][matrixDim];
 		System.out.println(matrixDim + " " + filaInicial + " " + columnaInicial + " " + filaDestino + " " + columnaDestino + " " + powerUpInicial);
