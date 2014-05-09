@@ -83,14 +83,8 @@ int agregar_arista(Grafo *g, Nodo nodo1, Nodo nodo2)
 	g->aristas++;
 
 	if(g->componente_conexa_nodos[nodo1] != g->componente_conexa_nodos[nodo2]){
-		if(g->componente_conexa_nodos[nodo1] <= g->componente_conexa_nodos[nodo2]){
-			nueva_componente = g->componente_conexa_nodos[nodo1];
-			vieja_componente = g->componente_conexa_nodos[nodo2];
-		}
-		else{
-			nueva_componente = g->componente_conexa_nodos[nodo2];
-			vieja_componente = g->componente_conexa_nodos[nodo1];
-		}
+		nueva_componente = g->componente_conexa_nodos[nodo1];
+		vieja_componente = g->componente_conexa_nodos[nodo2];
 
 		for(i = 0; i < g->nodos; i++){ //actualizo la componente conexa de todos los nodos que pertenecian a esa componente
 			if(g->componente_conexa_nodos[i] == vieja_componente){

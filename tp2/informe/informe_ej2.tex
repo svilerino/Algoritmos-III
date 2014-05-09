@@ -147,7 +147,8 @@ La cantidad de nodos se representar\'a como $n$, y la cantidad de centrales como
 		\item La actualizaci\'on de las distancias, entre las l\'ineas \ref{ej_2:pseudo:actualiza} y \ref{ej_2:pseudo:fin_actualiza} realiza $n$ iteraciones de comparaciones y asignaciones que son $O(1)$, quedandonos $O(n)$
 	\end{itemize}
 	\item Ordenar las aristas en la l\'inea \ref{ej_2:pseudo:sort}, y se realizan sobre las aristas agregadas en la iteraci\'on anterior, la cual agrega $n-1$ aristas, entonces se ordenan $n - 1$ elementos. Al $n$ no estar acotado, se puede realizar con algoritmos como \emph{MergeSort} o \emph{HeapSort} en $O(n \log n)$
-	\item Entre las l\'ineas \ref{ej_2:pseudo:componentes} y \ref{ej_2:pseudo:fin_componentes} se realizan $n - k$ iteraciones, implementando el grafo \emph{g} en una \emph{matriz de adyacencia}, \emph{AgregarArista} se realiza en $O(1)$, quedandonos una complejidad de $O(n - k)$. Notar que si $k > n$, no se realiza ninguna iteraci\'on.
+	\item Entre las l\'ineas \ref{ej_2:pseudo:componentes} y \ref{ej_2:pseudo:fin_componentes} se realizan $n - k$ iteraciones, implementando el grafo \emph{g} en una \emph{matriz de adyacencia}, \emph{AgregarArista} se realiza en $O(n)$ ya que agrega la relaci\'on en la matriz de adyacencia en $O(1)$ y luego tiene que actualizar las componentes conexas en $O(n)$ quedandonos una complejidad de $O(n * (n - k))$. Notar que si $k > n$, no se realiza ninguna iteraci\'on.
+	\item Luego de tener el grafo soluci\'on, tenemos que obtener 1 nodo de cada componente, eso se realiza con la funci\'on \emph{NodosDeComponentes} que inicializa un array de $n$ elementos y luego recorre todos los nodos ($n$ nodos) una vez, quedando $O(n + n) = O(n)$
 \end{itemize}
 
 Bajo \'este an\'alisis, la complejidad nos queda (\ref{ej_2:cota:formula})
@@ -155,14 +156,21 @@ Bajo \'este an\'alisis, la complejidad nos queda (\ref{ej_2:cota:formula})
 \begin{equation}
 \label{ej_2:cota:formula}
 \begin{split}
-O(n) + (n-1)*(O(n) + O(1) + O(n)) + O(n \log n) + O(n - k) \\
-=
-O(n) + O(n^2) + O(n) + O(n^2) + O(n \log n) + O(n - k) \\
-=
-O(2n) + O(2n^2) + O(n \log n) + O(n - k) \\
-= O(n^2)
+	O(n) + (n-1)*(O(n) + O(1) + O(n)) + O(n \log n) + O(n*(n - k)) + O(n) \\
+= \\
+O(n) + O(n^2) + O(n) + O(n^2) + O(n \log n) + O(n*(n - k)) + O(n)\\
+= \\
+O(3n) + O(2n^2) + O(n \log n) + O(n*(n - k))\\
+= \\
+O(n^2) + O(n*(n - k))
 \end{split}
 \end{equation}
+
+Como el $O(n*(n - k))$ est\'a acotado por $O(n^2)$ (cuando $k = 0$), entonces nos queda que la complejidad del algoritmo es:
+
+\begin{equation*}
+	O(n^2)
+\end{equation*}
 
 Cumpliendo as\'i la complejidad requerida.
 

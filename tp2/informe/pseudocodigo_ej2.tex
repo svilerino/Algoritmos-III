@@ -1,3 +1,5 @@
+El algoritmo propuesto lo que realiza es generar un \emph{AGM} siguiendo al algoritmo de \emph{Prim} (desde la L\'inea \ref{ej_2:pseudo:inicializa} a \ref{ej_2:pseudo:fin_crea_arbol}), y luego se ordenan las aristas del \emph{AGM} para ir agreg\'andolas siguiendo la idea de \emph{Kruskal} y detenerse cuando se llega a $k$ componentes conexas (desde la L\'inea \ref{ej_2:pseudo:sort} a \ref{ej_2:pseudo:fin_componentes}).
+
 \begin{algorithm}[!h]
 \caption{minimizarTuberias} \label{ej_2:pseudo}
 \end{algorithm}
@@ -46,9 +48,47 @@
 		\State \Call{Ordenar}{aristas} \Comment{Ordeno las aristas por la distancia} \label{ej_2:pseudo:sort}
 		\Statex
 		\For{componentes $\gets$ n; componentes $>$ centrales; componentes$--$} \label{ej_2:pseudo:componentes}
-			\State \Call{AgregarArista}{g, aristas[n - componentes].nodo1, aristas[n - componentes].nodo2}
+		\State \Call{AgregarArista}{g, aristas[n - componentes].nodo1, aristas[n - componentes].nodo2} \Comment{AgregarArista est\'a especificado en el Algoritmo \ref{ej_2:pseudo_agrega_arista}}
 		\EndFor \label{ej_2:pseudo:fin_componentes}
 		\State retornar $\gets$ g
+	\EndProcedure
+\end{algorithmic}
+
+Una vez que tenemos el \'arbol, lo que tenemos que hacer es seleccionar un nodo cualquiera de cada componente conexa para colocar la central distribuidora. Para \'esto al crear un nodo sin aristas, cada nodo va a estar asociado a una componente conexa distinta, y cada vez que se agrega una arista, se unen las componentes conexas de ambos nodos bajo una misma componente. Luego al tener el grafo armado, se recorre la lista de componentes conexas y se agarra un nodo para cada componente:
+
+\begin{algorithm}[!h]
+\caption{AgregarArista} \label{ej_2:pseudo_agregar_arista}
+\end{algorithm}
+\begin{algorithmic}[1]
+	\Procedure{AgregarArista}{Grafo g, Nodo n1, Nodo n2}
+		\State \Call{NuevaArista}{g, n1, n2} \Comment{agrega la arista entre n1 y n2, sin actualizar las componentes conexas}
+		\If{\Call{ComponenteConexa}{g,n1} $\neq$ \Call{ComponenteConexa}{g,n2}}
+			\State nueva $\gets$ \Call{ComponenteConexa}{g,n1}
+			\State vieja $\gets$ \Call{ComponenteConexa}{g,n2}
+			\For{n $\in$ \Call{Nodos}{g}} \Comment{Le asigno a todos los nodos de la componente conexa vieja, la nueva componente conexa}
+				\If{\Call{ComponenteConexa}{g,n} $=$ vieja} 
+					\State \Call{SetearComponente}{g,n,nueva}
+				\EndIf
+			\EndFor
+		\EndIf
+	\EndProcedure
+\end{algorithmic}
+
+Y por \'ultimo para obtener un Nodo para cada componente conexa, vamos a crear un array con $n$ elementos, cada posici\'on $i$ representa a la componente conexa $i$, y adentro puede tener un valor nulo representando que esa componente conexa no existe, o el valor de un nodo, entonces se va a retornar para cada componente conexa existente, un nodo, para que esos nodos representen las centrales:
+
+\begin{algorithm}[!h]
+\caption{NodosDeComponentes} \label{ej_2:pseudo_nodos_de_componentes}
+\end{algorithm}
+\begin{algorithmic}[1]
+	\Procedure{NodosDeComponentes}{Grafo g}{Nodo[CantidadNodos(g)]}
+		\State Nodos nodos[CantidadNodos(g)]
+		\For{i $=$ 0; i $<$ CantidadNodos(g); i$++$} \Comment{Inicializo todas las componentes conexas (que son como m\'aximo igual a la cantidad de nodos) asignandole ning\'un nodo}
+			\State nodos[i] = nil
+		\EndFor
+		\For{n $\in$ g} \Comment{para cada nodo, le asigno dento del array nodos tomando como \'indice la componente conexa el valor del nodo. As\'i al finalizar el ciclo s\'olo las componentes conexas existentes y con nodos tienen un valor dentro del array nodos, y va a tener el valor del \'ultimo nodo correspondiente a esa componente conexa, ya que nodos de la misma componente se van pisando en el array}
+			\State nodos[\Call{ComponenteConexa}{g,n}] $\gets$ n
+		\EndFor
+		\State return nodos
 	\EndProcedure
 \end{algorithmic}
 
