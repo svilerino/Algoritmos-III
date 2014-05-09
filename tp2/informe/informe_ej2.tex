@@ -195,7 +195,9 @@ Soluci\'on: Figura \ref{ej_2:aleatorio:sol}
 
 Dados 2 casos con las mismas ciudades, el algoritmo realizar\'a m\'as operaciones en la que tenga menos centrales disponibles porque tiene que agregar m\'as tuber\'ias, \'esto se ve en la complejidad calculada en la Secci\'on \ref{ej_2:cota}, donde nos quedaba $O(n^2) + O(n*(n - k))$, si $k = n$, entonces queda $O(n^2)$, y si $k = 1$, queda $O(n^2) + O(n*(n - 1))$.
 
-A su vez, cuando se elige el nodo m\'as cercano para agregar al \emph{AGM} de \emph{Prim} (L\'inea \ref{ej_2:pseudo:mas_cerca} del Algoritmo \ref{ej_2:pseudo}), si los nodos tienen la distancia de mayor a menor, entonces siempre entra a la condici\'on de actualizar la m\'inima distancia. Y cuando se agrega un nuevo nodo y se actualiza la nueva distancia de los nodos restantes (L\'inea \ref{ej_2:pseudo:actualiza} del Algoritmo \ref{ej_2:pseudo}) si siempre el nodo agregado est\'a m\'as cerca que los nodos que ya estaban agregados, entonces siempre se actualiza.
+Teniendo en cuenta que el algoritmo recorre los nodos siempre en orden seg\'un el n\'umero que identifica a la ciudad:
+
+Cuando se elige el nodo m\'as cercano para agregar al \emph{AGM} de \emph{Prim} (L\'inea \ref{ej_2:pseudo:mas_cerca} del Algoritmo \ref{ej_2:pseudo}), si los nodos tienen la distancia de mayor a menor, entonces siempre entra a la condici\'on de actualizar la m\'inima distancia. Y cuando se agrega un nuevo nodo y se actualiza la nueva distancia de los nodos restantes (L\'inea \ref{ej_2:pseudo:actualiza} del Algoritmo \ref{ej_2:pseudo}) si siempre el nodo agregado est\'a m\'as cerca que los nodos que ya estaban agregados, entonces siempre se actualiza.
 
 Entonces, el peor caso se puede ver cuando $k = 1$ y si los nodos est\'an alineados y comenzando de la ciudad 1, el resto de las ciudades est\'an ordenadas de mayor a menor, as\'i el algoritmo comienza agregando el nodo 1 y luego recorre el resto de los nodos para buscar el m\'as cercano comenzando por el m\'as lejano y siempre que agregue un nuevo nodo (el m\'as cercano al 1) va a tener que actualizar la distancia de todos los nodos.
 
