@@ -143,6 +143,18 @@ La segunda parte del algoritmo, el c\'alculo de la tabla $P$, es de complejidad 
 El c\'alculo de esta tabla, que tiene $n^2/2$ posiciones, involucra para cada posici\'on el c\'alculo del m\'aximo de una cantidad de elementos que depende \'unicamente de la posici\'on que se c\'alcula, no del contenido de las cartas. Como el tiempo que demora el algoritmo est\'a dominado por esta parte, es de esperar que el contenido de las cartas no cambie apreciablemente los tiempos de ejecuci\'on. \'Esto se puede constatar por medio de la experimentaci\'on.\\
 \\
 Se hizo una experimentaci\'on con tama\~nos n de entrada entre 100 y 400. Se distingui\'o la distribuci\'on de los valores de las cartas en tres casos : uniforme en $[-50;50]$, uniforme en $[-100;0]$ y uniforme en $[0;100]$. Todos los casos dieron tiempos similares. En la gr\'afica puede observarse una curva similar a las de la forma $ax^{m}$. Se puede comprobar que al variar de $n=200$ a $n'=300$, $n'=(3/2)n$, el tiempo pasa de un promedio de $200$ a un promedio de $650 \sim 200.(3/2)^3$. \'Esto comprueba que la curva es c\'ubica.
-En el ap\'endice se adjuntan las gr\'aficas experimentales de $tiempo(n)$.
+A continuaci\'on se adjuntan las gr\'aficas experimentales de $tiempo(n)$.
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/ej1_1.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/ej1_2.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/ej1_3.png}
+\end{center}
 
 %\end{document}
