@@ -58,10 +58,8 @@ public class Main {
 				if("--generate-tests".equals(args[i])){
 					/**
 					 * Parameters later this flag
-					 	* 	randMinDimension
-						*	randMaxDimension
-						*	randMinPowerUp
-						*	randMaxPowerUp
+					 	* 	dimension
+						*	powerUp
 					 */
 					randomGeneration = true;
 				}

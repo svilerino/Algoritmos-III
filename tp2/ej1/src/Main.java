@@ -1,88 +1,125 @@
-import java.io.IOException;
+import java.util.Scanner;
 
-import parseo.*;
+public class Main {
 
+	private static boolean randomGeneration;
+	private static boolean takingTime;
 
-public class tp2_ej1 {
-
-	public static void main(String[] args) throws IOException{
-		/*
-		//Toma la entrada de un archivo de texto
-		TxtAParseo conv = new TxtAParseo();
-		conv.set_origen("C:/Documents and Settings/Administrador/Escritorio/entrada.txt");
-		Parseo p_entrada = conv.convertir();
-		
-		
-		//Pasa la entrada a array
-		int a_entrada[] = new int[p_entrada.dame_lin(0).num_elem()-1];
-		int i;
-		for(i=1;i<=p_entrada.dame_lin(0).num_elem()-1;i++){
-			a_entrada[i-1]=Integer.parseInt(p_entrada.dame_lin(0).dame_elem(i));
-		}
-		*/
-		
-		/*
-		//Corre el algoritmo
-		double t1_com = System.currentTimeMillis();
-		algo_robanum algoritmo = new algo_robanum();
-		algoritmo.calcular(a_entrada);
-		double t2_com = System.currentTimeMillis();
-		*/
-		Parseo p_salida = new Parseo();
-		Parseo p_salida2 = new Parseo();
-		
-		int j;
-		for(j=100;j<=400;j++){
-			int a_entrada[] = new int[j];
-			int i;
-			for(i=1;i<=j;i++){
-				a_entrada[i-1] = (int) Math.floor(Math.random()*100);
+	public static void main(String[] args) {				
+		if(args.length>0){
+			for(int i=0;i<args.length;i++){
+				if("--generate-tests".equals(args[i])){
+					/**
+					 * Parameters later this flag
+					 	*   cards number 	
+					 	* 	randMin
+						*	randMax
+					 */
+					randomGeneration = true;
+				}
+				if("--take-time".equals(args[i])){
+					takingTime = true;
+				}
 			}
-			double t1_com = System.currentTimeMillis();
-			algo_robanum algoritmo = new algo_robanum();
-			algoritmo.calcular(a_entrada);
-			double t2_com = System.currentTimeMillis();
+		}
+		
+		if(randomGeneration){
+			generateTest(args);
+		}else{
+			//parse input
+			int[] cards = parseInput();			
+			int CANT_REPETICIONES = 0;
+			try{
+				CANT_REPETICIONES = Integer.parseInt(args[1]);
+			}catch(Exception e){
+				System.out.println("[Bad parameters] --take-time <cant_repeticiones>");
+				System.exit(-1);
+			}
 			
-			Linea lin = new Linea();
-			lin.agregar_elem(Integer.toString(j));
-			p_salida.agregar_lin(lin);
-			lin = new Linea();
-			lin.agregar_elem(Integer.toString((int)(t2_com-t1_com)));
-			p_salida2.agregar_lin(lin);
-		}
-		/*
-		//Parsea la salida
-		Parseo p_salida = new Parseo();
-		Linea lin = new Linea();
-		lin.agregar_elem(Double.toString(t2_com - t1_com));
-		p_salida.agregar_lin(lin);
-		lin = new Linea();
-		lin.agregar_elem(Integer.toString(algoritmo.ret_turnos_jug()));
-		lin.agregar_elem(Integer.toString(algoritmo.ret_pt_j1()));
-		lin.agregar_elem(Integer.toString(algoritmo.ret_pt_j2()));
-		p_salida.agregar_lin(lin);
-		
-		for(i=1;i<=algoritmo.ret_turnos_jug();i++){
-			lin = new Linea();
-			if(algoritmo.ret_turnos_lado(i)==true){
-				lin.agregar_elem("izq");
+			if(takingTime){
+				//run algorithm taking time.
+				double promedioNanoSeconds = 0;
+				RobaNumeros juego = null;
+				for(int k=0;k<CANT_REPETICIONES;k++){
+					long start = System.nanoTime();
+						//--starts algorithm
+						juego = new RobaNumeros();
+						juego.calcular(cards);
+						//para obtener los resultados usar los getters de la clase RobaNumeros luego de llamar a calcular(...)
+						//--ends algorithm
+					long stop = System.nanoTime();
+					long elapsed = stop - start;
+					promedioNanoSeconds += elapsed;
+				}
+				promedioNanoSeconds/=CANT_REPETICIONES;
+				double promedioMicroSeconds = Math.round(promedioNanoSeconds)/(double)1000;
+				System.err.println(cards.length + "	" + promedioMicroSeconds);
+				serializeOutput(juego);
+			}else{
+				//algoritmo
+				RobaNumeros juego = new RobaNumeros();
+				juego.calcular(cards);
+				serializeOutput(juego);
 			}
-			else{
-				lin.agregar_elem("der");
-			}
-			lin.agregar_elem(Integer.toString(algoritmo.ret_turnos_cant_rob(i)));
-			p_salida.agregar_lin(lin);
 		}
-		*/
-		//Escribe el parseo de salida en un texto
-		ParseoATxt conv2 = new ParseoATxt();
-		conv2.set_origen(p_salida);
-		conv2.set_destino("C:/Documents and Settings/Administrador/Escritorio/salida.txt");
-		conv2.convertir();
+	}
+
+	private static void serializeOutput(RobaNumeros juego) {
+		int turnosJugados = juego.getTurnosJugados();
 		
-		conv2.set_origen(p_salida2);
-		conv2.set_destino("C:/Documents and Settings/Administrador/Escritorio/salida2.txt");
-		conv2.convertir();
+		System.out.print(turnosJugados);
+		System.out.print(" ");
+		
+		System.out.print(juego.getPuntosJugador1());
+		System.out.print(" ");
+		
+		System.out.print(juego.getPuntosJugador2());
+		System.out.println(" ");
+		
+		for(int turnoActual=1;turnoActual<=turnosJugados;turnoActual++){
+			System.out.print((juego.esTurnoIzquierdo(turnoActual)) ? "izq" : "der");
+			System.out.print(" ");
+			System.out.println(juego.getCantidadRobadaPorTurno(turnoActual));
+		}		
+	}
+
+	private static void generateTest(String[] args) {
+		/**
+		 * Parameters later this flag
+		 	*   cards number 	
+		 	* 	randMin
+			*	randMax
+		 */
+		int cardsNumber = Integer.parseInt(args[1]);		
+		int randMin = Integer.parseInt(args[2]);
+		int randMax = Integer.parseInt(args[3]);
+		System.out.print(cardsNumber);
+		System.out.print(" ");
+		for(int i=0;i<cardsNumber;i++){
+			System.out.print(randomInt(randMin, randMax));
+			if(i<cardsNumber-1)
+				System.out.print(" ");
+		}
+		System.out.println("");
+	}
+
+	private static int[] parseInput() {
+		Scanner in = new Scanner(System.in);
+		String input = in.nextLine();
+		String[] splittedInput = input.split(" ");
+		
+		//La primera linea contiene <longuitud k> <v1>,...,<vl>
+		
+		int cardCount = splittedInput.length - 1;
+		int[] robanumerosInput = new int[cardCount];
+		for(int i=1;i<cardCount;i++){
+			robanumerosInput[i] = Integer.parseInt(splittedInput[i]);
+		}
+		return robanumerosInput;
+	}
+	
+	private static int randomInt(int min, int max){
+		return (int) ((max-min + 1)*Math.random() + min);
 	}
 
 }
