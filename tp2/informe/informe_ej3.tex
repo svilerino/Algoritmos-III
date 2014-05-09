@@ -106,6 +106,8 @@ El algoritmo consta de varias etapas principales:
  			c\'alculo de powerup utilizado en cada salto.
  \end{enumerate}
 
+ \subsubsection{Generaci\'on del Grafo}
+
 A continuaci\'on mostramos un pseudoc\'odigo de la generaci\'on del juego. Durante las demostraciones, se usar\'a la variable $k$ para referirse a la cantidad de potencias iniciales al iniciar el juego, y la variable $n$ como la cantidad de filas del juego.
 \vspace{2mm}
 \begin{algorithmic}[1]
@@ -158,7 +160,10 @@ Complejidad:
 Los 3 ciclos for anidados indican una complejidad de $O(k*n^2)$. Dentro de estos ciclos se realizan operaciones, todas de tiempo constante $O(1)$ excepto la llamada a a funci\'on $alcanzables$, que toma $O(n)$, y ser\'a justificado a continuaci\'on, d\'andonos un total de $O(k*n^3)$ en la construccion del grafo para nuestro modelo.
 
 \vspace{10mm}		
-Calcular Alcanzables: funci\'on auxiliar que para un nodo, calcula todos los otros nodos a los que podri\'a $"saltar"$, usando y no usando potencias. La salida del algoritmo es del tipo $Lista<Nodo>$.
+
+ \subsubsection{C\'alculo de alcanzables}
+
+Funci\'on auxiliar que para un nodo, calcula todos los otros nodos a los que podri\'a $"saltar"$, usando y no usando potencias. La salida del algoritmo es del tipo $Lista<Nodo>$.
 \vspace{2mm}
 \begin{algorithmic}[1]
 \Procedure{calcularAlcanzables}{$Nodo\: nodo,\:int\: valorNodo,\: int \:dimension$}
@@ -191,41 +196,41 @@ Calcular Alcanzables: funci\'on auxiliar que para un nodo, calcula todos los otr
 			\EndIf
 		\EndFor
 
-		\For{$int\: potenciasSumadas\gets 1;\:potenciasSumadas+\leq nivelActual;\:potenciasSumadas++$}
+		\For{$int\: potAdic\gets 1;\:potAdic+\leq nivelActual;\:potAdic++$}
 			\Comment{$O(dimension)$}
-			\State $int\: potenciaTotal \gets potencia\: +\: potenciasSumadas; $
-			\If{$potenciaTotal>dimension$}
+			\State $int\: potTotal \gets potencia\: +\: potAdic; $
+			\If{$potTotal>dimension$}
 				\State $break$
 			\EndIf
-			\If{$validarBordes(dimension, \:actualY,\: potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualY,\: potTotal)$}
 			\Comment{$O(1)$}
-				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX,\: actualY +\: potenciaTotal, \:nivelActual - \:potenciasSumadas)$
+				\State $Nodo\: alcanzableIndir = new\: Nodo(actualX,\: actualY +\: potTotal, \:nivelActual - \:potAdic)$
 				\Comment{$O(1)$}
-				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\State $alcanzables.agregar(alcanzableIndir)$
 				\Comment{$O(1)$}
 			\EndIf
 
-			\If{$validarBordes(dimension, \:actualY,\: -potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualY,\: -potTotal)$}
 			\Comment{$O(1)$}
-				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX,\: actualY -\: potenciaTotal, \:nivelActual - \:potenciasSumadas)$
+				\State $Nodo\: alcanzableIndir = new\: Nodo(actualX,\: actualY -\: potTotal, \:nivelActual - \:potAdic)$
 				\Comment{$O(1)$}
-				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\State $alcanzables.agregar(alcanzableIndir)$
 				\Comment{$O(1)$}
 			\EndIf
 
-			\If{$validarBordes(dimension, \:actualX,\: potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualX,\: potTotal)$}
 			\Comment{$O(1)$}
-				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX  +\: potenciaTotal,\: actualY, \:nivelActual - \:potenciasSumadas)$
+				\State $Nodo\: alcanzableIndir = new\: Nodo(actualX  +\: potTotal,\: actualY, \:nivelActual - \:potAdic)$
 				\Comment{$O(1)$}
-				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\State $alcanzables.agregar(alcanzableIndir)$
 				\Comment{$O(1)$}
 			\EndIf
 
-			\If{$validarBordes(dimension, \:actualX,\: -potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualX,\: -potTotal)$}
 			\Comment{$O(1)$}
-				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX  -\: potenciaTotal,\: actualY, \:nivelActual - \:potenciasSumadas)$
+				\State $Nodo\: alcanzableIndir = new\: Nodo(actualX  -\: potTotal,\: actualY, \:nivelActual - \:potAdic)$
 				\Comment{$O(1)$}
-				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\State $alcanzables.agregar(alcanzableIndir)$
 				\Comment{$O(1)$}
 			\EndIf
 
@@ -238,7 +243,21 @@ Calcular Alcanzables: funci\'on auxiliar que para un nodo, calcula todos los otr
 
 \vspace{2mm}
 
-Donde $nodo$ es el nodo del cual se van a calcular sus alcanzables, $valorNodo$ la potencia de su resorte y dimension es $n$. Podemos ver que al algoritmo lo componen dos ciclos for lineales, que van armando la lista $alcanzables$. El primer ciclo, calcula los nodos alcanzables $Directos$, es decir, aquellos a los que puede saltar con el resorte de la celda sin hacer uso de ninguna potencia adicional. El ciclo itera de $-resorte$ a $resorte$, agregando de \'esta forma a la lista de alcanzables los nodos a su izquierda, derecha, hacia adelante y atr\'as, validando con cuidado los bordes de la matriz, y sin agregarse a s\'i mismo. Dado que la potencia de un resorte est\'a acotada por la dimensi\'on de la matriz
+Donde $nodo$ es el nodo del cual se van a calcular sus alcanzables, $valorNodo$ la potencia de su resorte y dimension es $n$. Podemos ver que al algoritmo lo componen dos ciclos for lineales, que van armando la lista $alcanzables$. El primer ciclo, calcula los nodos alcanzables $Directos$, es decir, aquellos a los que puede saltar con el resorte de la celda sin hacer uso de ninguna potencia adicional.El ciclo itera de $-resorte$ a $resorte$, agregando de \'esta forma a la lista de alcanzables los nodos a su izquierda, derecha, hacia adelante y atr\'as, validando con cuidado los bordes de la matriz, y sin agregarse a s\'i mismo, tomando cada uno de estos pasos $(O(1))$. Dado que la potencia de un resorte est\'a acotada por la dimensi\'on de la matriz (por la forma en la que generamos el grafo), este ciclo itera como m\'aximo de $-dimension$ a $dimension$, por lo tanto $\in O(n)$. 
+
+\vspace{2mm}
+
+El segundo ciclo for calcula todos los nodos alcanzables indirectamente, es decir, aquellos para los cuales el jugador tiene que 1 o m\'as de sus potencias extra para poder llegar. Este ciclo itera segu\'un la variabie $potAdic$, potencias adicionales, que comienza en 1 hasta el nivel del nodo en cuesti\'on (recordar que el nivel de un nodo representa la cantidad de potencias extra que le quedan a un jugador). Este valor se le suma a la potencia del resorte (l\'inea 18) y si se validan bien los bordes, se agregan estos nodos ($O(1)$), los que est\'an a distancia $potencia \: de \: resorte + \: potAdic$, y al iterar $potAdic$ hasta el nivel del nodo obtenemos todos los nodos alcanzables usando las potencias que le quedan disponibles al jugador. Estas acciones se realizan en $O(1)$, y el ciclo itera de 1 hasta el nivel del nodo.
+
+\vspace{2mm}
+
+ Esto indicar\'ia que el ciclo tendr\'ia una complejidad de $O(k)$, por ser $k$ el nivel m\'aximo del grafo, pero podemos acotar esto, en la l\'inea 19, por el mismo motivo que en el ciclo anterior, una vez que la potencia total a usar supera el valor de la dimensi\'on de la matriz, cortamos el ciclo, ya que no tiene sentido saltar fuera del campo de juego. Por lo tanto calculamos para los posibles valores de potencia adicional que le queden al jugador, hasta que la potencia total de salto sea de $dimension$. Por lo tanto el ciclo tambi\'en $\in O(dimension)$. Como comentario adicional, remarcamos que es posible agregar este condicional a la guarda del ciclo, pero dada la complejidad de entendimiento de este pseudoc\'odigo decidimos ponerlo como una instrucci\'on de $break$ para mayor claridad.
+
+ \vspace{2mm}
+
+Concluimos en que la funci\'on tiene una complejidad de $O(n) + O(n)$ = $O(n)$. Lo cual tiene sentido, ya que si consideramos la matriz de juego, un nodo como m\'aximo puede moverse hacia todos los de su fila y columna, es decir a $2n - 2$ nodos, lo cual concuerda con la complejidad ya que anadimos cada uno de ellos a la lista de alcanzables en tiempo constante.
+
+\subsubsection{B\'usqueda del camino m\'inimo}
 
 A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modificacion de BFS que busca un camino entre el nodo inicial y alguno de los nodos destino, sin importar a qu\'e nivel pertenezcan, es decir, cuando la b\'usqueda encuentra un nodo w tal que las primeras 2 coordenadas de w coinciden con la celda destino, termina el algoritmo. Acto seguido reconstruye el camino en base a los predecesores, que se van guardando a medida que se realiza la expansion en anchura. Teniendo en cuenta que BFS encuentra el camino mas corto en cantidad de aristas entre 2 nodos, esto resuelve nuestro problema. La salida es una lista de nodos que comprende el camino, indicando en cada paso: (posX, posY, gasto de PowerUp en el salto del predecesor de este nodo al actual).
 
@@ -259,7 +278,7 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modific
 		\Comment{$O(1)$}
 		\If{$esDestino(actual)$}
 		\Comment{$O(1)$}
-			\State $return construirCaminoConPredecesores(actual)$
+			\State $return \: construirCaminoConPredecesores(actual)$
 			\Comment{$O(dimension*dimension)$}
 
 		\EndIf
@@ -285,6 +304,26 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modific
 
 \EndProcedure
 \end{algorithmic}
+\vspace{2mm}
+
+Sea n = {dimension de la matriz cuadrada de entrada}, k = unidades de powerUp Disponibles al inicio del algoritmo + 1(hay capas [0..k] en el grafo)
+ *			El while principal del ciclo recorre todos los nodos en el peor caso(cuando la busqueda no se detiene en el if(esDestino(...))
+ *			Veamos porque: En cada iteracion, se visita un nodo, se lo marca para no visitarlo nuevamente, y se verifica que no sea
+ *			el nodo que estamos buscando(nodo destino), si lo es, termina el algoritmo de busqueda y se llama a la funcion construirCaminoConPredecesores
+ *			Caso contrario, se agregan a la cola todos los nodos adyacentes(alcanzables) NO visitados, ademas se indicarse quien es el precedesor, en este paso.
+ *			Veamos ciertos detalles tecnicos, obtener los adyacentes de un nodo es O(1) amortizado(acceder al hashmap por key) y O(n) para encolar todos los adyacentes
+ *			(cada nodo tenia 2n alcanzables como maximo). Sea f(G, i) = {cantidad de nodos sin visitar en G en la iteracion i}, esta funcion tiene un valor inicial f(G, 0) = pow(n,2)*k y
+ *			en cada iteracion esta funcion decrece y toma el valor cero en f(G, pow(n,2)*k) = f(G, cantNodosG) = 0, en este momento, no hay mas nodos no visitados para agregar 
+ *			a la cola. Luego, se procesaran todos los elementos encolados y terminara el algoritmo. Juntando todas estas observaciones vemos que el 
+ *			while(!queue.isEmpty()) esta asociado a la funcion f(G, i), que decrece en cada iteracion al menos una unidad, en el peor de los casos, 
+ *			tomara O(f(G,0)) = O(pow(n,2)*k) = {cantNodos de G al comenzar} en recorrer todos los nodos.
+ *			la funcion esDestino(...) toma tiempo constante, de ingresar en este if, termina el algoritmo con un costo O(f(G, 0)) adicional por armar
+ *			el camino con la funcion construirCaminoConPredecesores. La lista de alcanzables se obtenia en O(1), iterar sobre los alcanzables(adyacentes)
+ *			realizando operaciones de tiempo constante adentro de este subciclo	era O(n). En total, este metodo tiene una complejidad temporal
+ *			{iterar sobre todos los nodos O(k*pow(n, 2))}*({esDestino O(1)} + {obtenerAlzancables O(1} + {encolarAlcanzables O(n}) + {al finalizar armar camino O(k*pow(n, 2))}
+ *			= O(k*pow(n, 2))*O(n) + O(k*pow(n, 2)) = O(k*pow(n, 3)) 
+
+
 \vspace{2mm}
 Finalmente, el pseudoc\'odigo de la funci\'on que genera el camino a partir del recorrido que realiz\'o el BFS. La salida del algoritmo es del tipo $Lista<Nodo>$.
 \vspace{2mm}
