@@ -103,7 +103,7 @@ El algoritmo consta de varias etapas principales:
 	\item Generaci\'on del grafo a partir de los datos de entrada.
 	\item Busqueda del camino m\'inimo(en cantidad de pasos) con un BFS.
 	\item Construcci\'on del camino a trav\'es de los predecesores del destino indicados por BFS y
- 			c\'alculo de powerup utilizado en cada salto.
+ 			c\'alculo de potencia utilizado en cada salto.
  \end{enumerate}
 
  \subsubsection{Generaci\'on del Grafo}
@@ -273,20 +273,20 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modific
 	\Comment{$O(1)$}
 	
 	\While{$\neg cola.esVacia()$}
-	\Comment{$O(dimension*dimension)$}
+	\Comment{$O(dimension^2)$}
 		\State $Nodo \:actual \gets cola.desencolar()$
 		\Comment{$O(1)$}
 		\If{$esDestino(actual)$}
 		\Comment{$O(1)$}
 			\State $return \: construirCaminoConPredecesores(actual)$
-			\Comment{$O(dimension*dimension)$}
+			\Comment{$O(dimension^2*potInicial)$}
 
 		\EndIf
 			
 		\State $Lista<Nodo> \: alcanzables \gets obtenerAlcanzables(actual)$
-		\Comment{$O(dimension*dimension)$}
+		\Comment{$O(dimension)$}
 		\ForAll{$Nodo\: alcanzable : alcanzables$}
-		\Comment{$O(dimension*dimension)$}
+		\Comment{$O(dimension)$}
 			\If{$\neg estaVisitado(alcanzable)$}
 			\Comment				
 				\State$marcarVisitado(alcanzable)$
@@ -306,25 +306,25 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modific
 \end{algorithmic}
 \vspace{2mm}
 
-Sea n = {dimension de la matriz cuadrada de entrada}, k = unidades de powerUp Disponibles al inicio del algoritmo + 1(hay capas [0..k] en el grafo)
- *			El while principal del ciclo recorre todos los nodos en el peor caso(cuando la busqueda no se detiene en el if(esDestino(...))
- *			Veamos porque: En cada iteracion, se visita un nodo, se lo marca para no visitarlo nuevamente, y se verifica que no sea
- *			el nodo que estamos buscando(nodo destino), si lo es, termina el algoritmo de busqueda y se llama a la funcion construirCaminoConPredecesores
- *			Caso contrario, se agregan a la cola todos los nodos adyacentes(alcanzables) NO visitados, ademas se indicarse quien es el precedesor, en este paso.
- *			Veamos ciertos detalles tecnicos, obtener los adyacentes de un nodo es O(1) amortizado(acceder al hashmap por key) y O(n) para encolar todos los adyacentes
- *			(cada nodo tenia 2n alcanzables como maximo). Sea f(G, i) = {cantidad de nodos sin visitar en G en la iteracion i}, esta funcion tiene un valor inicial f(G, 0) = pow(n,2)*k y
- *			en cada iteracion esta funcion decrece y toma el valor cero en f(G, pow(n,2)*k) = f(G, cantNodosG) = 0, en este momento, no hay mas nodos no visitados para agregar 
- *			a la cola. Luego, se procesaran todos los elementos encolados y terminara el algoritmo. Juntando todas estas observaciones vemos que el 
- *			while(!queue.isEmpty()) esta asociado a la funcion f(G, i), que decrece en cada iteracion al menos una unidad, en el peor de los casos, 
- *			tomara O(f(G,0)) = O(pow(n,2)*k) = {cantNodos de G al comenzar} en recorrer todos los nodos.
- *			la funcion esDestino(...) toma tiempo constante, de ingresar en este if, termina el algoritmo con un costo O(f(G, 0)) adicional por armar
- *			el camino con la funcion construirCaminoConPredecesores. La lista de alcanzables se obtenia en O(1), iterar sobre los alcanzables(adyacentes)
- *			realizando operaciones de tiempo constante adentro de este subciclo	era O(n). En total, este metodo tiene una complejidad temporal
- *			{iterar sobre todos los nodos O(k*pow(n, 2))}*({esDestino O(1)} + {obtenerAlzancables O(1} + {encolarAlcanzables O(n}) + {al finalizar armar camino O(k*pow(n, 2))}
- *			= O(k*pow(n, 2))*O(n) + O(k*pow(n, 2)) = O(k*pow(n, 3)) 
-
+	Podemos ver que el c\'odigo es an\'alogo al de el algoritmo BFS, con el agregado de que adem\'as de marcar cada nodo $i$ una vez visitado, se le asigna un predecesor $j$, que es el nodo para el cual $i$ pertenece a la lista de alcanzables de $j$, en el orden de la b\'usqueda. De esta forma, cuando encuentra al nodo $destino$, puede reconstruir el camino que realiz\'o la b\'usqueda visitando todos los precedesores hasta llegar al nodo $origen$, de lo cual se encarga la pr\'oxima funcio\'on.
 
 \vspace{2mm}
+
+	El while principal del ciclo recorre todos los nodos en el peor caso (cuando la b\'usqueda no se detiene en la l\'inea 7. En cada iteraci\'on, se visita un nodo, se lo marca para no visitarlo nuevamente, y se verifica que no sea el nodo que estamos buscando(nodo destino).
+	Si lo es, termina el algoritmo de b\'usqueda y se llama a la funci\'on $construirCaminoConPredecesores$. Caso contrario, se agregan a la cola todos los nodos adyacentes(alcanzables) no visitados, ademas se indicar para cada uno de ellos que el nodo anterior es su predecesor
+
+	\vspace{2mm}
+
+	Obtener los adyacentes de un nodo se realiza en tiempo constante $O(1)$ (acceder al hashmap por clave) y $O(n)$ para encolar todos los adyacentes (anteriormente argumentado). Sea $f(G, i)$ = {cantidad de nodos sin visitar en G en la iteracion i}, esta funcion tiene un valor inicial $f(G,\: 0)$ = $n^2*k$ y en cada iteracion esta funcion decrece y toma el valor cero en $f(G, \:n^2*k)$ = $f(G,\: cantNodosG)$ = $0$. En este momento, no hay mas nodos no visitados para agregar a la cola. Luego, se procesar\'an todos los elementos encolados y terminar\'a el algoritmo.
+	\vspace{2mm}
+
+
+	 Juntando todas estas observaciones vemos que el $while(!queue.isEmpty())$ est\'a asociado a la funci\'on $f(G,\: i)$, que decrece en cada iteraci\'on al menos una unidad, en el peor de los casos, tomara $O(f(G,\:0))$ = $O(n^2*k)$ = $cantNodos \:de\: G \:al\: comenzar$ en recorrer todos los nodos. La funci\'on esDestino(...) toma tiempo constante, de ingresar en este if, termina el algoritmo con un costo $O(f(G,\: 0))$ adicional por armar	el camino con la funcion $construirCaminoConPredecesores$. La lista de alcanzables se obtiene en $O(1)$, iterar sobre los alcanzables realizando operaciones de tiempo constante dentro de este subciclo toma $O(n)$. En total, este metodo tiene una complejidad temporal: iterar sobre todos los nodos y fijarse si es destino: $O(k*n^2))*(O(1))$, obtener nodos alcanzables: $O(1)$, encolar lcanzables: $O(n)$ y al finalizar armar el camino: $O(k*n^2)$	= $O(k*n^2)*O(n) + O(k*n^2) = O(k*n^3) $.
+
+\vspace{2mm}
+
+ \subsubsection{Construcci\'on del camino}
+
 Finalmente, el pseudoc\'odigo de la funci\'on que genera el camino a partir del recorrido que realiz\'o el BFS. La salida del algoritmo es del tipo $Lista<Nodo>$.
 \vspace{2mm}
 \begin{algorithmic}[1]
@@ -336,7 +336,7 @@ Finalmente, el pseudoc\'odigo de la funci\'on que genera el camino a partir del 
 		\State $Nodo\: nodo \gets actual$
 		\Comment{$O(1)$}	
 		\While{$damePredecesor(nodo) != null)$}
-		\Comment{$O(dimension)$}	
+		\Comment{$O(dimension*dimension)$}	
 			\State $Nodo\: predecesor \gets damePredecesor(nodo)$
 			\Comment{$O(1)$}	
 			\State $nodo.nivel \gets predecesor.nivel()\: -\: nodo.nivel()$
@@ -358,8 +358,28 @@ Finalmente, el pseudoc\'odigo de la funci\'on que genera el camino a partir del 
 \EndProcedure
 \end{algorithmic}
 
+La lista de nodos del camino va a ser a lo sumo $n^2$, dandonos una complejidad de $O(n^2)$ dado que el ciclo que arma el camino itera una vez por cada nodo en base a los predecesores. Adentro del ciclo se realizan operaciones de tiempo constante, dandonos una complejidad temporal total de $O(n^2)$.
 
-\subsection{Cota de complejidad} \label{ej_3:cota}
+\vspace{2mm}
+
+Dado que el algoritmo BFS nos brinda el camino m\'as corto en aristas de el nodo origen al destino, llegamos a la conclusi\'on de que la complejidad depende de $n^2$, que es la cantidad de nodos, ya que como m\'aximo va a visitar cada uno de los $k$ nodos $(i,j,0..k)$ una \'unica vez. Supongamos que esto no ocurre, y el camino m\'inimo visita al menos dos nodos $(i,j,k_1)$ y $(i,j,k_2)$. Si volvemos a pensar el grafo como el tablero de juego bidimensional, estar\'ia volviendo a la misma celda otra vez, s\'olo que con menos unidades de potencia (de ah\'i la diferenciad de nivel), formando un ciclo, el cual podr\'iamos retirar para quedarnos con un camino m\'as corto. Esto es absurdo, ya que consideramos m\'inimo el anterior camino, por lo tanto, el camino m\'inimo va a visitar como m\'aximo una vez cada celda, la complejidad va a ser $O(n^2)$.
+ 
+ \subsubsection{Complejidad Total}
+
+ Complejidad total:
+\begin{enumerate}
+
+\item Armar el grafo: $O(k*n^3)$
+\item Algoritmo de busqueda en anchura y armado del camino: $O(k*n^3)$
+ \end{enumerate}
+\vspace{2mm}
+ Por lo tanto la complejidad es $O(k*n^3)$ como lo pide el enunciado.
+
+\vspace{2mm}
+
+Documentaci\'on de la clase HashMap:
+
+ http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html
 
 
 
