@@ -94,8 +94,8 @@ public class Main {
 					promedioNanoSeconds += elapsed;
 				}
 				promedioNanoSeconds/=CANT_REPETICIONES;
-				System.err.println("Repeticiones | Tamanio entrada(dim*powerUpInicial) | Tiempo promedio en nanosegundos");
-				System.err.println(CANT_REPETICIONES + "|" + matrixDim * powerUpInicial + "|" + promedioNanoSeconds);			
+				double promedioMicroSeconds = Math.round(promedioNanoSeconds)/(double)1000;
+				System.err.println(matrixDim * powerUpInicial + " " + promedioMicroSeconds + " " + CANT_REPETICIONES);
 			}else{
 				Juego juego = new Juego(matrix, powerUpInicial, filaInicial, columnaInicial, filaDestino, columnaDestino);
 				res = juego.caminoMinimo();
@@ -141,7 +141,7 @@ public class Main {
 		System.out.println(matrixDim + " " + filaInicial + " " + columnaInicial + " " + filaDestino + " " + columnaDestino + " " + powerUpInicial);
 		for(int i=0;i<matrixDim;i++){
 			for(int j=0;j<matrixDim;j++){
-				matrix[i][j] = randomInt(0, matrixDim-1);
+				matrix[i][j] = randomInt(1, matrixDim-1);
 				System.out.print(matrix[i][j]);
 				if(j!=matrixDim-1){
 					System.out.print(" ");
