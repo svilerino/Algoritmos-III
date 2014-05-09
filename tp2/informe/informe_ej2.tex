@@ -180,5 +180,23 @@ Cumpliendo as\'i la complejidad requerida.
 
 Para medir la p\'erformance del algoritmo, se crearon casos de prueba como se especifa en el Ap\'endice de casos de prueba (Secci\'on \ref{casos_de_prueba}) y se compar\'o contra la complejidad $O(n^2)$ calculada en la Secci\'on \ref{ej_2:cota}
 
+Se prob\'o la implementaci\'on con $n$ desde 100 a 13800, avanzando de a 100, y se grafic\'o el promedio del tiempo en segundos que tard\'o el algoritmo repitiendo la prueba 10 veces.
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/ej2_n.png}
+\end{center}
+
+Luego se grafic\'o el resultado anterior diviendo el tiempo por $n$, quedando lo que parece una recta
+\begin{center}
+	\includegraphics[scale=0.6]{images/ej2_d_n.png}
+\end{center}
+
+Y por \'ultimo se grafic\'o el resultado anterior diviendo el tiempo por $n^2$, mostrando una recta que se aproxima a una constante acotada por arriba y abajo. Se quit\'o del gr\'afico las mediciones para valores chicos de $n$ por dar valores demaciado chicos y variables.
+\begin{center}
+	\includegraphics[scale=0.6]{images/ej2_d_n2.png}
+\end{center}
+
+No se pudieron hacer pruebas para $n$ mucho mas grandes por el tiempo que se tardaba en sacar las mediciones y porque el consumo de memoria crec\'ia en el \'orden de $n^2$, con $n = 20000$ se requer\'ian al menos $(20000b)^2 * 4b = 1600000000b = 1600000kb = 1600mb$ de memoria (la multiplicaci\'on por 4 es por el tama\~no de un entero) y al llegar a esos valores, la computadora que se usaba para las mediciones comenzaba a ponerse muy lenta porque el sistema mientras tanto mov\'ia memoria en RAM al disco r\'igido.
+
 %\subsection{Concluciones} \label{ej_2:concluciones}
 
