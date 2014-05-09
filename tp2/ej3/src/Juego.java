@@ -91,7 +91,9 @@ public class Juego {
 			for(int i=0;i<dimension;i++){
 				for(int j=0;j<dimension;j++){
 					Nodo nodo = new Nodo(i, j, level);
-					int nodoValue = valoresNodos[i][j];
+					//de nuevo fix para complejidad, no tiene sentido una potencia instrinseca mayor a dim
+					//nunca va a saltar mas alla de los limites de la matriz
+					int nodoValue = (valoresNodos[i][j] < dimension) ? valoresNodos[i][j] : dimension;
 					boolean fueVisitado = false;
 					List<Nodo> alcanzables = calcularAlcanzables(nodo, nodoValue, dimension);
 					NodoMetadata metaData = new NodoMetadata(nodoValue, fueVisitado, alcanzables, null);
