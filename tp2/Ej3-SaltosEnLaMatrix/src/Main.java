@@ -95,7 +95,8 @@ public class Main {
 				}
 				promedioNanoSeconds/=CANT_REPETICIONES;
 				double promedioMicroSeconds = Math.round(promedioNanoSeconds)/(double)1000;
-				System.err.println(matrixDim * (powerUpInicial + 1) + " " + promedioMicroSeconds + " " + CANT_REPETICIONES);
+				//System.err.println(matrixDim + "	" + powerUpInicial + "	" + promedioMicroSeconds + "	" + CANT_REPETICIONES);
+				System.err.println(matrixDim + "	" + powerUpInicial + "	" + promedioMicroSeconds);
 			}else{
 				Juego juego = new Juego(matrix, powerUpInicial, filaInicial, columnaInicial, filaDestino, columnaDestino);
 				res = juego.caminoMinimo();

@@ -6,4 +6,5 @@ rm -rf *.o
 rm -rf ../tests/*.testcase
 rm -rf ../testsout/*.testout
 rm -rf ../timingout/*.timingout
+rm -rf ../timingout/*.png
 popd
