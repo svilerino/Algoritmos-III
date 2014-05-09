@@ -145,6 +145,8 @@ El c\'alculo de esta tabla, que tiene $n^2/2$ posiciones, involucra para cada po
 Se hizo una experimentaci\'on con tama\~nos n de entrada entre 100 y 400. Se distingui\'o la distribuci\'on de los valores de las cartas en tres casos : uniforme en $[-50;50]$, uniforme en $[-100;0]$ y uniforme en $[0;100]$. Todos los casos dieron tiempos similares. En la gr\'afica puede observarse una curva similar a las de la forma $ax^{m}$. Se puede comprobar que al variar de $n=200$ a $n'=300$, $n'=(3/2)n$, el tiempo pasa de un promedio de $200$ a un promedio de $650 \sim 200.(3/2)^3$. \'Esto comprueba que la curva es c\'ubica.
 A continuaci\'on se adjuntan las gr\'aficas experimentales de $tiempo(n)$.
 
+
+
 \begin{center}
 	\includegraphics[scale=0.6]{images/ej1_1.png}
 \end{center}
@@ -155,6 +157,27 @@ A continuaci\'on se adjuntan las gr\'aficas experimentales de $tiempo(n)$.
 
 \begin{center}
 	\includegraphics[scale=0.6]{images/ej1_3.png}
+\end{center}
+
+\subsection{Testeo de Complejidad}
+
+Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
+
+\vspace{2mm}
+
+Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(n^3)$, llegamos a esta conclusion graficando los casos: $n$ = $[1..200]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $n^3$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$.
+
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/funcion.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/sobrencuadrado.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.6]{images/sobrencubo.png}
 \end{center}
 
 %\end{document}

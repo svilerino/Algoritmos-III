@@ -8,9 +8,9 @@ El problema se trata de un juego que forma parte de un reality show. Este juego 
 
 Un ejemplo de salto ser\'ia la siguiente situaci\'on: vemos que la celda tiene una potencia de 1, por lo que el jugador podr\'ia saltar una celda izquierda, hacia adelante o hacia la derecha. Y en caso de que quisiera usar una potencia, podr\'ia saltar does celdas hacia adelante, pero su reserva de potencias se reducir\'ia en uno.
  \vspace{2mm}
-
-\includegraphics[scale=0.8]{images/saltos}
-
+\begin{center}
+\includegraphics[scale=0.9]{images/saltos}
+\end{center}
 El objetivo del juego es llegar de una celda origen a otra destino, realizando la menor cantidad de saltos posibles. Por esto, se pide el diseno e implementaci\'on de un algoritmo que calcule y de como resultado uno de los caminos que lleguen de origen a destino cuya cantidad de saltos sea m\'inima.
 \vspace{2mm}
 
@@ -20,9 +20,9 @@ El algoritmo tiene que tener una complejidad de $O(n^3*k)$, con $n$ la cantidad 
 \subsection{Ideas para la resoluci\'on} \label{ej_3:idea}
 
 Decidimos encarar la resolucio\'on como un problema de grafos. El campo de juego es representado como un grafo con un nodo por cada celda, y las aristas son orientadas, de peso constante y representan todos los posibles saltos entre celda y celda. 
-
+\begin{center}
 \includegraphics[scale=0.5]{images/grafo1}
-
+\end{center}
 \vspace{2mm}
 
 
@@ -59,8 +59,9 @@ Dados niveles $G_m,\, G_j\, /\, m\,< \,j$ y dos v\'ertices $v \in V_m(G_m) \: \l
 
 En el siguiente diagrama mostramos las aristas entre niveles que deber\'ian tomarse en caso de usar una potencia en las celdas $(0,2)$ y $(2,0)$
 
+\begin{center}
 \includegraphics[scale=0.5]{images/dospisos}
-
+\end{center}
 \vspace{2mm}
 
 Notemos que al avanzar hacia niveles m\'as bajos no se puede ir hacia arriba (lo cual tiene sentido pues el nivel actual indica la cantidad de potencias disponibles para usar, y este valor nunca puede aumentar)
@@ -96,36 +97,46 @@ Finalmente tenemos una clase $Juego$ que unifica todo, cuyos atributos son un no
 
 
 
-\subsection{Algoritmo} \label{ej_3:algoritmo}
+\subsection{Algoritmos y Complejidad} \label{ej_3:algoritmo}
+El algoritmo consta de varias etapas principales:
+\begin{enumerate}
+	\item Generaci\'on del grafo a partir de los datos de entrada.
+	\item Busqueda del camino m\'inimo(en cantidad de pasos) con un BFS.
+	\item Construcci\'on del camino a trav\'es de los predecesores del destino indicados por BFS y
+ 			c\'alculo de powerup utilizado en cada salto.
+ \end{enumerate}
 
-A continuaci\'on mostramos un pseudoc\'odigo de la generaci\'on del juego, la complejidad indicada en cada paso ser\'a justificada m\'as adelante. 
+A continuaci\'on mostramos un pseudoc\'odigo de la generaci\'on del juego. Durante las demostraciones, se usar\'a la variable $k$ para referirse a la cantidad de potencias iniciales al iniciar el juego, y la variable $n$ como la cantidad de filas del juego.
 \vspace{2mm}
 \begin{algorithmic}[1]
 \Statex
-	\Procedure{Juego}{$int[\,][\,] valoresNodo, int powerupInicial, int filaInicial, int columnaInicial,  int filaDestino, int columnaDestino$}
-	\State $Juego.nodoInicial \gets new \: Nodo(filaInicial, columnaInicial, powerUpInicial)$
+	\Procedure{Juego}{$int[\,][\,] valores, int\, potInicial, int \,filInicial, \,int colInicial,  int\, filDestino, int \,colDestino$}
+	\State $Juego.nodoInicial \gets new \: Nodo(filInicial, colInicial, potInicial)$
 	\Comment{$O(1)$}
-	\State $Juego.nodoDestino \gets new \: Nodo(filaDestino, columnaDestino, 0) $
+	\State $Juego.nodoDestino \gets new \: Nodo(filDestino, colDestino, 0) $
 	\Comment{$O(1)$}
 	\State $Juego.graph \gets new \: HashMap<Nodo,\: NodoMetadata>()$
 	\Comment{$O(1)$}
-	\State $int \: dimension \gets longitud(valoresNodos)$
+	\State $int \: dimension \gets longitud(valores)$
 	\Comment{$O(1)$}
-	\For{$int\:  level \gets powerUpInicial;\: level \geq 0;level--$}
-	\Comment{$O(powerUpInicial)$}
+	\For{$int\:  level \gets potInicial;\: level \geq 0;level--$}
+	\Comment{$O(potInicial)$}
 		\For{$int \: i \gets 0;\: i\,<\,dimension;\:i++$}
 		\Comment{$O(dimension)$}
 			\For{$int  \:j\gets 0; \:j<dimension; \:j++$}	
 			\Comment{$O(dimension)$}
 				\State	$Nodo \: nodo\gets new \: Nodo(i,\: j,\: level)$
 				\Comment{$O(1)$}
-				\State	$int\: nodoValue \gets valoresNodos[i][j]$
+				\State	$int\: nodoValue \gets valoress[i][j]$
 				\Comment{$O(1)$}
+				\If{$nodoValue>dimension$}
+					\State $nodoValue \gets dimension$
+				\EndIf
 				\State	$boolean \:fueVisitado \gets false$
 				\Comment{$O(1)$}
 				\State	$List<Nodo>:, alcanzables \gets calcularAlcanzables(nodo,\, nodoValue,\, dimension)$
 				\Comment{$O(dimension)$}
-				\State	$NodoMetadata \: metaData \gets new\: NodoMetadata(nodoValue,\: fueVisitado,\: alcanzables,\: null)$
+				\State	$NodoMetadata \, metaData \gets new\, NodoMetadata(nodoValue,\, fueVisitado,\, alcanzables,\, null)$
 				\Comment{$O(1)$}
 				\State	$graph.put(nodo,\: metaData)$
 				\Comment{$O(1)$}
@@ -137,43 +148,56 @@ A continuaci\'on mostramos un pseudoc\'odigo de la generaci\'on del juego, la co
 \Statex
 \end{algorithmic}
 \vspace{2mm}
-Funci\'on auxiliar que para un nodo calcula sus nodos alcanzables. La salida del algoritmo es del tipo $Lista<Nodo>$.
+
+Donde valores representa la matriz de celdas con sus respectivas potencias de resorte, potInicial representa $k$, la cantidad de potencias que se le brinda a un jugador al iniciar el juego, y $filInicial$, $colInicial$, $filDestino$, $colDestino$ las coordenadas respectivas de la celda de inicio y la celda destino. Cabe aclarar, en la l\'inea 11, en caso de que en la entrada, una celda posea un valor de resorte mayor a la dimensi\'on del campo de juego, fijamos el valor del nodo como $dimension$, ya que no tiene sentido poseer un resorte que permita saltar fuera de los l\'mites de la matriz, es decir, el jugador s\'olo va a poder usar uso de la potencia del resorte como m\'aximo hasta el valor dimensi\'on. Esto nos permite ajustar el c\'alculo de complejidad de la funci\'on siguiente.
+
+\vspace{2mm}
+
+Complejidad:
+
+Los 3 ciclos for anidados indican una complejidad de $O(k*n^2)$. Dentro de estos ciclos se realizan operaciones, todas de tiempo constante $O(1)$ excepto la llamada a a funci\'on $alcanzables$, que toma $O(n)$, y ser\'a justificado a continuaci\'on, d\'andonos un total de $O(k*n^3)$ en la construccion del grafo para nuestro modelo.
+
+\vspace{10mm}		
+Calcular Alcanzables: funci\'on auxiliar que para un nodo, calcula todos los otros nodos a los que podri\'a $"saltar"$, usando y no usando potencias. La salida del algoritmo es del tipo $Lista<Nodo>$.
 \vspace{2mm}
 \begin{algorithmic}[1]
-\Procedure{calcularAlcanzables}{$Nodo\: nodo,\:int\: valorNodo,\: int \:dimensionMatriz$}
+\Procedure{calcularAlcanzables}{$Nodo\: nodo,\:int\: valorNodo,\: int \:dimension$}
 		\State $int\: nivelActual\: =\: nodo.getLevel()$
 		\Comment{$O(1)$}
 		\State $int\: actualX\: =\: nodo.getX()$
 		\Comment{$O(1)$}
 		\State $int\: actualY\: =\: nodo.getY()$
 		\Comment{$O(1)$}
-		\State $int\: potencia\: =\: valorNodo$
-		\Comment{$O(1)$ Recordar que el nivel del nodo es la cantidad de potencias}
+		\State $int\: resorte\: =\: valorNodo$
+		\Comment{$O(1)$}
 		\State $Lista<Nodo>\: alcanzables\: =\: new\: Lista<Nodo>$
 		\Comment{$O(1)$}
-		\For{$int\: j \gets -potencia;\:j\leq potencia;\:j++$}
-		\Comment{$O(potencia)\: acotado \: por \: O(dimension)$}
-			\If{$validarBordes(dimensionMatriz,\: actualX,\: j)$}
+		\For{$int\: j \gets -resorte;\:j\leq resorte;\:j++$}
+		\Comment{$O(resorte)\: acotado \: por \: O(dimension)$}
+			\If{$validarBordes(dimension,\: actualX,\: j)$}
 			\Comment{$O(1)$}
-				\State $Nodo\: alcanzableDirecto\gets new\: Nodo(actualX\: +\: j,\: actualY, \:nivelActual)$
+				\State $Nodo\: alcanzableDir\gets new\: Nodo(actualX\: +\: j,\: actualY, \:nivelActual)$
 				\Comment{$O(1)$}
-				\State $alcanzables.agregar(alcanzableDirecto)$
+				\State $alcanzables.agregar(alcanzableDir)$
 				\Comment{$O(1)$}
 			\EndIf
 				
-			\If{$validarBordes(dimensionMatriz,\: actualY,\: j)$}
+			\If{$validarBordes(dimension,\: actualY,\: j)$}
 			\Comment{$O(1)$}
-				\State $Nodo\: alcanzableDirecto \gets new \:Nodo(actualX, \:actualY\: + \:j, \:nivelActual)$
+				\State $Nodo\: alcanzableDir \gets new \:Nodo(actualX, \:actualY\: + \:j, \:nivelActual)$
 				\Comment{$O(1)$}
-				\State $alcanzables.agregar(alcanzableDirecto);$
+				\State $alcanzables.agregar(alcanzableDir);$
 				\Comment{$O(1)$}
 			\EndIf
 		\EndFor
 
 		\For{$int\: potenciasSumadas\gets 1;\:potenciasSumadas+\leq nivelActual;\:potenciasSumadas++$}
-			\Comment{$I dont know$}
+			\Comment{$O(dimension)$}
 			\State $int\: potenciaTotal \gets potencia\: +\: potenciasSumadas; $
-			\If{$validarBordes(dimensionMatriz, \:actualY,\: potenciaTotal)$}
+			\If{$potenciaTotal>dimension$}
+				\State $break$
+			\EndIf
+			\If{$validarBordes(dimension, \:actualY,\: potenciaTotal)$}
 			\Comment{$O(1)$}
 				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX,\: actualY +\: potenciaTotal, \:nivelActual - \:potenciasSumadas)$
 				\Comment{$O(1)$}
@@ -181,7 +205,7 @@ Funci\'on auxiliar que para un nodo calcula sus nodos alcanzables. La salida del
 				\Comment{$O(1)$}
 			\EndIf
 
-			\If{$validarBordes(dimensionMatriz, \:actualY,\: -potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualY,\: -potenciaTotal)$}
 			\Comment{$O(1)$}
 				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX,\: actualY -\: potenciaTotal, \:nivelActual - \:potenciasSumadas)$
 				\Comment{$O(1)$}
@@ -189,7 +213,7 @@ Funci\'on auxiliar que para un nodo calcula sus nodos alcanzables. La salida del
 				\Comment{$O(1)$}
 			\EndIf
 
-			\If{$validarBordes(dimensionMatriz, \:actualX,\: potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualX,\: potenciaTotal)$}
 			\Comment{$O(1)$}
 				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX  +\: potenciaTotal,\: actualY, \:nivelActual - \:potenciasSumadas)$
 				\Comment{$O(1)$}
@@ -197,7 +221,7 @@ Funci\'on auxiliar que para un nodo calcula sus nodos alcanzables. La salida del
 				\Comment{$O(1)$}
 			\EndIf
 
-			\If{$validarBordes(dimensionMatriz, \:actualX,\: -potenciaTotal)$}
+			\If{$validarBordes(dimension, \:actualX,\: -potenciaTotal)$}
 			\Comment{$O(1)$}
 				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX  -\: potenciaTotal,\: actualY, \:nivelActual - \:potenciasSumadas)$
 				\Comment{$O(1)$}
@@ -212,7 +236,10 @@ Funci\'on auxiliar que para un nodo calcula sus nodos alcanzables. La salida del
 \EndProcedure
 \end{algorithmic}
 
-%\vspace{2mm}
+\vspace{2mm}
+
+Donde $nodo$ es el nodo del cual se van a calcular sus alcanzables, $valorNodo$ la potencia de su resorte y dimension es $n$. Podemos ver que al algoritmo lo componen dos ciclos for lineales, que van armando la lista $alcanzables$. El primer ciclo, calcula los nodos alcanzables $Directos$, es decir, aquellos a los que puede saltar con el resorte de la celda sin hacer uso de ninguna potencia adicional. El ciclo itera de $-resorte$ a $resorte$, agregando de \'esta forma a la lista de alcanzables los nodos a su izquierda, derecha, hacia adelante y atr\'as, validando con cuidado los bordes de la matriz, y sin agregarse a s\'i mismo. Dado que la potencia de un resorte est\'a acotada por la dimensi\'on de la matriz
+
 A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modificacion de BFS que busca un camino entre el nodo inicial y alguno de los nodos destino, sin importar a qu\'e nivel pertenezcan, es decir, cuando la b\'usqueda encuentra un nodo w tal que las primeras 2 coordenadas de w coinciden con la celda destino, termina el algoritmo. Acto seguido reconstruye el camino en base a los predecesores, que se van guardando a medida que se realiza la expansion en anchura. Teniendo en cuenta que BFS encuentra el camino mas corto en cantidad de aristas entre 2 nodos, esto resuelve nuestro problema. La salida es una lista de nodos que comprende el camino, indicando en cada paso: (posX, posY, gasto de PowerUp en el salto del predecesor de este nodo al actual).
 
 \vspace{2mm}
@@ -303,7 +330,105 @@ Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma es
 
 \vspace{2mm}
 
-Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $R$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$.
+Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $R$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$. Referencia: http://www.excelsior-usa.com/jetcs00007.html
+
+\vspace{2mm}
+
+Con k = 0
+
+\begin{center}
+\includegraphics[scale=0.54]{images/0potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/0potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/0potenciasobrecubo}
+\end{center}
+\vspace{2mm}
+\vspace{2mm}
+\vspace{2mm}
+
+Con k = 1
+
+\begin{center}
+\includegraphics[scale=0.54]{images/1potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/1potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/1potenciasobrecubo}
+\end{center}
+
+
+\vspace{2mm}
+
+Con k = 2
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/2potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/2potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/2potenciasobrecubo}
+\end{center}
+
+
+\vspace{2mm}
+
+Con k = 3
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/3potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/3potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/3potenciasobrecubo}
+\end{center}
+
+
+\vspace{2mm}
+
+Con k = 4
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/4potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/4potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/4potenciasobrecubo}
+\end{center}
+
 
 \subsection{Mediciones de performance} \label{ej_3:performance}
 
