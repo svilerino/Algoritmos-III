@@ -16,7 +16,7 @@ gcj --main=Main *.o -o app.runnable
 rm -rf *.o
 echo "Ok"
 
-for powerup in {0..5}
+for powerup in {0..4}
 do
 	for dim in {2..100}
 	do
