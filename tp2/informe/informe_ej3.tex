@@ -6,7 +6,7 @@ El problema se trata de un juego que forma parte de un reality show. Este juego 
 
 \vspace{2mm}
 
-Un ejemplo de salto ser\'ia la siguiente situaci\'on: vemos que la celda tiene una potencia de 1, por lo que el jugador podr\'ia saltar una celda izquierda, hacia adelante o hacia la derecha. Y en caso de que quisiera usar una potencia, podr\'ia saltar does celdas hacia adelante, pero su reserva de potencias se reducir\'ia en uno.
+Un ejemplo de salto ser\'ia la siguiente situaci\'on: vemos que la celda 2 tiene una potencia de 1, por lo que el jugador podr\'ia saltar una celda izquierda, hacia adelante o hacia la derecha. Y en caso de que quisiera usar una potencia, podr\'ia saltar does celdas hacia adelante, pero su reserva de potencias se reducir\'ia en uno.
  \vspace{2mm}
 \begin{center}
 \includegraphics[scale=0.9]{images/saltos}
@@ -74,8 +74,7 @@ Definimos $n_0$ como el nodo origen $/ n_0 \in V_k$ (primer nivel, m\'as alto), 
 
 Las aristas son de peso constante en su totalidad (en particular, 1). Adem\'as, en cada arista se guarda un valor indicando la cantidad de niveles atravesadas en este paso, lo cual es equivalente a la cantidad de potencias utilizadas en el salto. No confundir este valor con el costo o peso de la arista.
 \vspace{2mm}
-(Dibujo zarpado)
-\vspace{2mm}
+
 
 De esta forma, encontrar el camino que realize la menor cantidad de saltos se reduce a buscar el camino m\'as corto en el grafo de $n_0$ a alg\'un nodo destino, guardando en cada caso el valor de cada arista (potencia usada) y la posici\'on $(i,j)$ del nodo sin importar el nivel actual. Un recorrido de anchura BFS del grafo nos brinda el camino m\'as corto, comenzando la b\'usqueda desde $n_0$.
 
@@ -119,7 +118,7 @@ A continuaci\'on mostramos un pseudoc\'odigo de la generaci\'on del juego. Duran
 	\Comment{$O(1)$}
 	\State $Juego.graph \gets new \: HashMap<Nodo,\: NodoMetadata>()$
 	\Comment{$O(1)$}
-	\State $int \: dimension \gets longitud(valores)$
+	\State $int \: dimension \gets size(valores)$
 	\Comment{$O(1)$}
 	\For{$int\:  level \gets potInicial;\: level \geq 0;level--$}
 	\Comment{$O(potInicial)$}
@@ -159,7 +158,6 @@ Complejidad:
 
 Los 3 ciclos for anidados indican una complejidad de $O(k*n^2)$. Dentro de estos ciclos se realizan operaciones, todas de tiempo constante $O(1)$ excepto la llamada a a funci\'on $alcanzables$, que toma $O(n)$, y ser\'a justificado a continuaci\'on, d\'andonos un total de $O(k*n^3)$ en la construccion del grafo para nuestro modelo.
 
-\vspace{10mm}		
 
  \subsubsection{C\'alculo de alcanzables}
 
@@ -279,7 +277,7 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modific
 		\If{$esDestino(actual)$}
 		\Comment{$O(1)$}
 			\State $return \: construirCaminoConPredecesores(actual)$
-			\Comment{$O(dimension^2*potInicial)$}
+			\Comment{$O(dimension^2)$}
 
 		\EndIf
 			
@@ -379,53 +377,144 @@ Dado que el algoritmo BFS nos brinda el camino m\'as corto en aristas de el nodo
 
 Documentaci\'on de la clase HashMap:
 
- http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html
+ \url{http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html}
+
+\subsection{Evaluaci\'on de Correctitud}
+
+El grafo de nuestro modelo posee al menos un nodo por cada celda, para ellos, posee aristas que representan todos los posibles saltos a otras celda para cada una de las potencias del resorte, y adem\'as posee aristas con todos los posibles usos de las potencias adicionales por cada celda, por lo que cualquier camino del campo de juego es representable en nuestro modelo. Para cada nodo es posible saltar a todos sus alcanzables, o bien usar una o m\'as potencias adicionales y saltar al nodo correspondiente en alg\'un un nivel menor, representando la p\'erdida de estas potencias adicionales, y no hay ninguna arista que conecte un nivel menor con uno mayor, por lo que se deduce que an\'alogamente cualquier camino del grafo es un camino v\'alido del juego.
+
+\vspace{2mm}
+
+Finalmente el problema se reduce a la b\'usqueda del camino m\'inimo en el grafo, que va a ser an\'alogo al camino m\'inimo en el tablero de juego. Y la correctitud de esto deriva del comportamiento del algoritmo BFS, que por lo visto en la te\'orica, al ser el recorrido en anchura, siempre llega a cada nodo por primera vez usando la m\'inima cantidad de aristas posible. (Primero a todos los nodos a 1 arista de distancia del origen, luego a todos los nodos a 2 aristas de distancia de origen, etc.). Es f\'acil ver que si no tomara el camino m\'inimo, y llegara por primera vez a un nodo usando de $k$ aristas de distancia del origen en $j>k$ pasos, es absurdo ya que en la tercera iteraci\'on recorri\'o todos los nodos a $k$ aristas de distancia.
+
+\vspace{2mm}
+
+Esto nos asegura llegar al nodo destino usando el menor m\'inimo de aristas posible, y al ser las aristas los posibles saltos, significa llegar a esa celda usando el menor n\'umero de saltos posible.
 
 
-\subsection{Mediciones de performance} \label{ej_3:performance}
 
-Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.\\
+\subsection{Tests de correctitud}
 
-Como f(n,k) = $\{tiempo$ $en$ $milisegundos$ $transcurrido$ $en$ $la$ $ejecucion$ $de$ $una$ $entrada$ $de$ $dimension$ $n$ $y$ $powerUp$ $k\}$ es una funcion que va de $\mathbb{R}^2 \rightarrow \mathbb{R}$, en lugar de graficarla en 3d, graficaremos ciertas curvas $C_k = \{ (x, f(x, k)) \in \mathbb{R}^2 \}$ para ver como se comporta la funcion cuando $n \rightarrow \infty$ con k fijo
+Para comprobar la correctitud de forma emp\'irica de nuestro programa, construimos unos casos de prueba, un caso promedio, un peor caso y un mejor caso. A continuaci\'on se listan los casos.
 
-\begin{itemize}
-	
-	\item $C_0 = \{ (x, f(x, 0)) \in \mathbb{R}^2 \}$
-	\begin{center}
-		\includegraphics[scale=0.54]{images/0potenciafuncion}
-		\includegraphics[scale=0.54]{images/0potenciasobrecuadrado}
-		\includegraphics[scale=0.54]{images/0potenciasobrecubo}
-	\end{center}
+Caso Promedio:
 
-	\item $C_1 = \{ (x, f(x, 1)) \in \mathbb{R}^2 \}$
-	\begin{center}
-		\includegraphics[scale=0.54]{images/1potenciafuncion}
-		\includegraphics[scale=0.54]{images/1potenciasobrecuadrado}
-		\includegraphics[scale=0.54]{images/1potenciasobrecubo}
-	\end{center}
+5 0 0 1 2 0
+3 4 1 1 1
+1 1 1 1 3
+2 4 2 2 2
+1 2 1 1 4
+1 2 2 1 1
 
-	\item $C_2 = \{ (x, f(x, 2)) \in \mathbb{R}^2 \}$
-	\begin{center}
-		\includegraphics[scale=0.54]{images/2potenciafuncion}
-		\includegraphics[scale=0.54]{images/2potenciasobrecuadrado}
-		\includegraphics[scale=0.54]{images/2potenciasobrecubo}
-	\end{center}
+\begin{center}
+\includegraphics[scale=0.5]{images/casosej3}
+\end{center}
 
-	\item $C_3 = \{ (x, f(x, 3)) \in \mathbb{R}^2 \}$
-	\begin{center}
-		\includegraphics[scale=0.54]{images/3potenciafuncion}
-		\includegraphics[scale=0.54]{images/3potenciasobrecuadrado}
-		\includegraphics[scale=0.54]{images/3potenciasobrecubo}
-	\end{center}
+\subsection{Testeo de complejidad y Perfomance}
+Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
 
-	\item $C_4 = \{ (x, f(x, 4)) \in \mathbb{R}^2 \}$
-	\begin{center}
-		\includegraphics[scale=0.54]{images/4potenciafuncion}
-		\includegraphics[scale=0.54]{images/4potenciasobrecuadrado}
-		\includegraphics[scale=0.54]{images/4potenciasobrecubo}
-	\end{center}
+\vspace{2mm}
 
-\end{itemize}
+Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $R$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$. Referencia: http://www.excelsior-usa.com/jetcs00007.html
 
-Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $\mathbb{R}$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$. Referencia: http://www.excelsior-usa.com/jetcs00007.html
+\vspace{2mm}
+
+Con k = 0
+
+\begin{center}
+\includegraphics[scale=0.54]{images/0potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/0potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/0potenciasobrecubo}
+\end{center}
+\vspace{2mm}
+\vspace{2mm}
+\vspace{2mm}
+
+Con k = 1
+
+\begin{center}
+\includegraphics[scale=0.54]{images/1potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/1potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/1potenciasobrecubo}
+\end{center}
+
+
+\vspace{2mm}
+
+Con k = 2
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/2potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/2potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/2potenciasobrecubo}
+\end{center}
+
+
+\vspace{2mm}
+
+Con k = 3
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/3potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/3potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/3potenciasobrecubo}
+\end{center}
+
+
+\vspace{2mm}
+
+Con k = 4
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/4potenciafuncion}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/4potenciasobrecuadrado}
+\end{center}
+
+
+\begin{center}
+\includegraphics[scale=0.54]{images/4potenciasobrecubo}
+\end{center}
+
+
+
+
 
