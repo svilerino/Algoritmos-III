@@ -34,15 +34,15 @@ Una idea que se propone es comenzar con todos los nodos sueltos, sin ninguna ari
 y calcular todas las distancias entre todos los nodos, es decir, calcular todas las tuber\'ias posibles con sus respectivas distancias.
 Luego se ordenar\'an las aristas (tuber\'ias) de menor a mayor de acuerdo a sus longitudes.
 Se calcula si la cantidad de componentes conexas es menor o igual a $k$, si es as\'i, entonces el algoritmo termina, sino coloca la tuber\'ia m\'as corta que no genere un ciclo y contin\'ua preguntando sobre la cantidad de componentes conexas e iterando sobre las aristas siguiendo el orden de menor a mayor.
-B\'asicamente es aplicar \emph{Kruskal} sobre un grafo completo.
+B\'asicamente es aplicar un algoritmo parecido a \emph{Kruskal} sobre un grafo completo.
 
-Como se requiere tener todas las aristas ordenadas por peso, en un grafo completo tenemos $n(n-1)/2$ aristas, dandonos una complejidad de al menos $O(n^2 \log n^2)$, y no cumple con el requerimiento.
+Como para aplicar la idea anterior se requiere tener todas las aristas ordenadas por peso, en un grafo completo tenemos $n(n-1)/2$ aristas, dandonos una complejidad de al menos $O(n^2 \log n^2)$ para ordenarlas, y no cumple con el requerimiento.
 Para mejorar la complejidad del algoritmo, en vez de calcular la distancia de todos las aristas e iterar sobre todas las aristas, requiriendo ordenar por peso \emph{todas} las aristas, primero creamos un \'arbol generador m\'inimo (con las aristas m\'as cortas posibles), con una idea como el algoritmo de \emph{Prim} y que tenga de cota $O(n^2)$,
 el \'arbol generador m\'inimo generado nos queda $n - 1$ aristas, y luego, al igual que antes, se ordenan y se recorren esas $n - 1$ aristas de menor a mayor.
 
 En resumen, la idea es partir de un grafo completo con $n$ nodos, aplicar \emph{Prim} y obtener el \emph{AGM}, luego sobre ese \'arbol aplicar \emph{Kruskal} pero cortando el algoritmo cuando se tienen tantas componentes conexas como $k$ centrales de gas. La colocaci\'on de las centrales de gas se colocan luego en un nodo cualquiera de los nodos de cada componente conexa.
 
-En la secci\'on \ref{ej_2:algoritmo} se propone un pseudoc\'odigo, en la secci\'on \ref{ej_2:ejemplo} se ver\'a un ejemplo de ejecuci\'on del algoritmo,
+En la secci\'on \ref{ej_2:algoritmo} se propone un pseudoc\'odigo, %en la secci\'on \ref{ej_2:ejemplo} se ver\'a un ejemplo de ejecuci\'on del algoritmo,
 en la secci\'on \ref{ej_2:justificacion} se justificar\'a la correctitud, y en la secci\'on \ref{ej_2:cota} se har\'a el c\'alculo de la complejidad del algoritmo.
 
 \subsubsection{Algoritmo} \label{ej_2:algoritmo}
@@ -76,7 +76,7 @@ Demostraremos que aplicar el algoritmo de \emph{Kruskal} sobre un grafo completo
 
 Como \emph{Prim} y \emph{Kruskal} son 2 algoritmos diferentes, podr\'ian generar un \'arbol con diferentes aristas pero igual mantienen la igualdad en la suma de los pesos y la cantidad de aristas.
 
-Supongamos que un algoritmo pone las mismas aristas que el otro pero en vez de poner la arista $a$ pone la arista $a'$ con distinto peso, entonces tambi\'en tiene que haber cambiado otra arista $b$ por $b'$ para mantener la igualdad de la suma. Supongamos que tenemos todas las aristas $a_i$ del \emph{AGM} y las ordenamos de menor a mayor y de la arista $a_0$ a $a_{j-1}$ y de $a_j+2$ a $a_{n-2}$ las aristas son las mmismas para ambos algoritmos pero $a_j$ y $a_{j+2}$ son diferentes, entonces:
+Supongamos que un algoritmo pone las mismas aristas que el otro pero en vez de poner la arista $a$ pone la arista $a'$ con distinto peso, entonces tambi\'en tiene que haber cambiado otra arista $b$ por $b'$ para mantener la igualdad de la suma. Supongamos que tenemos todas las aristas $a_i$ del \emph{AGM} y las ordenamos de menor a mayor y de la arista $a_0$ a $a_{j-1}$ y de $a_{j+2}$ a $a_{n-2}$ las aristas son las mismas para ambos algoritmos pero $a_j$ y $a_{j+1}$ son diferentes, entonces:
 
 	\begin{equation*}
 	\begin{split}
@@ -96,7 +96,7 @@ Simplificamos la igualdad de las suma, nos queda:
 	\end{split}
 	\end{equation*}
 
-	Como dijimos que el peso de $a'$ es distinto de $a$, podemos suponer que $\pi(a) > \pi(a')$ y por lo tanto $\pi(b) < \pi(b')$ (se puede suponer tambi\'en lo contrario y ser\'ia an\'alogo). \emph{Prim} entonces hubiera agregado $a'$ con menor peso que $a$, pero como \emph{Kruskal} recorre las aristas de menor a mayor peso, ya tendr\'ia que haber pasado por $a'$, y como las aristas anteriores a $a'$ son las mismas en ambos algoritmos, agregar $a'$ no genera ciclos, entonces \emph{Kruskal} hubiera agregado a $a'$, entonces $\pi(a') = \pi(a)$ porque $a' = a$. A\'un quedar\'ia $\pi(b') \neq \pi(b)$, pero como todas las dem\'as aristas son las mismas (incluidas $a'$ y $a$), entonces para mantener la igualdad de la suma $\pi(b') = \pi(b)$, contradiciendo la suposci\'on que un algoritmo cambiaria una arista por otra con peso dinstinto.
+	Como dijimos que el peso de $a'$ es distinto de $a$, podemos suponer que $\pi(a) > \pi(a')$ y por lo tanto $\pi(b) < \pi(b')$ (se puede suponer tambi\'en lo contrario y ser\'ia an\'alogo). \emph{Prim} entonces hubiera agregado $a'$ con menor peso que $a$, pero como \emph{Kruskal} recorre las aristas de menor a mayor peso, ya tendr\'ia que haber pasado por $a'$, y como las aristas anteriores a $a'$ son las mismas en ambos algoritmos, agregar $a'$ no genera ciclos, entonces \emph{Kruskal} hubiera agregado a $a'$ cuando lleg\'o el momento de agregar $a$, entonces $\pi(a') = \pi(a)$ porque $a' = a$. A\'un quedar\'ia $\pi(b') \neq \pi(b)$, pero como todas las dem\'as aristas tienen el mismo peso, entonces para mantener la igualdad de la suma nos queda que $\pi(b') = \pi(b)$, contradiciendo la suposci\'on que un algoritmo cambiaria una arista por otra con peso dinstinto.
 
 	Si cambia una arista por otra de igual peso, no modifica la soluci\'on porque el peso de la arista de mayor peso seguir\'ia siendo el mismo.
 
@@ -109,8 +109,8 @@ Simplificamos la igualdad de las suma, nos queda:
 Demostraremos que teniendo un grafo completo, si aplicamos \emph{Kruskal} y dejamos de agregar aristas cuando llegamos a $k$ componentes conzas, tenemos la soluci\'on que buscamos:
 
 \begin{proof}
-	El algoritmo de \emph{Kruskal} ordena las aristas de menor a mayor seg\'un su peso, y agrega 1 a 1 las aristas seg\'un dicho orden tal que no genere un ciclo. Al agregar una arista se disminuye en 1.  Nosotros detendremos el algoritmo cuando se llego a $k$ componentes conezas.
-	Supongamos que tenemos $m$ aristas ordenadas de menor a mayor por su peso, ($a_0, a_1 .. a_i .. a_{m-1}$), que se fueron agregando (aunque algunas generaban ciclos y no se agregaron), y que detuvimos el algoritmo de \emph{Kruskal} al agregar la arista $a_j$ porque se llegaron a $k$ componentes conexas. Entonces, como las aristas estaban ordenadas:
+	El algoritmo de \emph{Kruskal} ordena las aristas de menor a mayor seg\'un su peso, y agrega 1 a 1 las aristas seg\'un dicho orden tal que no genere un ciclo. Al agregar una arista se disminuye en 1 la cantidad de componentes conexas.  Nosotros detendremos el algoritmo cuando se llego a $k$ componentes conexas.
+	Supongamos que tenemos $m$ aristas ordenadas de menor a mayor por su peso, ($a_0, a_1 .. a_i .. a_{m-1}$), que se fueron agregando (aunque algunas generaban ciclos y no se agregaron al \emph{AGM}), y que detuvimos el algoritmo de \emph{Kruskal} al agregar la arista $a_j$ porque se llegaron a $k$ componentes conexas. Entonces, como las aristas estaban ordenadas:
 	\begin{equation*}
 	\begin{split}
 		(\forall 0 \leq i < j) a_i \leq a_j \\
@@ -118,13 +118,12 @@ Demostraremos que teniendo un grafo completo, si aplicamos \emph{Kruskal} y deja
 		(\forall j < i < m) a_i \geq a_j \\
 	\end{split}
 	\end{equation*}
-	Todos los $a_i, i < j$ est\'an agregados al resultado de \emph{Kruskal}.
 
 	El $a_j$ es la arista de mayor peso (la tuber\'ia m\'as larga), y es la que queremos minimiza.
 
 	Si existiese una mejor forma de armar las componentes conexas, entonces existe un $a_i, a_i < a_j \implies i < j$, tal que se puede reemplazar $a_i$ por $a_j$ y as\'i terner la arista de mayor peso que es de menor peso que la que obtuvimos. Como $i < j$, \emph{Kruskal} ya la analiz\'o $a_i$ antes de pasar por $a_j$.
 
-	Si $a_i$ no generaba ciclos, entonces esa arista pertenece al resultado del algoritmo, y como no se detuvo en $a_i$ significa que a\'un agregando esa arista (y todas las anteriores) no se llegaban a las $k$ componentes componentes conexas que se buscan, entonces no se puede sacar $a_j$ porque no se llegar\'ia a la cantidad de componentes conexas necesarias, contradiciendo que se puede quitar $a_j$ para mejorar la soluci\'on.
+	Si $a_i$ no generaba ciclos, entonces esa arista pertenece al resultado del algoritmo de \emph{Kruskal}, y como no se detuvo en $a_i$ significa que a\'un agregando esa arista (y todas las anteriores) no se llegaban a las $k$ componentes componentes conexas que se buscan, entonces no se puede sacar $a_j$ porque no se llegar\'ia a la cantidad de componentes conexas necesarias, contradiciendo que se puede quitar $a_j$ para mejorar la soluci\'on.
 
 	Si $a_i$ generaba un ciclo, entonces esa arista no pertenece al resultado del algoritmo. Notar que como $a_i$ se analiza antes que $a_j$ por tener menor peso, entonces $a_i$ generaba un ciclo cuando $a_j$ a\'un no estaba agregada. Si se quita $a_j$ y se agrega $a_i$, al quitar $a_j$ se aumenta en 1 la cantidad de componentes conexas (ahora tenemos $k + 1$) y no es soluci\'on, y al agregar $a_i$ se est\'a generando un ciclo, por lo que no disminuye la cantidad de componentes conexas, manteniendose en $k + 1$ y no es soluci\'on tampoco, por lo que contradice que se puede quitar $a_j$ para agregar $a_i$ y tener una mejor soluci\'on.
 

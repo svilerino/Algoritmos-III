@@ -54,7 +54,7 @@ El algoritmo propuesto lo que realiza es generar un \emph{AGM} siguiendo al algo
 	\EndProcedure
 \end{algorithmic}
 
-Una vez que tenemos el \'arbol, lo que tenemos que hacer es seleccionar un nodo cualquiera de cada componente conexa para colocar la central distribuidora. Para \'esto al crear un nodo sin aristas, cada nodo va a estar asociado a una componente conexa distinta, y cada vez que se agrega una arista, se unen las componentes conexas de ambos nodos bajo una misma componente. Luego al tener el grafo armado, se recorre la lista de componentes conexas y se agarra un nodo para cada componente:
+Una vez que tenemos el \'arbol, lo que tenemos que hacer es seleccionar un nodo cualquiera de cada componente conexa para colocar la central distribuidora. Para \'esto al crear un nodo sin aristas, cada nodo se va a asociar a una componente conexa distinta, y cada vez que se agrega una arista, se unen las componentes conexas de ambos nodos bajo una misma componente. Luego al tener el grafo armado, se recorre la lista de componentes conexas y se agarra un nodo para cada componente:
 
 \begin{algorithm}[!h]
 \caption{AgregarArista} \label{ej_2:pseudo_agregar_arista}
