@@ -1,2 +1,23 @@
 \section{Ap\'endice: Entregable e instrucciones de compilacion y testing}
+\subsection{Estructura de directorios}
+\begin{itemize}
+	\item \textbf{ej1:} Contiene el codigo fuente en java del ejercicio 1, tanto como los scripts de compilacion nativa, testeo y graficacion, casos de tests, mediciones, y graficos.
+	\item \textbf{ej2:} Contiene el codigo fuente en C++ del ejercicio 2 y su Makefile para compilar.
+	\item \textbf{ej3:} Contiene el codigo fuente en java del ejercicio 3, tanto como los scripts de compilacion nativa, testeo y graficacion, casos de tests, mediciones y graficos.
+	\item \textbf{informe:} Contiene los fuentes de latex, imagenes y codigo relevante junto al pdf del informe 
+	\item \textbf{casos:}	Contiene el programa que genera los casos del ej2
+\end{itemize}
 
+\subsection{Compilacion y ejecucion}
+\begin{itemize}
+	\item \textbf{ej1:} Ejecutando ./compilacionNativa.sh se compila el programa, se crean y resuelven tests aleatorios tomando tiempos y se grafican en png los resultados.
+	\item \textbf{ej2:} utilizando el Makefile y corriendo el ejecutable.
+	\item \textbf{ej3:} Ejecutando ./compilacionNativa.sh se compila el programa, se crean y resuelven tests aleatorios tomando tiempos y se grafican en png los resultados.
+\end{itemize}
+
+\subsection{Generacion de tests aleatorios y toma de tiempos}
+\begin{itemize}
+	\item \textbf{ej1:} pasandole el parametro --take-time $<$cant\_repeticiones$>$ se repite la ejecucion cant\_repeticiones veces tomando tiempo promedio en microsegundos . --generate-tests $<$cards number$>$ $<$randMin$>$ $<$randMax$>$ genera casos aleatorios correspondientes y los arroja por stdout.
+	\item \textbf{ej2:} Utilizando el programa especifico en la carpeta casos.
+	\item \textbf{ej1:} pasandole el parametro --take-time $<$cant\_repeticiones$>$ se repite la ejecucion cant\_repeticiones veces tomando tiempo promedio en microsegundos . --generate-tests $<$dimension$>$ $<$powerUp inicial$>$ genera casos aleatorios correspondientes y los arroja por stdout.y graficos.
+\end{itemize}

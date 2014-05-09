@@ -1,7 +1,34 @@
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map.Entry;
+
+public class Nodo {
+	//posicion x en el grafo
+	private int x;
+	
+	//posicion y en el grafo
+	private int y;
+	
+	//posicion z en el grafo
+	private int level;
+
+	//...constructor, getters, setters, toString, hashCode, equals, etc...
+}
+
+
+public class NodoMetadata {
+	//predecesor en el grafo
+	private Nodo predecesor;
+	
+	// potencia del resorte
+	private int nodoValue;
+	
+	// flag para bfs
+	private boolean fueVisitado;
+	
+	// Lista de nodos adyacentes	
+	private List<Nodo> alcanzables;
+	
+	//...constructor, getters, setters, etc...	
+}
+
 /**
  * 
  * @author svilerino
@@ -101,24 +128,6 @@ public class Juego {
 				}
 			}			
 		}
-	}
-	
-	public String getGraphString(){		
-		StringBuilder sb = new StringBuilder();
-		sb.append("Grafo G:\nNodo v = potencia(v) | Adyacentes(v)\n");
-		for(Entry<Nodo, NodoMetadata> entry : graph.entrySet()){
-			NodoMetadata metadata = entry.getValue();
-			sb.append(entry.getKey());
-			sb.append(" = ");
-			sb.append(metadata.getNodoValue());
-			sb.append(" | ");
-			for(Nodo adyacente : metadata.getAlcanzables()){
-				sb.append(adyacente);
-				sb.append(" -> ");
-			}
-			sb.append(" Nil\n");
-		}		
-		return sb.toString();
 	}
 
 	/**
