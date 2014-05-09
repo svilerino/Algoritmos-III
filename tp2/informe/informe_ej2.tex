@@ -14,6 +14,8 @@ El algoritmo tiene que tener una complejidad de $O(n^2)$, con $n$ la cantidad de
 
 De a partir de ahora, $k$ va a ser siempre la cantidad de centrales distribuidoras disponibles, y $n$ la cantidad de ciudades.
 
+En todos los gr\'aficos se va a colocar una grilla donde cada casillero de la grilla representa una unidad de distancia.
+
 \subsubsection{Ejemplo}
 
 Como entrada podemos tener 6 ciudades y 2 centrales distribuidoras, como en la Figura \ref{ej_2:ej:entrada}, y la soluci\'on que se busca es como indica la Figura \ref{ej_2:ej:solucion}.
@@ -125,7 +127,9 @@ Demostraremos que teniendo un grafo completo, si aplicamos \emph{Kruskal} y deja
 
 	Si $a_i$ no generaba ciclos, entonces esa arista pertenece al resultado del algoritmo de \emph{Kruskal}, y como no se detuvo en $a_i$ significa que a\'un agregando esa arista (y todas las anteriores) no se llegaban a las $k$ componentes componentes conexas que se buscan, entonces no se puede sacar $a_j$ porque no se llegar\'ia a la cantidad de componentes conexas necesarias, contradiciendo que se puede quitar $a_j$ para mejorar la soluci\'on.
 
-	Si $a_i$ generaba un ciclo, entonces esa arista no pertenece al resultado del algoritmo. Notar que como $a_i$ se analiza antes que $a_j$ por tener menor peso, entonces $a_i$ generaba un ciclo cuando $a_j$ a\'un no estaba agregada. Si se quita $a_j$ y se agrega $a_i$, al quitar $a_j$ se aumenta en 1 la cantidad de componentes conexas (ahora tenemos $k + 1$) y no es soluci\'on, y al agregar $a_i$ se est\'a generando un ciclo, por lo que no disminuye la cantidad de componentes conexas, manteniendose en $k + 1$ y no es soluci\'on tampoco, por lo que contradice que se puede quitar $a_j$ para agregar $a_i$ y tener una mejor soluci\'on.
+	Si $a_i$ generaba un ciclo, entonces esa arista no pertenece al resultado del algoritmo. Notar que como $a_i$ se analiza antes que $a_j$ por tener menor peso, entonces $a_i$ generaba un ciclo cuando $a_j$ a\'un no estaba agregada. Si se quita $a_j$ y se agrega $a_i$, al quitar $a_j$ se aumenta en 1 la cantidad de componentes conexas (ahora tenemos $k + 1$) y no es soluci\'on porque no hay tantas centrales para poner en cada componente, y al agregar $a_i$ se est\'a generando un ciclo, por lo que no disminuye la cantidad de componentes conexas, manteniendose en $k + 1$ y no es soluci\'on tampoco, por lo que contradice que se puede quitar $a_j$ para agregar $a_i$ y tener una mejor soluci\'on.
+
+	Si se detuviera el algoritmo al obtener $k - 1$ componentes conexas, \'esta tendr\'ia 1 arista m\'as que si se tienen $k$ componentes conexas, y como se agregan en orden entonces esa arista nueva es mayor o igual que teniendo $k$ componentes, por lo que har\'ia de mayor peso la arista m\'as larga, no siendo \'optima la soluci\'on.
 
 	Entonces, agregar aristas en orden seg\'un su peso si no genera ciclos y parar cuando se alcanzan las $k$ componentes conexas, nos da como peso de la arista m\'as larga, el peso mas chico posible, siendo la soluci\'on que se busca del problema.
 
@@ -173,7 +177,20 @@ Como el $O(n*(n - k))$ est\'a acotado por $O(n^2)$ (cuando $k = 0$), entonces no
 
 Cumpliendo as\'i la complejidad requerida.
 
-%\subsection{Casos de prueba y resultado del programa} \label{ej_2:casos}
+\subsection{Casos de prueba y resultado del programa} \label{ej_2:casos}
+
+\subsubsection{Caso aleatorio}
+Para el caso aleatorio, se utiliza el programa descripto en la Secci\'on \ref{casos_de_prueba}. Se obtuvo una entrada con 10 ciudades dispuesta aleatoriamente en un espacio de 10 x 10, y con $k$ centrales, $k$ un valor aleatorio entre 1 y $10$
+
+Entrada: Figura \ref{ej_2:aleatorio}
+\input{ej_2_aleatorio}
+
+Soluci\'on: Figura \ref{ej_2:aleatorio:sol}
+\input{ej_2_aleatorio_sol}
+
+\subsubsection{Mejor caso}
+
+\subsubsection{Peor caso}
 
 \subsection{Mediciones de p\'erformance} \label{ej_2:performance}
 
