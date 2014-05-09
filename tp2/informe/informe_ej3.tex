@@ -84,14 +84,226 @@ A cada una de las celdas, las representamos con la clase $nodo$, que posee tres 
 
 \vspace{2mm}
 
-Representamos el grafo en memoria con una modificaci\'on del m\'etodo de listas de adyacencia. La estructura es un diccionario (java $HashMap$)
+Representamos el grafo en memoria con una modificaci\'on del m\'etodo de listas de adyacencia. La estructura es un diccionario (java $HashMap$) llamado graph, cuyas claves son los nodos y sus definiciones son el tipo $NodoMetadata$.
 
-\subsubsection{Algoritmo} \label{ej_3:algoritmo}
+\vspace{2mm}
+
+La clase $NodoMetadata$ brinda la informaci\'on necesaria de cada nodo para poder armar el grafo, ya que contiene el atributo $alcanzables$, que es su lista de adyacencia. Adem\'as de esto, posee tres atributos m\'as: $nodoValue$, $fueVisitado$ y $predecesor$, el primero representando la potencia del resorte de la celda, y los otros dos son de utilidad al bfs, para $"marcar"$ un nodo, e indicar su antecesor en el recorrido de \'este.
+
+\vspace{2mm}
+
+Finalmente tenemos una clase $Juego$ que unifica todo, cuyos atributos son un nodo inicial, un nodo destino, y el diccionario graph.
+
+
+
+\subsection{Algoritmo} \label{ej_3:algoritmo}
+
+A continuaci\'on mostramos un pseudoc\'odigo de la generaci\'on del juego, la complejidad indicada en cada paso ser\'a justificada m\'as adelante. 
+\vspace{2mm}
+\begin{algorithmic}[1]
+\Statex
+	\Procedure{Juego}{$int[\,][\,] valoresNodo, int powerupInicial, int filaInicial, int columnaInicial,  int filaDestino, int columnaDestino$}
+	\State $Juego.nodoInicial \gets new \: Nodo(filaInicial, columnaInicial, powerUpInicial)$
+	\Comment{$O(1)$}
+	\State $Juego.nodoDestino \gets new \: Nodo(filaDestino, columnaDestino, 0) $
+	\Comment{$O(1)$}
+	\State $Juego.graph \gets new \: HashMap<Nodo,\: NodoMetadata>()$
+	\Comment{$O(1)$}
+	\State $int \: dimension \gets longitud(valoresNodos)$
+	\Comment{$O(1)$}
+	\For{$int\:  level \gets powerUpInicial;\: level \geq 0;level--$}
+	\Comment{$O(powerUpInicial)$}
+		\For{$int \: i \gets 0;\: i\,<\,dimension;\:i++$}
+		\Comment{$O(dimension)$}
+			\For{$int  \:j\gets 0; \:j<dimension; \:j++$}	
+			\Comment{$O(dimension)$}
+				\State	$Nodo \: nodo\gets new \: Nodo(i,\: j,\: level)$
+				\Comment{$O(1)$}
+				\State	$int\: nodoValue \gets valoresNodos[i][j]$
+				\Comment{$O(1)$}
+				\State	$boolean \:fueVisitado \gets false$
+				\Comment{$O(1)$}
+				\State	$List<Nodo>:, alcanzables \gets calcularAlcanzables(nodo,\, nodoValue,\, dimension)$
+				\Comment{$O(dimension)$}
+				\State	$NodoMetadata \: metaData \gets new\: NodoMetadata(nodoValue,\: fueVisitado,\: alcanzables,\: null)$
+				\Comment{$O(1)$}
+				\State	$graph.put(nodo,\: metaData)$
+				\Comment{$O(1)$}
+			\EndFor
+		\EndFor
+	\EndFor
+
+\EndProcedure
+\Statex
+\end{algorithmic}
+\vspace{2mm}
+Funci\'on auxiliar que para un nodo calcula sus nodos alcanzables. La salida del algoritmo es del tipo $Lista<Nodo>$.
+\vspace{2mm}
+\begin{algorithmic}[1]
+\Procedure{calcularAlcanzables}{$Nodo\: nodo,\:int\: valorNodo,\: int \:dimensionMatriz$}
+		\State $int\: nivelActual\: =\: nodo.getLevel()$
+		\Comment{$O(1)$}
+		\State $int\: actualX\: =\: nodo.getX()$
+		\Comment{$O(1)$}
+		\State $int\: actualY\: =\: nodo.getY()$
+		\Comment{$O(1)$}
+		\State $int\: potencia\: =\: valorNodo$
+		\Comment{$O(1)$ Recordar que el nivel del nodo es la cantidad de potencias}
+		\State $Lista<Nodo>\: alcanzables\: =\: new\: Lista<Nodo>$
+		\Comment{$O(1)$}
+		\For{$int\: j \gets -potencia;\:j\leq potencia;\:j++$}
+		\Comment{$O(potencia)\: acotado \: por \: O(dimension)$}
+			\If{$validarBordes(dimensionMatriz,\: actualX,\: j)$}
+			\Comment{$O(1)$}
+				\State $Nodo\: alcanzableDirecto\gets new\: Nodo(actualX\: +\: j,\: actualY, \:nivelActual)$
+				\Comment{$O(1)$}
+				\State $alcanzables.agregar(alcanzableDirecto)$
+				\Comment{$O(1)$}
+			\EndIf
+				
+			\If{$validarBordes(dimensionMatriz,\: actualY,\: j)$}
+			\Comment{$O(1)$}
+				\State $Nodo\: alcanzableDirecto \gets new \:Nodo(actualX, \:actualY\: + \:j, \:nivelActual)$
+				\Comment{$O(1)$}
+				\State $alcanzables.agregar(alcanzableDirecto);$
+				\Comment{$O(1)$}
+			\EndIf
+		\EndFor
+
+		\For{$int\: potenciasSumadas\gets 1;\:potenciasSumadas+\leq nivelActual;\:potenciasSumadas++$}
+			\Comment{$I dont know$}
+			\State $int\: potenciaTotal \gets potencia\: +\: potenciasSumadas; $
+			\If{$validarBordes(dimensionMatriz, \:actualY,\: potenciaTotal)$}
+			\Comment{$O(1)$}
+				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX,\: actualY +\: potenciaTotal, \:nivelActual - \:potenciasSumadas)$
+				\Comment{$O(1)$}
+				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\Comment{$O(1)$}
+			\EndIf
+
+			\If{$validarBordes(dimensionMatriz, \:actualY,\: -potenciaTotal)$}
+			\Comment{$O(1)$}
+				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX,\: actualY -\: potenciaTotal, \:nivelActual - \:potenciasSumadas)$
+				\Comment{$O(1)$}
+				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\Comment{$O(1)$}
+			\EndIf
+
+			\If{$validarBordes(dimensionMatriz, \:actualX,\: potenciaTotal)$}
+			\Comment{$O(1)$}
+				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX  +\: potenciaTotal,\: actualY, \:nivelActual - \:potenciasSumadas)$
+				\Comment{$O(1)$}
+				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\Comment{$O(1)$}
+			\EndIf
+
+			\If{$validarBordes(dimensionMatriz, \:actualX,\: -potenciaTotal)$}
+			\Comment{$O(1)$}
+				\State $Nodo\: alcanzableIndirecto = new\: Nodo(actualX  -\: potenciaTotal,\: actualY, \:nivelActual - \:potenciasSumadas)$
+				\Comment{$O(1)$}
+				\State $alcanzables.agregar(alcanzableIndirecto)$
+				\Comment{$O(1)$}
+			\EndIf
+
+		\EndFor	
+		\State $return alcanzables$
+		\Comment{$O(1)$}
+\vspace{2mm}
+\EndProcedure
+\end{algorithmic}
+
+%\vspace{2mm}
+A continuaci\'on el pseudoc\'odigo de la b\'usqueda BFS. Se trata de una modificacion de BFS que busca un camino entre el nodo inicial y alguno de los nodos destino, sin importar a qu\'e nivel pertenezcan, es decir, cuando la b\'usqueda encuentra un nodo w tal que las primeras 2 coordenadas de w coinciden con la celda destino, termina el algoritmo. Acto seguido reconstruye el camino en base a los predecesores, que se van guardando a medida que se realiza la expansion en anchura. Teniendo en cuenta que BFS encuentra el camino mas corto en cantidad de aristas entre 2 nodos, esto resuelve nuestro problema. La salida es una lista de nodos que comprende el camino, indicando en cada paso: (posX, posY, gasto de PowerUp en el salto del predecesor de este nodo al actual).
+
+\vspace{2mm}
+\begin{algorithmic}[1]
+\Procedure{caminoMinimo}{$Juego j$}{$List<Nodo>$}
+
+	\State$Cola<Nodo>\: cola \gets new \:Cola<Nodo>$
+	\Comment{$O(1)$}
+	\State$cola.encolar(nodoInicial)$
+	\Comment{$O(1)$}
+	\State$marcarVisitado(nodoInicial)$
+	\Comment{$O(1)$}
+	
+	\While{$\neg cola.esVacia()$}
+	\Comment{$O(dimension*dimension)$}
+		\State $Nodo \:actual \gets cola.desencolar()$
+		\Comment{$O(1)$}
+		\If{$esDestino(actual)$}
+		\Comment{$O(1)$}
+			\State $return construirCaminoConPredecesores(actual)$
+			\Comment{$O(dimension*dimension)$}
+
+		\EndIf
+			
+		\State $Lista<Nodo> \: alcanzables \gets obtenerAlcanzables(actual)$
+		\Comment{$O(dimension*dimension)$}
+		\ForAll{$Nodo\: alcanzable : alcanzables$}
+		\Comment{$O(dimension*dimension)$}
+			\If{$\neg estaVisitado(alcanzable)$}
+			\Comment				
+				\State$marcarVisitado(alcanzable)$
+				\Comment{$O(1)$}
+				\State$	asignarPredecesor(alcanzable,\: actual)$
+				\Comment{$O(1)$}
+				\State$	cola.encolar(alcanzable)$	
+				\Comment{$O(1)$}			
+			\EndIf
+			
+		\EndFor
+		\EndWhile
+		\State $return\: null$
+		\Comment{$O(1)$}
+
+\EndProcedure
+\end{algorithmic}
+\vspace{2mm}
+Finalmente, el pseudoc\'odigo de la funci\'on que genera el camino a partir del recorrido que realiz\'o el BFS. La salida del algoritmo es del tipo $Lista<Nodo>$.
+\vspace{2mm}
+\begin{algorithmic}[1]
+\Procedure{construirCaminoConPredecesores}{$Nodo \: actual$}
+
+
+		\State $Lista<Nodo>\: camino \gets new\: Lista<Nodo>$
+		\Comment{$O(1)$}	
+		\State $Nodo\: nodo \gets actual$
+		\Comment{$O(1)$}	
+		\While{$damePredecesor(nodo) != null)$}
+		\Comment{$O(dimension)$}	
+			\State $Nodo\: predecesor \gets damePredecesor(nodo)$
+			\Comment{$O(1)$}	
+			\State $nodo.nivel \gets predecesor.nivel()\: -\: nodo.nivel()$
+			\Comment{$O(1)$}	
+			\State $camino.agregarAdelante(nodo)$
+			\Comment{$O(1)$}	
+			\State $nodo \gets predecesor$
+			\Comment{$O(1)$}	
+
+		\EndWhile
+
+		\State $nodo.setLevel(0)$
+		\Comment{$O(1)$}	
+		\State $camino.agregarAdelante(nodo)$
+		\Comment{$O(1)$}	
+		\State $return\: camino$
+		\Comment{$O(1)$}	
+		
+\EndProcedure
+\end{algorithmic}
 
 
 \subsection{Cota de complejidad} \label{ej_3:cota}
 
+
+
 \subsection{Casos de prueba y resultado del programa} \label{ej_3:casos}
+
+Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
+
+\vspace{2mm}
+
+Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $R$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$.
 
 \subsection{Mediciones de performance} \label{ej_3:performance}
 
