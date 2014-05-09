@@ -34,10 +34,13 @@ Una idea que se propone es comenzar con todos los nodos sueltos, sin ninguna ari
 y calcular todas las distancias entre todos los nodos, es decir, calcular todas las tuber\'ias posibles con sus respectivas distancias.
 Luego se ordenar\'an las aristas (tuber\'ias) de menor a mayor de acuerdo a sus longitudes.
 Se calcula si la cantidad de componentes conexas es menor o igual a $k$, si es as\'i, entonces el algoritmo termina, sino coloca la tuber\'ia m\'as corta que no genere un ciclo y contin\'ua preguntando sobre la cantidad de componentes conexas e iterando sobre las aristas siguiendo el orden de menor a mayor.
-Es parecido al algoritmo de \emph{Kruskal}.
+B\'asicamente es aplicar \emph{Kruskal} sobre un grafo completo.
 
-Para mejorar la complejidad del algoritmo, en vez de calcular la distancia de todos las aristas e iterar sobre todas las aristas, requiriendo ordenar por peso \emph{todas} las aristas, primero creamos un \'arbol generador m\'inimo (con las aristas m\'as cortas posibles), con una idea como el algoritmo de Prim y que tenga de cota $O(n^2)$,
-qued\'andonos $n - 1$ aristas, y luego, al igual que antes, se ordenan y se recorren esas $n - 1$ aristas de menor a mayor.
+Como se requiere tener todas las aristas ordenadas por peso, en un grafo completo tenemos $n(n-1)/2$ aristas, dandonos una complejidad de al menos $O(n^2 \log n^2)$, y no cumple con el requerimiento.
+Para mejorar la complejidad del algoritmo, en vez de calcular la distancia de todos las aristas e iterar sobre todas las aristas, requiriendo ordenar por peso \emph{todas} las aristas, primero creamos un \'arbol generador m\'inimo (con las aristas m\'as cortas posibles), con una idea como el algoritmo de \emph{Prim} y que tenga de cota $O(n^2)$,
+el \'arbol generador m\'inimo generado nos queda $n - 1$ aristas, y luego, al igual que antes, se ordenan y se recorren esas $n - 1$ aristas de menor a mayor.
+
+En resumen, la idea es partir de un grafo completo con $n$ nodos, aplicar \emph{Prim} y obtener el \emph{AGM}, luego sobre ese \'arbol aplicar \emph{Kruskal} pero cortando el algoritmo cuando se tienen tantas componentes conexas como $k$ centrales de gas. La colocaci\'on de las centrales de gas se colocan luego en un nodo cualquiera de los nodos de cada componente conexa.
 
 En la secci\'on \ref{ej_2:algoritmo} se propone un pseudoc\'odigo, en la secci\'on \ref{ej_2:ejemplo} se ver\'a un ejemplo de ejecuci\'on del algoritmo,
 en la secci\'on \ref{ej_2:justificacion} se justificar\'a la correctitud, y en la secci\'on \ref{ej_2:cota} se har\'a el c\'alculo de la complejidad del algoritmo.
@@ -50,84 +53,84 @@ en la secci\'on \ref{ej_2:justificacion} se justificar\'a la correctitud, y en l
 
 \subsection{Justificaci\'on del procedimiento} \label{ej_2:justificacion}
 
+Para la justificaci\'on vamos a justificar primero que si se aplica el algoritmo de \emph{Kruskal} sobre el \emph{AGM} generado por el algoritmo de \emph{Prim} dado un grafo completo, entonces llegamos a un grafo con pesos de aristas iguales que aplicar \emph{Kruskal} sobre el grafo completo directamente, aunque puede tener aristas diferentes de igual peso. Como tienen los mismos pesos aunque las arisas sean diferentes, a efectos de minimizar el peso de la arista de mayor peso da el mismo resultado. (Secci\'on \ref{ej_2:demo:k}).
 
-%El Algoritmo \ref{ej_2:pseudo} se puede dividir en 4 partes. Primero de la l\'inea \ref{ej_2:pseudo:inicializa} a \ref{ej_2:pseudo:fin_inicializa} inicializa variables,
-%luego de la l\'inea \ref{ej_2:pseudo:crea_arbol} a \ref{ej_2:pseudo:fin_crea_arbol} crea un \'arbol generador que la arista de mayor peso sea la menor posible,
-%en la l\'inea \ref{ej_2:pseudo:sort} se ordenan las aristas del \'arbol del paso anterior,
-%y entre \ref{ej_2:pseudo:componentes} y \ref{ej_2:pseudo:fin_componentes} se busca encontrar la soluci\'on con la arista m\'as corta posible.
-%
-%C\'omo se explic\'o en la Secci\'on \ref{ej_2:idea}, la idea del algoritmo es buscar el \'arbol con un algoritmo como Prim y luego agregar de a una las aristas de dicho \'arbol en orden de menor peso hasta encontrar la soluci\'on al problema.
-%
-%Vamos a demostrar que el algoritmo genera un \'arbol generador que minimiza el peso de las aristas (Secci\'on \ref{ej_2:demo:arbol}, y que a partir de las aristas del \'arbol se genera la soluci\'on al problema:
-%que haya como m\'axio $k$ componentes conexas y que las aristas sean las m\'as cortas posibles (Secci\'on \ref{ej_2:demo:solucion})
-%
-%\subsubsection{Obtener el \'arbol} \label{ej_2:demo:arbol}
-%
-%La entrada que se tiene del problema es una cantidad de ciudades ($n$ nodos), las cuales pueden ser conectadas cualquier ciudad con cualquier ciudad, por lo que la entrada es un grafo completo de $n$ nodos.
-%Cada arista tiene un peso, y dicho peso es el que se quiere minimizar, pero el peso de las aristas (la longitud de la tuber\'ia) depende de los nodos que conecta, y no se requiere informaci\'on extra,
-%s\'olo con los 2 nodos que conecta la arista se sabe su peso (la distancia entre los nodos)
-%
-%El Algoritmo \ref{ej_2:pseudo} desde la l\'inea \ref{ej_2:pseudo:inicializa} a \ref{ej_2:pseudo:fin_crea_arbol} obtiene las aristas de longitud m\'inima para obtener el \'arbol generador, colocandolas en el vector \emph{aristas}.
-%
-%Los pasos del algoritmo son:
-%\begin{enumerate}
-%	\item Agarra el primer nodo del grafo y lo agrega al \'arbol que va a generar, llamemoslo $T$ (L\'inea \ref{ej_2:pseudo:inicializa})
-%	\item Calcula todas las distancias del resto de los nodos hacia el primer nodo (L\'ineas \ref{ej_2:pseudo:distancia} a \ref{ej_2:pseudo:fin_inicializa})
-%	\item Recorre la lista de nodos $n - 1$ veces
-%	\begin{enumerate}
-%		\item Busca el nodo que no pertenezca a $T$ y que tenga la distancia m\'as chica hacia el \'arbol $T$, llamemoslo $v$ (L\'ineas \ref{ej_2:pseudo:mas_cerca} a \ref{ej_2:pseudo:fin_mas_cerca})
-%		\item Agrega $v$ al \'arbol $T$ con arista que va desde $v$ hacia el nodo m\'as cercano de $v$ que ya pertenec\'ia a $T$ (L\'ineas \ref{ej_2:pseudo:nodo} y \ref{ej_2:pseudo:arista})
-%		\item A los nodos que a\'un no fueron agregados a $T$, le recalcula la distancia hacia el \'arbol $T$ (L\'ineas \ref{ej_2:pseudo:actualiza} a \ref{ej_2:pseudo:fin_actualiza})
-%	\end{enumerate}
-%\end{enumerate}
-%
-%\begin{proof}[Demostraci\'on: Los pasos anteriores crean un \'arbol]
-%
-%El \'arbol que queremos encontrar, $T$, por definici\'on es conexo y tiene $n - 1$ aristas.
-%
-%El algoritmo divide los nodos en 2 grupos, los agregados a $T$ que son nodos con alguna arista que lo conecta a otro nodo, y los que faltan agregar que son nodos sueltos de grado 0 (llamemoslos $V$) ($T$ y $V$ contienen nodos diferentes), cada vez que agrega una arista, est\'a uniendo un nodo $v \in T$ con un nodo $v' \in V$, sacando $v'$ de $V$ y agreg\'andolo a $T$.
-%Como siempre une con una arista con un extremo un nodo que esta en $T$ (que ya est\'a unido a otro nodo en $T$) y en el otro extremo un nodo que est\'a en $V$ y no en $T$ y no es adyacente a ning\'un nodo, entonces $T$ es conexo porque todos los nodos \'estan conectados a $T$ mediante una arista al finalizar la iteraci\'on.
-%Como agrega $n - 1$ aristas (L\'inea \ref{ej_2:pseudo:arista}), entonces $T$ es un grafo conexo con $n - 1$ aristas, es decir, un \emph{\'arbol}
-%\end{proof}
-%
-%\begin{proof}[Demostraci\'on: El \'arbol anterior tiene el menor peso]
-%En cada paso en que se agrega una nueva arista con un nuevo nodo, el algoritmo busca el nodo m\'as cercano al \'arbol $T$ que se est\'a armando y actualiza las distancias hacia $T$ del resto de los nodos qued\'andose con el m\'inimo entre la distancia vieja a $T$ y la distancia hacia el nuevo nodo que se agreg\'o.
-%La distancia a $T$ es el peso de la arista de menor peso que une al nodo con algun nodo de $T$.
-%En el algoritmo la distancia de un nodo a $T$ comienza siendo la distancia hacia el \'unico nodo que tiene $T$.
-%
-%Pruebo que al agregar un nuevo nodo, la distancia a $T$ va a ser la menor entre la vieja distancia a $T$ y la distancia al nuevo nodo que se agreg\'o:
-%
-%Siendo $d$ la distancia entre un nodo $m$ hacia $T$, significa que hay un nodo $v$ en $T$ tal que:
-%\begin{equation}
-%	d = distancia(m,T) \equiv
-%	(\exists v \in T) (distancia(m,v) = d \land (\forall v' \in T) d <= distancia(m,v')) \label{ej_2:demo:d}
-%\end{equation}
-%Al agregar un nuevo nodo $w$ a $T$, sucede que las distancias viejas no cambian:
-%\begin{equation*}
-%	(\forall v' \in (T - w)) d <= distancia(m,v')
-%\end{equation*}
-%Por lo que al agregar $w$ lo que puede pasar es que $d <= distancia(m,w)$ ( en tal caso sigue valiendo la Equaci\'on \ref{ej_2:demo:d} con $w$ agregado a $T$),
-%o puede ser que $d > distancia(m,w)$, entonces en ese caso para que siga valiendo la Equaci\'on \ref{ej_2:demo:d} la distancia hacia $T$ tiene que ser la distancia desde $m$ a $w$.
-%Es decir, la distancia a $T$ al agregar un nuevo nodo es la menor entre la distancia vieja y la distancia hacia el nuevo nodo.
-%
-%El algoritmo en cada paso tiene componentes conexas, por un lado $T$ (el \'arbol que est\'a construyendo) y por otro lado cada uno de los nodos que a\'un no est\'an en $T$.
-%Pruebo que teniendo una componente conexa $T$ y varios nodos sueltos, si se agregan los nodos a $T$ en orden de menor distancia entre nodo y $T$, se tiene un \'arbol con las aristas de menor peso posible:
-%
-%%Sea $T$ el \'arbol ya armado y $T'$ un momento en la iteraci\'on del algoritmo mientras se arma el \'arbol, $T'$ comienza con 1 nodo, y se tiene que agregar aristas para conectarlo con los nodos que a\'un no est\'an en $T'$ para formar $T$,
-%%entonces en un instante del armado del \'arbol busco el nodo que tenga la menor distancia a $T'$ (lo llamo $v$) y lo uno mediante la arista $e$ al nodo m\'as cercano dentro de $T'$ (lo llamo $w$).
-%%Ahora supongo que existe un mejor \'arbol $A$ tal que llega al mismo paso que $T'$ que $v$ no est\'a en $T'$ y es el m\'as cercano (es decir, $T'$ es subgrafo de $A$ y de $T$) pero no conecto $v$ con $T'$ mediante la arista $e$ (es decir, $v$ con $w$) por lo que $v$ estar\'a conectado a otro nodo en el \'arbol $A$ (porque el \'arbol es conexo) con una arista $e'$ tal que $distancia(e') < distancia(e), e' \in A, e \in T$ haciendo que al finalizar el \'arbol $T$ no minimize la mayor distancia pero $A$ si.
-%%Como en $A$, $T'$ no lo conecto con $v$, entonces se tiene que conectar a otro nodo mediante una arista $a, a \in A$. Como el nodo $e$ en $T$ se hab\'ia elegido como el nodo m\'as cercano a $T'$, entonces $a$ no es el m\'as cercano y $distancia(a) > distancia(e)$, por lo que $distancia(e') < distancia(e) < distancia(a)$, como $e \notin A$ y $a \in A$ y $e' \in A$, entonces $A$ tiene una arista ($a$) con mayor distancia que la que tiene $T$, lo que contradice la suposici\'on de que $A$ sea el que minimize la distancia en vez de $T$.
-%\end{proof}
-%
-%\subsubsection{Soluci\'on al problema} \label{ej_2:demo:solucion}
-%Teniendo ya un \'arbol $T$ que contiene las aristas m\'as cortas posible, queremos armar $S$ tal que sea la soluci\'on al problema (que contenga $k$ componentes conexas como m\'aximo y que la mayor distancia sea la menor posible).
-%
-%\begin{proof}
-%
-%Luego de armar $T$, lo que se hace es ordenar las aristas de $T$ de menor a mayor seg\'un su peso (L\'inea \ref{ej_2:pseudo:sort}) y se agregan de a 1 y en cada paso se est\'a disminuyendo en 1 la cantidad de componentes conexas (porque en el \'arbol no hay ciclos)
-%hasta tener $k$ componentes conexas. Como se agregan en orden de menor peso a mayor, las aristas que no se agregaron a $S$ son todas de mayor peso que las que s\'i est\'an en $S$. Suponemos entonces que se quitase la arista de mayor peso de $S$ (llamada $v$) para que
-%tener la soluci\'on $S'$ tenga como mayor peso una arista m\'as corta, como $S$ no tiene ciclos (por ser subgrafo del \'arbol $T$) entonces al quitar $v$ se aumentar\'a en 1 la cantidad de componentes conexas, haciendo que sea mayor a $k$, y como no es soluci\'on se necesitar\'a colocar otra arista que no est\'e en $S$ y que no sea $v$ (porque $v$ se sac\'o para mejorar la soluci\'on), y como todas las aristas que no est\'an en $S$ son de mayor peso que las que s\'i, entonces quidando $v$ se tiene que agregar una arista de mayor peso que $v$ a $S$, haciendo que $S'$ tenga la arista m\'as larga, m\'as larga que la que ten\'ia $S$ ($v$) (valga la redundancia), contradiciendo la suposici\'on de agregando las aristas en orden y que quitando la arista m\'as larga de $S$, se obtiene un $S'$ que es mejor soluci\'on.
-%\end{proof}
+Luego vamos a justificar que aplicando el algoritmo de \emph{Kruskal} sobre un grafo completo pero cortando cuando tenemos $K$ componentes conexas, nos genera la soluci\'on que buscamos (Secci\'on \ref{ej_2:demo:p}).
+
+Teniendo demostrado esos 2 puntos, entonces aplicar \emph{Kruskal} a un grafo completo nos da la soluci\'on que buscamos y aplicar \emph{Kruskal} al resultado \emph{Prim} (que es lo que realiza el algoritmo propuesto) nos da el mismo resultado que aplicar \emph{Kruskal} directamente, siendo la soluci\'on buscada.
+
+\subsubsection{Demostraci\'on de Kruskal sobre Prim} \label{ej_2:demo:k}
+
+Demostraremos que aplicar el algoritmo de \emph{Kruskal} sobre un grafo completo da aristas con los mismos pesos que aplicar \emph{Kruskal} sobre el \emph{AGM} resultante del algoritmo de \emph{Prim}. Como el problema pone restricci\'on sobre el peso de las aristas (de las tuber\'ias), entonces nos fijaremos que las aristas del resultado pueden ser diferentes pero si se mira s\'olo los pesos de las aristas, estos son los mismos.
+
+\begin{proof}
+	Un \emph{AGM} de un grafo tiene como suma de los pesos de sus aristas, la menor suma posible de todos los \'arboles de un grafo. Si se aplica \emph{Prim} y \emph{Kruskal} a un mismo grafo (un grafo completo por ejemplo), ambos dan un \emph{AGM} como resultado, por ende el peso del \'arbol generado por \emph{Prim} del grafo g ($P_p(g)$) es igual al peso del que genera \emph{Kruskal} ($P_k(g)$), si no fueran iguales, el que tiene mayor peso no ser\'ia un \emph{AGM}. Como \'ambos son \'arboles del mismo grafo, ambos tienen $n-1$ aristas ($n = $ cantidad de nodos del grafo).
+
+	\begin{equation*}
+	\begin{split}
+		P_p(g) = \sum_{i = 0}^{i < n - 1} \pi(a_i)\\
+		=\\
+		P_k(g) = \sum_{i = 0}^{i < n - 1} \pi(a_i)
+	\end{split}
+	\end{equation*}
+
+Como \emph{Prim} y \emph{Kruskal} son 2 algoritmos diferentes, podr\'ian generar un \'arbol con diferentes aristas pero igual mantienen la igualdad en la suma de los pesos y la cantidad de aristas.
+
+Supongamos que un algoritmo pone las mismas aristas que el otro pero en vez de poner la arista $a$ pone la arista $a'$ con distinto peso, entonces tambi\'en tiene que haber cambiado otra arista $b$ por $b'$ para mantener la igualdad de la suma. Supongamos que tenemos todas las aristas $a_i$ del \emph{AGM} y las ordenamos de menor a mayor y de la arista $a_0$ a $a_{j-1}$ y de $a_j+2$ a $a_{n-2}$ las aristas son las mmismas para ambos algoritmos pero $a_j$ y $a_{j+2}$ son diferentes, entonces:
+
+	\begin{equation*}
+	\begin{split}
+		P_p(g) = \sum_{i = 0}^{i < j} \pi(a_i) + \pi(a') + \pi(b') + \sum_{i = j + 2}^{i < n - 1} \pi(a_i) \\
+		=\\
+		P_k(g) = \sum_{i = 0}^{i < j} \pi(a_i) + \pi(a) + \pi(b) + \sum_{i = j + 2}^{i < n - 1} \pi(a_i)
+	\end{split}
+	\end{equation*}
+
+Simplificamos la igualdad de las suma, nos queda:
+
+	\begin{equation*}
+	\begin{split}
+		\pi(a') + \pi(b') \\
+		=\\
+		\pi(a) + \pi(b)
+	\end{split}
+	\end{equation*}
+
+	Como dijimos que el peso de $a'$ es distinto de $a$, podemos suponer que $\pi(a) > \pi(a')$ y por lo tanto $\pi(b) < \pi(b')$ (se puede suponer tambi\'en lo contrario y ser\'ia an\'alogo). \emph{Prim} entonces hubiera agregado $a'$ con menor peso que $a$, pero como \emph{Kruskal} recorre las aristas de menor a mayor peso, ya tendr\'ia que haber pasado por $a'$, y como las aristas anteriores a $a'$ son las mismas en ambos algoritmos, agregar $a'$ no genera ciclos, entonces \emph{Kruskal} hubiera agregado a $a'$, entonces $\pi(a') = \pi(a)$ porque $a' = a$. A\'un quedar\'ia $\pi(b') \neq \pi(b)$, pero como todas las dem\'as aristas son las mismas (incluidas $a'$ y $a$), entonces para mantener la igualdad de la suma $\pi(b') = \pi(b)$, contradiciendo la suposci\'on que un algoritmo cambiaria una arista por otra con peso dinstinto.
+
+	Si cambia una arista por otra de igual peso, no modifica la soluci\'on porque el peso de la arista de mayor peso seguir\'ia siendo el mismo.
+
+	Como aplicar \emph{Kruskal} a un \'arbol da el mismo \'arbol (porque es el \'unico subgrafo que es un \'arbol), aplicar \emph{Kruskal} al resultado de \emph{Prim} da el mismo resultado que aplicar directamente \emph{Prim}, y ya demostramos que aplicar \emph{Prim} y \emph{Kruskal} dan \'arboles con mismos pesos de aristas, por lo que aplicar \emph{Kruskal} directamente o aplicar \emph{Kruskal} a la salida de \emph{Prim}, da \'arboles con los mismos pesos de aristas.
+
+\end{proof}
+
+\subsubsection{Demostraci\'on de que aplicar Kruskal nos genera la soluci\'on} \label{ej_2:demo:p}
+
+Demostraremos que teniendo un grafo completo, si aplicamos \emph{Kruskal} y dejamos de agregar aristas cuando llegamos a $k$ componentes conzas, tenemos la soluci\'on que buscamos:
+
+\begin{proof}
+	El algoritmo de \emph{Kruskal} ordena las aristas de menor a mayor seg\'un su peso, y agrega 1 a 1 las aristas seg\'un dicho orden tal que no genere un ciclo. Al agregar una arista se disminuye en 1.  Nosotros detendremos el algoritmo cuando se llego a $k$ componentes conezas.
+	Supongamos que tenemos $m$ aristas ordenadas de menor a mayor por su peso, ($a_0, a_1 .. a_i .. a_{m-1}$), que se fueron agregando (aunque algunas generaban ciclos y no se agregaron), y que detuvimos el algoritmo de \emph{Kruskal} al agregar la arista $a_j$ porque se llegaron a $k$ componentes conexas. Entonces, como las aristas estaban ordenadas:
+	\begin{equation*}
+	\begin{split}
+		(\forall 0 \leq i < j) a_i \leq a_j \\
+		\land \\
+		(\forall j < i < m) a_i \geq a_j \\
+	\end{split}
+	\end{equation*}
+	Todos los $a_i, i < j$ est\'an agregados al resultado de \emph{Kruskal}.
+
+	El $a_j$ es la arista de mayor peso (la tuber\'ia m\'as larga), y es la que queremos minimiza.
+
+	Si existiese una mejor forma de armar las componentes conexas, entonces existe un $a_i, a_i < a_j \implies i < j$, tal que se puede reemplazar $a_i$ por $a_j$ y as\'i terner la arista de mayor peso que es de menor peso que la que obtuvimos. Como $i < j$, \emph{Kruskal} ya la analiz\'o $a_i$ antes de pasar por $a_j$.
+
+	Si $a_i$ no generaba ciclos, entonces esa arista pertenece al resultado del algoritmo, y como no se detuvo en $a_i$ significa que a\'un agregando esa arista (y todas las anteriores) no se llegaban a las $k$ componentes componentes conexas que se buscan, entonces no se puede sacar $a_j$ porque no se llegar\'ia a la cantidad de componentes conexas necesarias, contradiciendo que se puede quitar $a_j$ para mejorar la soluci\'on.
+
+	Si $a_i$ generaba un ciclo, entonces esa arista no pertenece al resultado del algoritmo. Notar que como $a_i$ se analiza antes que $a_j$ por tener menor peso, entonces $a_i$ generaba un ciclo cuando $a_j$ a\'un no estaba agregada. Si se quita $a_j$ y se agrega $a_i$, al quitar $a_j$ se aumenta en 1 la cantidad de componentes conexas (ahora tenemos $k + 1$) y no es soluci\'on, y al agregar $a_i$ se est\'a generando un ciclo, por lo que no disminuye la cantidad de componentes conexas, manteniendose en $k + 1$ y no es soluci\'on tampoco, por lo que contradice que se puede quitar $a_j$ para agregar $a_i$ y tener una mejor soluci\'on.
+
+	Entonces, agregar aristas en orden seg\'un su peso si no genera ciclos y parar cuando se alcanzan las $k$ componentes conexas, nos da como peso de la arista m\'as larga, el peso mas chico posible, siendo la soluci\'on que se busca del problema.
+
+\end{proof}
 
 \subsection{Cota de complejidad} \label{ej_2:cota}
 
