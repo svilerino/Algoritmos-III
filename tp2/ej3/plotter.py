@@ -1,3 +1,4 @@
+import numpy as np
 import matplotlib.pyplot as plt
 import sys
 import math
@@ -55,35 +56,20 @@ else:
 			plt.title("(x, f(x)/pow(n, 3))")
 			#plt.show()
 			plt.savefig(outputFilePath + "over_ncube.png")
+		else: 
+			if(graphictype == 3):
+				xData = ["Mejor caso", "Caso promedio", "Peor caso"]
+				fig = plt.figure()
+				width = .35
+				ind = np.arange(len(graphic_fx))
+				plt.bar(ind, graphic_fx)
+				plt.xticks(ind + width / 2, xData)
 
-#X = []
-#Y = []
-#Z = []
-#for line in dataFile:
-#	point_x = float(line.split()[0])
-#	point_y = float(line.split()[1])
-#	point_z = float(line.split()[2])
-#	X.append(point_x)
-#	Y.append(point_y)
-#	Z.append(point_z)
-#print X
-#print Y
-#print Z
-##3d plotting
-#
-#fig = plt.figure()
-#ax = fig.gca(projection='3d')
-#X, Y = np.meshgrid(X, Y)
-#surf = ax.plot_surface(X, Y, Z, rstride=1, cstride=1, cmap=cm.coolwarm,
-#        linewidth=0, antialiased=True)
-#ax.zaxis.set_major_locator(LinearLocator(10))
-#ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-#
-#ax.view_init(25, 70)
-#
-#fig.tight_layout()
-#
-#fig.colorbar(surf, shrink=0.5, aspect=5)
-#
-##plt.show()
-#plt.savefig(outputFilePath)
+				plt.xlabel('Casos', fontsize=14)
+				plt.ylabel('Microsegundos transcurridos', fontsize=14)
+				plt.title("Tabla comparativa de casos")
+
+				fig.autofmt_xdate()
+
+				plt.savefig(outputFilePath + "histogram.png")
+				
