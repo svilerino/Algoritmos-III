@@ -1,24 +1,3 @@
-%\documentclass{article}
-%
-%\usepackage [spanish] {babel} 
-%\usepackage [T1]{fontenc}
-%\usepackage [latin1]{inputenc}
-%\usepackage{amsthm}
-%%\usepackage{algorithmic}
-%\usepackage{algorithm}
-%\usepackage{algpseudocode}
-%\usepackage{graphicx}
-%\usepackage{epstopdf}
-%
-%\title{TP2 Ej.1 Descripci\'on del algoritmo} 
-%\author{Mat\'ias Chapresto \\ Nicol\'as Dato \\ Ezequiel Fattori \\ Silvio Vileri\~no}
-%\newtheorem{Ejemplo}{Ejemplo}
-%%\renewcommand{\algorithmicprint}{\textbf{function}}
-%
-%\begin{document}
-%
-%\maketitle
-
 \subsection{Descripci\'on del problema}
 El problema consiste en modelar un juego de roban\'umeros en el cual ambos jugadores juegan empleando la estrategia \'optima. El juego consiste en una serie de cartas con valores enteros que los jugadores deben ir robando por turnos. Solo se puede robar una serie de cartas que sean contiguas y que comiencen por alguno de los extremos. El jugador que obtenga una suma mayor gana.
 El algoritmo debe calcular, a partir de una tanda de cartas, como van a ser las jugadas de ambos jugadores en cada turno, suponiendo que ambos jugadores juegan de "forma \'optima", es decir, de manera de maximizar la diferencia final a favor suponiendo que el contrincante har\'a lo mismo cuando sea su turno.
@@ -38,11 +17,10 @@ Se llamar\'a $ A_{i}$ a la tira de n\'umeros inicial, con la que el juego comien
 Se definen las siguientes funciones:\\
 $$S(i,j)=\sum_{i \le k \le j} A_{k}$$
 $$P(i,j,h)= p1 - p2$$
-Donde $p1$ y $p2$ son los puntajes sumados por los jugadores 1 y 2 respectivamente, luego de jugar \'optimamente la subinstancia dada por la subtira $A_{k} ; i \le k \le j $, comenzando por el jugador $h$ (jugador1 = 1, jugador2 = -1).\\
-\\
-El algoritmo se divide en tres partes:\\
-\\
-\underline{Parte 1:} Se calcula la funci\'on $S$. Se hace por programac\'ion din\'amica guardando en una tabla los valores $S(i,j)$ y usando la f\'ormula de recursi\'on $$S(i,j) = S(i,j-1) + A_{j}.$$ (con $S(i,i-1)=0$).\\
+Donde $p1$ y $p2$ son los puntajes sumados por los jugadores 1 y 2 respectivamente, luego de jugar \'optimamente la subinstancia dada por la subtira $A_{k} ; i \le k \le j $, comenzando por el jugador $h$ (jugador1 = 1, jugador2 = -1).
+\subsubsection{Etapa 1: Calculo de la funcion S}
+
+Se calcula la funci\'on $S$. Se hace por programac\'ion din\'amica guardando en una tabla los valores $S(i,j)$ y usando la f\'ormula de recursi\'on $$S(i,j) = S(i,j-1) + A_{j}.$$ (con $S(i,i-1)=0$).\\
 \begin{algorithmic}
 \For {i=1 to n}
 	\For {j=i to n}
@@ -50,7 +28,9 @@ El algoritmo se divide en tres partes:\\
 	\EndFor
 \EndFor
 \end{algorithmic}
-\underline{Parte 2:} Se calcula la funci\'on P, tambi\'en por programaci\'on din\'amica, usando la $S$ ya calculada. Se guarda en una tabla $P(i,j,1)$, pudiendo calcularse $P(i,j,-1) = -P(i,j,1)$ a partir de \'esta. La regla de recursi\'on es:
+
+\subsubsection{Etapa 2: Calculo de la funcion P}
+Se calcula la funci\'on P, tambi\'en por programaci\'on din\'amica, usando la $S$ ya calculada. Se guarda en una tabla $P(i,j,1)$, pudiendo calcularse $P(i,j,-1) = -P(i,j,1)$ a partir de \'esta. La regla de recursi\'on es:
 $$P(i,j,1) = max \{ \ max\{ S(i,k) + P(k+1,j,-1) \ | \  i \le k \le j \} , max\{ S(k,j) + P(i,k-1,-1) \ | \ i \le k\le j \} \ \}$$ con $P(i,i-1,-1) = 0$.\\
 \\
 Ya que la recursi\'on requiere para el c\'alculo de $P(i,j)$ el c\'alculo de $P(i,j') ; j' \le j$ y de $P(i',j) ; i' \ge i$ la tabla se calcula entonces de menor a mayor en las columnas, y por cada columna de mayor a menor en las filas.\\
@@ -86,7 +66,7 @@ La tabla contiene en el lugar $(i,j)$ la tupla $(res(i,j),P(i,j))$ donde $res(i,
 \EndFor
 \end{algorithmic}
 
-\underline{Parte 3:} Se calcula, a partir de las tablas ya calculadas, el desarrollo del juego a partir de su instancia inicial. Se guarda la cantidad de turnos jugados y las fichas robadas por izquierda o derecha en cada turno.
+\subsubsection{Etapa 3: Simulacion del juego} Se calcula, a partir de las tablas ya calculadas, el desarrollo del juego a partir de su instancia inicial. Se guarda la cantidad de turnos jugados y las fichas robadas por izquierda o derecha en cada turno.
 
 \begin{algorithmic}
 \State var $turno \leftarrow 1$
@@ -126,26 +106,26 @@ Sea entonces $A_{k}$ una tira inicial de cartas. Si $A_{k}=(c1)$ hay una \'unica
 \\
  Por \'ultimo resta ver que esta estrategia se traduce formalmente en la recursi\'on dada para $P(i,j,h)$ en la descripci\'on del algoritmo, pero esto es muy f\'acil de ver por inducci\'on y no se escribe.\\
 \\
-\subsection{Complejidad}
+
+\subsection{Complejidad teorica esperada}
 La parte 1 del algoritmo es $O(n^{2})$, ya que son 2 bucles for anidados con interior $O(1)$ con a lo sumo $n$ iteraciones cada uno.
 La parte 2 del algoritmo es $O(n^{3})$ ya que son 2 bucles for anidados con a lo sumo $n$ iteraciones cada uno, y dentro de ellos hay dos bucles for sucesivos, cada uno de ellos $O(n)$.
 La parte 3 del algoritmo es O(n) ya que el loop se ejecuta a lo sumo tantas veces como la cantidad de turnos, que es a lo sumo $n$, y el interior del loop es $O(1)$.\\
-Por lo tanto el tiempo total del algoritmo es $O(n^3)$
+Por lo tanto la complejidad temporal total del algoritmo es $O(n^3)$
 
-\subsection{C\'odigo fuente}
-Ver Ap\'endice.
-
-\subsection{Verificaci\'on}
+\subsection{Verificaci\'on de correctitud}
 Para la verificaci\'on se emplearon las mismas instancias que fueron dadas como ejemplo del problema y su resoluci\'on. \'Estas fueron calculadas a mano, y luego se verific\'o que efectivamente el algoritmo daba el mismo resultado (la misma diferencia de puntos a favor) en cada caso.
 
 \subsection{An\'alisis de performance}
+\subsubsection{Consideraciones de compilacion en el analisis de performance}
+Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
+
+\subsubsection{Experimentos}
 La segunda parte del algoritmo, el c\'alculo de la tabla $P$, es de complejidad $O(n^3)$ y se lleva la mayor parte del tiempo de ejecuci\'on para $n$ grande.
 El c\'alculo de esta tabla, que tiene $n^2/2$ posiciones, involucra para cada posici\'on el c\'alculo del m\'aximo de una cantidad de elementos que depende \'unicamente de la posici\'on que se c\'alcula, no del contenido de las cartas. Como el tiempo que demora el algoritmo est\'a dominado por esta parte, es de esperar que el contenido de las cartas no cambie apreciablemente los tiempos de ejecuci\'on. \'Esto se puede constatar por medio de la experimentaci\'on.\\
 \\
 Se hizo una experimentaci\'on con tama\~nos n de entrada entre 100 y 400. Se distingui\'o la distribuci\'on de los valores de las cartas en tres casos : uniforme en $[-50;50]$, uniforme en $[-100;0]$ y uniforme en $[0;100]$. Todos los casos dieron tiempos similares. En la gr\'afica puede observarse una curva similar a las de la forma $ax^{m}$. Se puede comprobar que al variar de $n=200$ a $n'=300$, $n'=(3/2)n$, el tiempo pasa de un promedio de $200$ a un promedio de $650 \sim 200.(3/2)^3$. \'Esto comprueba que la curva es c\'ubica.
 A continuaci\'on se adjuntan las gr\'aficas experimentales de $tiempo(n)$.
-
-
 
 \begin{center}
 	\includegraphics[scale=0.6]{images/ej1_1.png}
@@ -159,25 +139,16 @@ A continuaci\'on se adjuntan las gr\'aficas experimentales de $tiempo(n)$.
 	\includegraphics[scale=0.6]{images/ej1_3.png}
 \end{center}
 
-\subsection{Testeo de Complejidad}
 
-Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
+\subsubsection{Experimentos adicionales}
+Se realizaron ademas experimentos adicionales con el objetivo de verificar de forma practica que la complejidad graficada sera $O(n^3)$.
 
 \vspace{2mm}
 
-Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(n^3)$, llegamos a esta conclusion graficando los casos: $n$ = $[1..200]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $n^3$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$.
-
-
-\begin{center}
-	\includegraphics[scale=0.6]{images/funcion.png}
-\end{center}
+Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(n^3)$, llegamos a esta conclusion graficando los casos: $n$ = $[1\dots200]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $n^3$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$.
 
 \begin{center}
-	\includegraphics[scale=0.6]{images/sobrencuadrado.png}
+	\includegraphics[scale=0.7]{images/funcion.png}
+	\includegraphics[scale=0.7]{images/sobrencuadrado.png}
+	\includegraphics[scale=0.7]{images/sobrencubo.png}
 \end{center}
-
-\begin{center}
-	\includegraphics[scale=0.6]{images/sobrencubo.png}
-\end{center}
-
-%\end{document}
