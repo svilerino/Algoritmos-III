@@ -382,114 +382,50 @@ Documentaci\'on de la clase HashMap:
  http://docs.oracle.com/javase/7/docs/api/java/util/HashMap.html
 
 
-
-\subsection{Casos de prueba y resultado del programa} \label{ej_3:casos}
-
-Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.
-
-\vspace{2mm}
-
-Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $R$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$. Referencia: http://www.excelsior-usa.com/jetcs00007.html
-
-\vspace{2mm}
-
-Con k = 0
-
-\begin{center}
-\includegraphics[scale=0.54]{images/0potenciafuncion}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/0potenciasobrecuadrado}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/0potenciasobrecubo}
-\end{center}
-\vspace{2mm}
-\vspace{2mm}
-\vspace{2mm}
-
-Con k = 1
-
-\begin{center}
-\includegraphics[scale=0.54]{images/1potenciafuncion}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/1potenciasobrecuadrado}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/1potenciasobrecubo}
-\end{center}
-
-
-\vspace{2mm}
-
-Con k = 2
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/2potenciafuncion}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/2potenciasobrecuadrado}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/2potenciasobrecubo}
-\end{center}
-
-
-\vspace{2mm}
-
-Con k = 3
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/3potenciafuncion}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/3potenciasobrecuadrado}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/3potenciasobrecubo}
-\end{center}
-
-
-\vspace{2mm}
-
-Con k = 4
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/4potenciafuncion}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/4potenciasobrecuadrado}
-\end{center}
-
-
-\begin{center}
-\includegraphics[scale=0.54]{images/4potenciasobrecubo}
-\end{center}
-
-
 \subsection{Mediciones de performance} \label{ej_3:performance}
 
-\subsection{Conclusiones} \label{ej_3:conclusiones}
+Compilador GJC: Java realiza un profiling sobre el programa a compilar y toma estadisticas para realizar diferentes procesos de compilacion/interpretacion sobre el codigo, esto se ve reflejado en el tiempo de ejecucion del programa compilado con el jdk, para forzar la compilacion de java a codigo objeto, utilizamos el compilador GCJ de GNU, que es uno de los compiladores denominados Ahead-Of-Time. Todos los experimentos fueron ejecutados sobre el programa compilado a codigo nativo. La cantidad de iteraciones por cada entrada es 100 para licuar los posibles outliers.\\
+
+Como f(n,k) = $\{tiempo$ $en$ $milisegundos$ $transcurrido$ $en$ $la$ $ejecucion$ $de$ $una$ $entrada$ $de$ $dimension$ $n$ $y$ $powerUp$ $k\}$ es una funcion que va de $\mathbb{R}^2 \rightarrow \mathbb{R}$, en lugar de graficarla en 3d, graficaremos ciertas curvas $C_k = \{ (x, f(x, k)) \in \mathbb{R}^2 \}$ para ver como se comporta la funcion cuando $n \rightarrow \infty$ con k fijo
+
+\begin{itemize}
+	
+	\item $C_0 = \{ (x, f(x, 0)) \in \mathbb{R}^2 \}$
+	\begin{center}
+		\includegraphics[scale=0.54]{images/0potenciafuncion}
+		\includegraphics[scale=0.54]{images/0potenciasobrecuadrado}
+		\includegraphics[scale=0.54]{images/0potenciasobrecubo}
+	\end{center}
+
+	\item $C_1 = \{ (x, f(x, 1)) \in \mathbb{R}^2 \}$
+	\begin{center}
+		\includegraphics[scale=0.54]{images/1potenciafuncion}
+		\includegraphics[scale=0.54]{images/1potenciasobrecuadrado}
+		\includegraphics[scale=0.54]{images/1potenciasobrecubo}
+	\end{center}
+
+	\item $C_2 = \{ (x, f(x, 2)) \in \mathbb{R}^2 \}$
+	\begin{center}
+		\includegraphics[scale=0.54]{images/2potenciafuncion}
+		\includegraphics[scale=0.54]{images/2potenciasobrecuadrado}
+		\includegraphics[scale=0.54]{images/2potenciasobrecubo}
+	\end{center}
+
+	\item $C_3 = \{ (x, f(x, 3)) \in \mathbb{R}^2 \}$
+	\begin{center}
+		\includegraphics[scale=0.54]{images/3potenciafuncion}
+		\includegraphics[scale=0.54]{images/3potenciasobrecuadrado}
+		\includegraphics[scale=0.54]{images/3potenciasobrecubo}
+	\end{center}
+
+	\item $C_4 = \{ (x, f(x, 4)) \in \mathbb{R}^2 \}$
+	\begin{center}
+		\includegraphics[scale=0.54]{images/4potenciafuncion}
+		\includegraphics[scale=0.54]{images/4potenciasobrecuadrado}
+		\includegraphics[scale=0.54]{images/4potenciasobrecubo}
+	\end{center}
+
+\end{itemize}
+
+Interpretacion de los graficos: Como se puede ver en los graficos, la complejidad empirica, coincide con la complejidad teorica esperada $O(k*n^3)$, llegamos a esta conclusion graficando los siguientes casos: $k$ = $[0..5]$ $n$ = $[2..100]$ para cada caso, se realizaron 3 graficos, $(X,F(X))$,  $(X,F(X)/x^2)$ y $(X,F(X)/x^3)$. En estos graficos se puede observar que al dividir por $x^2$ se obtiene una curva con crecimiento lineal aproximado, y al dividir por $x^3$, se obtiene una constante aproximada, es decir, una curva acotada entre una diferencia pequena en el eje X, concluyendo que la curva inicial corresponde a una funcion $f(n)$ = $q.n^3$, con $q$ en $R$. Asimismo veamos que cuando se incrementa el valor de $k$ para los graficos anteriores, la imagen de las funciones graficadas crecen linealmente a medida que crece $k$. Lo que nos indica que en realidad las funciones graficadas son realmente $f(n)$ = $j.(k.n^3)$, con $j$ en $\mathbb{R}$, concluyendo, $f(n)$ $\in$ $O(k*n^3)$. Referencia: http://www.excelsior-usa.com/jetcs00007.html
 
