@@ -9,6 +9,10 @@
 template <class W> class Grafo {
 	public:
 		/**
+		 * agrega n nodos
+		 */
+		virtual bool AgregarNodos(int n) = 0;
+		/**
 		 * Agrega una arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 */
 		virtual bool AgregarArista(int i, int j, W *peso) = 0;
@@ -25,6 +29,8 @@ template <class W> class Grafo {
 		 * retorna un array de nodos adyacentes a i, en m retorna la cantidad de elementos en el array que se retorna. liberar con free()
 		 */
 		virtual int *Adyacentes(int i, int *m) = 0;
+
+		virtual int CantidadNodos(void) = 0;
 };
 
 template <class W> class GrafoAdyacencia : Grafo<W> {
@@ -59,7 +65,7 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		/**
 		 * O(nodos)
 		 */
-		~GrafoAdyacencia()
+		~GrafoAdyacencia(void)
 		{
 			int i;
 			for(i = 0; i < nodos; i++){
@@ -69,10 +75,42 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		}
 
 		/**
+		 * agrega n nodos
+		 * O(n*(nodos + n) + nodos*(n + nodos))
+		 */
+		bool AgregarNodos(int n)
+		{
+			int i, j;
+
+			if(n <= 0)
+				return false;
+
+			adyacencia = (Adyacente **)realloc(adyacencia, (nodos + n) * sizeof(Adyacente *));
+
+			for(i = nodos; i < nodos + n; i++){
+				adyacencia[i] = (Adyacente *)calloc(n, sizeof(Adyacente));
+				for(j = 0; j < nodos + n; j++){
+					adyacencia[i][j].adyacente = false;
+					adyacencia[i][j].peso = NULL;
+				}
+			}
+			for(i = 0; i < nodos; i++){
+				for(j = nodos; j < nodos + n; j++){
+					adyacencia[i][j].adyacente = false;
+					adyacencia[i][j].peso = NULL;
+				}
+			}
+
+			nodos += n;
+			return true;
+		}
+
+		/**
 		 * Agrega una arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 * O(1)
 		 */
-		bool AgregarArista(int i, int j, W *peso){
+		bool AgregarArista(int i, int j, W *peso)
+		{
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return false;
 			
@@ -85,7 +123,8 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		 * Quita la arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 * O(1)
 		 */
-		bool QuitarArista(int i, int j){
+		bool QuitarArista(int i, int j)
+		{
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return false;
 			
@@ -98,7 +137,8 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		/**
 		 * O(1)
 		 */
-		bool EsAdyacente(int i, int j){
+		bool EsAdyacente(int i, int j)
+		{
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return false;
 
@@ -109,7 +149,8 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		 * i y j tienen que ser adyacentes, sino retorna NULL.
 		 * O(1)
 		 */
-		W *Peso(int i, int j) {
+		W *Peso(int i, int j)
+		{
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return NULL;
 
@@ -123,7 +164,8 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		 * retorna un array de nodos adyacentes a i, en m retorna la cantidad de elementos en el array que se retorna. liberar con free()
 		 * O(nodos)
 		 */
-		int *Adyacentes(int i, int *m){
+		int *Adyacentes(int i, int *m)
+		{
 			int *ret;
 			int j;
 
@@ -138,6 +180,11 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 				}
 			}
 			return ret;
+		}
+
+		int CantidadNodos(void)
+		{
+			return nodos;
 		}
 };
 
@@ -155,7 +202,8 @@ template <class W> class GrafoLista : Grafo<W> {
 		/**
 		 * O(1)
 		 */
-		GrafoLista(int n){
+		GrafoLista(int n)
+		{
 			nodos = n;
 			lista_nodos = (Lista **)calloc(n, sizeof(Lista *));
 		}
@@ -163,7 +211,8 @@ template <class W> class GrafoLista : Grafo<W> {
 		/**
 		 * O(nodos + aristas)
 		 */
-		~GrafoLista(){
+		~GrafoLista(void)
+		{
 			Lista *l, *l2;
 			int i;
 			for(i = 0; i < nodos; i++){
@@ -176,11 +225,31 @@ template <class W> class GrafoLista : Grafo<W> {
 			}
 			free(lista_nodos);
 		}
+
+		/**
+		 * agrega n nodos
+		 * O(n)
+		 */
+		bool AgregarNodos(int n)
+		{
+			int i;
+
+			if(n <= 0)
+				return false;
+
+			lista_nodos = (Lista **)realloc(lista_nodos, (n + nodos) * sizeof(Lista *));
+			for(i = nodos; i < nodos + n; i++){
+				lista_nodos[i] = NULL;
+			}
+			return true;
+		}
+
 		/**
 		 * Agrega una arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 * O(1)
 		 */
-		bool AgregarArista(int i, int j, W *peso){
+		bool AgregarArista(int i, int j, W *peso)
+		{
 			Lista *nuevo;
 
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
@@ -204,7 +273,8 @@ template <class W> class GrafoLista : Grafo<W> {
 		 * Quita la arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 * O(aristas)
 		 */
-		bool QuitarArista(int i, int j){
+		bool QuitarArista(int i, int j)
+		{
 			Lista *l, *p;
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return false;
@@ -242,7 +312,8 @@ template <class W> class GrafoLista : Grafo<W> {
 		/**
 		 * O(aristas)
 		 */
-		bool EsAdyacente(int i, int j){
+		bool EsAdyacente(int i, int j)
+		{
 			Lista *l;
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return false;
@@ -259,7 +330,8 @@ template <class W> class GrafoLista : Grafo<W> {
 		/**
 		 * i y j tienen que ser adyacentes, sino retorna NULL.
 		 */
-		W *Peso(int i, int j){
+		W *Peso(int i, int j)
+		{
 			Lista *l;
 			if(i <= 0 || i > nodos || j <= 0 || j > nodos)
 				return NULL;
@@ -278,7 +350,8 @@ template <class W> class GrafoLista : Grafo<W> {
 		 * retorna un array de nodos adyacentes a i, en m retorna la cantidad de elementos en el array que se retorna. liberar con free()
 		 * O(aristas)
 		 */
-		int *Adyacentes(int i, int *m){
+		int *Adyacentes(int i, int *m)
+		{
 			int *ret;
 			Lista *l;
 
@@ -293,6 +366,11 @@ template <class W> class GrafoLista : Grafo<W> {
 				l = l->siguiente;
 			}
 			return ret;
+		}
+
+		int CantidadNodos(void)
+		{
+			return nodos;
 		}
 };
 
