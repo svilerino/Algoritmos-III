@@ -130,7 +130,7 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 			if(!m || i <= 0 || i > nodos)
 				return NULL;
 			*m = 0;
-			ret = (int *)Calloc(nodos, sizeof(int));
+			ret = (int *)calloc(nodos, sizeof(int));
 			for(j = 0; j < nodos; j++){
 				if(adyacencia[i - 1][j].adyacente){
 					ret[*m] = j + 1;
