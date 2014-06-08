@@ -46,9 +46,9 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		{
 			int i, j;
 			nodos = n;
-			adyacencia = calloc(n, sizeof(Adyacente *));
+			adyacencia = (Adyacente **)calloc(n, sizeof(Adyacente *));
 			for(i = 0; i < n; i++){
-				adyacencia[i] = calloc(n, sizeof(Adyacente));
+				adyacencia[i] = (Adyacente *)calloc(n, sizeof(Adyacente));
 				for(j = 0; j < n; j++){
 					adyacencia[i][j].adyacente = false;
 					adyacencia[i][j].peso = NULL;
@@ -130,7 +130,7 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 			if(!m || i <= 0 || i > nodos)
 				return NULL;
 			*m = 0;
-			ret = calloc(nodos, sizeof(int));
+			ret = (int *)calloc(nodos, sizeof(int));
 			for(j = 0; j < nodos; j++){
 				if(adyacencia[i - 1][j].adyacente){
 					ret[*m] = j + 1;

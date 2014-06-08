@@ -1,2 +1,4 @@
 *.o
+*~
+*.swp
 codigo/sol_exacta/exacta
