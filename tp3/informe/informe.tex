@@ -1,0 +1,73 @@
+\documentclass[a4paper,11pt]{article}
+\pagestyle{plain}
+
+\usepackage[spanish]{babel}
+\usepackage [latin1]{inputenc}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+%\usepackage[lined,spanish,boxed,linesnumbered]{algorithm2e}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[conEntregas]{caratula}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{listings}
+\lstset{breaklines=true}
+\usepackage[usenames,dvipsnames]{xcolor}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.97,0.97,0.97}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\usepackage{tikz}
+\usetikzlibrary{babel}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linktocpage}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\newtheorem{Ejemplo}{Ejemplo}
+
+\begin{document}
+
+\titulo{Trabajo Pr\'actico 2}
+
+\fecha{\today}
+
+\materia{Algoritmos y Estructuras de Datos III}
+
+\integrante{Chapresto, Mat\'ias}{201/12}{matiaschapresto@gmail.com}
+\integrante{Dato, Nicol\'as}{676/12}{nico\_dato@hotmail.com}
+\integrante{Fattori, Ezequiel}{280/11}{ezequieltori@hotmail.com}
+\integrante{Vileri\~no, Silvio}{106/12}{svilerino@gmail.com}
+
+\maketitle
+
+\tableofcontents
+
+%incluye un abstract de lo que trata el trabajo
+\include{introduccion}
+
+%Incluye el punto 1 del tp
+\include{vida_real}
+
+%Incluye los puntos 2.a,2.b,2.c del tp
+\include{sol_exacta}
+
+%Incluye los puntos 3 con todos los algoritmos golosos que se nos ocurran
+\include{sol_golosa}
+
+%Incluye los puntos 3 con todos los algoritmos de busqueda local que se nos ocurran
+\include{sol_busqueda_local}
+
+%Incluye los puntos 3 con GRASP
+\include{sol_grasp}
+
+%explica y detalla como se realizaron los experimentos, casos de prueba y mediciones, y que graficos se realizaron
+%punto 4 del tp
+\include{benchmark-framework}
+
+%partes relevantes del codigo
+\include{codigo}
+
+%info acerca del entregable de este trabajo
+\include{entregable}
+
+\end{document}
+
