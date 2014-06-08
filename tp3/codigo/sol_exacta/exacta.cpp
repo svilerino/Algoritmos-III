@@ -11,6 +11,14 @@ typedef struct peso{
 	int otra_cosa;
 } peso;
 
+typedef struct Solucion{
+	bool solucionado;
+	float W1;
+	float W2;
+	int k;
+	int *v;
+} Solucion;
+
 void setW1(void *p, float w)
 {
 	((peso *)p)->w1 = w;
@@ -20,8 +28,45 @@ void setW2(void *p, float w)
 	((peso *)p)->w2 = w;
 }
 
+bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
+{
+	solucion->solucionado = false;
+	return true;
+}
+
 int main(int argc, char **argv)
 {
+	GrafoAdyacencia<peso> *grafo;
+	peso **pesos;
+	int u, v, K, nodos, aristas, i;
+	Solucion solucion;
+
+	grafo = new GrafoAdyacencia<peso>(0);
+	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
+		solucion.solucionado = false;
+		resolver(*grafo, u, v, K, &solucion);
+		if(solucion.solucionado){
+			printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+			for(i = 0; i < solucion.k; i++){
+				printf(" %d", solucion.v[i]);
+			}
+			printf("\n");
+			free(solucion.v);
+		}
+		else{
+			printf("no\n");
+		}
+		int i;
+		for(i = 0; i < aristas; i++){
+			delete pesos[i];
+		}
+		free(pesos);
+		delete grafo;
+		grafo = new GrafoAdyacencia<peso>(0);
+	}
+	delete grafo;
+	return 0;
+/*
 	{
 		peso p1, *p;
 		GrafoAdyacencia<peso> grafo(10);
@@ -64,5 +109,6 @@ int main(int argc, char **argv)
 	delete grafo;
 
 	return 0;
+	*/
 }
 
