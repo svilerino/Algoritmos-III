@@ -1,13 +1,24 @@
 #include <stdio.h>
 #include <iostream>
 #include "../common/grafo.h"
+#include "../common/parser.h"
 
 using namespace std;
 
 typedef struct peso{
 	int w1;
 	int w2;
+	int otra_cosa;
 } peso;
+
+void setW1(void *p, float w)
+{
+	((peso *)p)->w1 = w;
+}
+void setW2(void *p, float w)
+{
+	((peso *)p)->w2 = w;
+}
 
 int main(int argc, char **argv)
 {
@@ -35,6 +46,22 @@ int main(int argc, char **argv)
 		p = grafo.Peso(5, 3);
 		cout << p->w1 << " " << p->w2 << " " << endl;
 	}
+
+	GrafoAdyacencia<peso> *grafo;
+	peso **pesos;
+	int u,v, K, nodos, aristas;
+	grafo = new GrafoAdyacencia<peso>(0);
+	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
+		cout << "tiene " << grafo->CantidadNodos() << " nodos" << endl;
+		int i;
+		for(i = 0; i < aristas; i++){
+			delete pesos[i];
+		}
+		free(pesos);
+		delete grafo;
+		grafo = new GrafoAdyacencia<peso>(0);
+	}
+
 	return 0;
 }
 

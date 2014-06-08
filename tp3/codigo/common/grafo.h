@@ -8,6 +8,8 @@
  */
 template <class W> class Grafo {
 	public:
+
+		virtual ~Grafo(void){};
 		/**
 		 * agrega n nodos
 		 */
@@ -33,7 +35,7 @@ template <class W> class Grafo {
 		virtual int CantidadNodos(void) = 0;
 };
 
-template <class W> class GrafoAdyacencia : Grafo<W> {
+template <class W> class GrafoAdyacencia : public Grafo<W> {
 	private:
 		typedef struct Adyacente{
 			bool adyacente;
@@ -188,7 +190,7 @@ template <class W> class GrafoAdyacencia : Grafo<W> {
 		}
 };
 
-template <class W> class GrafoLista : Grafo<W> {
+template <class W> class GrafoLista : public Grafo<W> {
 	private:
 		typedef struct Lista {
 			struct Lista *siguiente;
