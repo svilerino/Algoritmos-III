@@ -11,20 +11,20 @@ template <class W> class Grafo {
 		/**
 		 * Agrega una arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 */
-		virtual bool AgregarArista(int i, int j, W *peso);
+		virtual bool AgregarArista(int i, int j, W *peso) = 0;
 		/**
 		 * Quita la arista entre i y j, 1 <= i <= n, 1 <= j <= n, n cantidad de nodos.
 		 */
-		virtual bool QuitarArista(int i, int j);
-		virtual bool EsAdyacente(int i, int j);
+		virtual bool QuitarArista(int i, int j) = 0;
+		virtual bool EsAdyacente(int i, int j) = 0;
 		/**
 		 * i y j tienen que ser adyacentes, sino retorna NULL.
 		 */
-		virtual W *Peso(int i, int j);
+		virtual W *Peso(int i, int j) = 0;
 		/**
 		 * retorna un array de nodos adyacentes a i, en m retorna la cantidad de elementos en el array que se retorna. liberar con free()
 		 */
-		virtual int *Adyacentes(int i, int *m);
+		virtual int *Adyacentes(int i, int *m) = 0;
 };
 
 template <class W> class GrafoAdyacencia : Grafo<W> {
