@@ -61,6 +61,7 @@ int main(int argc, char **argv)
 		delete grafo;
 		grafo = new GrafoAdyacencia<peso>(0);
 	}
+	delete grafo;
 
 	return 0;
 }

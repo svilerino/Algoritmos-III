@@ -45,6 +45,7 @@ typedef void (*setW)(void *peso, float w);
  *			delete grafo;
  *			grafo = new GrafoAdyacencia<peso>(0);
  *		}
+ *		delete grafo;
  *	}
  */
 template<class W>
