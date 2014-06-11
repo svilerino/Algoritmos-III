@@ -8,8 +8,7 @@
  */
 template <class W> class Grafo {
 	public:
-
-		virtual ~Grafo(void){};
+		virtual ~Grafo(void){}
 		/**
 		 * agrega n nodos
 		 */
@@ -118,6 +117,8 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 			
 			adyacencia[i - 1][j - 1].adyacente = true;
 			adyacencia[i - 1][j - 1].peso = peso;
+			adyacencia[j - 1][i - 1].adyacente = true;
+			adyacencia[j - 1][i - 1].peso = peso;
 			return true;
 		}
 
@@ -132,6 +133,8 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 			
 			adyacencia[i - 1][j - 1].adyacente = false;
 			adyacencia[i - 1][j - 1].peso = NULL;
+			adyacencia[j - 1][i - 1].adyacente = false;
+			adyacencia[j - 1][i - 1].peso = NULL;
 			return true;
 
 		}
