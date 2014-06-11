@@ -32,6 +32,7 @@ template <class W> class Grafo {
 		virtual int *Adyacentes(int i, int *m) = 0;
 
 		virtual int CantidadNodos(void) = 0;
+		virtual int CantidadAristas(void) = 0;
 };
 
 template <class W> class GrafoAdyacencia : public Grafo<W> {
@@ -43,6 +44,7 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 
 		Adyacente **adyacencia;
 		int nodos;
+		int aristas;
 
 	public:
 		/**
@@ -61,6 +63,7 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 					adyacencia[i][j].peso = NULL;
 				}
 			}
+			aristas = 0;
 		}
 
 		/**
@@ -119,6 +122,7 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 			adyacencia[i - 1][j - 1].peso = peso;
 			adyacencia[j - 1][i - 1].adyacente = true;
 			adyacencia[j - 1][i - 1].peso = peso;
+			aristas++;
 			return true;
 		}
 
@@ -135,6 +139,7 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 			adyacencia[i - 1][j - 1].peso = NULL;
 			adyacencia[j - 1][i - 1].adyacente = false;
 			adyacencia[j - 1][i - 1].peso = NULL;
+			aristas--;
 			return true;
 
 		}
@@ -191,6 +196,11 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 		{
 			return nodos;
 		}
+
+		int CantidadAristas(void)
+		{
+			return aristas;
+		}
 };
 
 template <class W> class GrafoLista : public Grafo<W> {
@@ -202,6 +212,7 @@ template <class W> class GrafoLista : public Grafo<W> {
 		} Lista;
 		Lista **lista_nodos;
 		int nodos;
+		int aristas;
 
 	public:
 		/**
@@ -211,6 +222,7 @@ template <class W> class GrafoLista : public Grafo<W> {
 		{
 			nodos = n;
 			lista_nodos = (Lista **)calloc(n, sizeof(Lista *));
+			aristas = 0;
 		}
 
 		/**
@@ -272,6 +284,7 @@ template <class W> class GrafoLista : public Grafo<W> {
 			nuevo->siguiente = lista_nodos[j - 1];
 			lista_nodos[j - 1] = nuevo;
 
+			aristas++;
 			return true;
 		}
 		/**
@@ -311,6 +324,7 @@ template <class W> class GrafoLista : public Grafo<W> {
 				p = l;
 				l = l->siguiente;
 			}
+			aristas--;
 			return true;
 		}
 
@@ -376,6 +390,11 @@ template <class W> class GrafoLista : public Grafo<W> {
 		int CantidadNodos(void)
 		{
 			return nodos;
+		}
+
+		int CantidadAristas(void)
+		{
+			return aristas;
 		}
 };
 
