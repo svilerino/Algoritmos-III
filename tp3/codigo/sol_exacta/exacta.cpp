@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <string.h>
 #include "../common/grafo.h"
 #include "../common/parser.h"
 
@@ -30,7 +31,58 @@ void setW2(void *p, float w)
 
 bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 {
-	solucion->solucionado = false;
+	Solucion solucion_mejor;
+	int cantidad_aristas, *adyacentes, i;
+	peso *p;
+	float w2, w1;
+
+	solucion_mejor.solucionado = false;
+	solucion_mejor.W1 = -1;
+	solucion_mejor.W2 = -1;
+	solucion_mejor.k = 0;
+	solucion_mejor.v = (int *)calloc(2 * g.CantidadAristas(), sizeof(int));
+
+	if(u == v){
+		solucion->solucionado = true;
+		free(solucion_mejor.v);
+		return true;
+	}
+	adyacentes = g.Adyacentes(u, &cantidad_aristas);
+	for(i = 0; i < cantidad_aristas; i++){
+		p = g.Peso(u, adyacentes[i]);
+		w1 = p->w1;
+		w2 = p->w2;
+		if(w2 <= K){
+			g.QuitarArista(u, adyacentes[i]);
+			solucion->W1 += w1;
+			solucion->W2 += w2;
+			solucion->v[solucion->k] = adyacentes[i];
+			solucion->k++;
+			resolver(g, adyacentes[i], v, K - w2, solucion);
+			if(solucion->solucionado){
+				if(solucion_mejor.W1 < 0 || solucion_mejor.W1 > solucion->W1){
+					solucion_mejor.solucionado = solucion->solucionado;
+					solucion_mejor.W1 = solucion->W1;
+					solucion_mejor.W2 = solucion->W2;
+					solucion_mejor.k = solucion->k;
+					memcpy(solucion_mejor.v, solucion->v, 2 * g.CantidadAristas() * sizeof(int));
+				}
+			}
+			solucion->k--;
+			solucion->W1 -= w1;
+			solucion->W2 -= w2;
+			g.AgregarArista(u, adyacentes[i], p);
+		}
+	}
+	if(solucion_mejor.solucionado){
+		solucion->solucionado = solucion_mejor.solucionado;
+		solucion->W1 = solucion_mejor.W1;
+		solucion->W2 = solucion_mejor.W2;
+		solucion->k = solucion_mejor.k;
+		memcpy(solucion->v, solucion_mejor.v, 2 * g.CantidadAristas() * sizeof(int));
+	}
+	free(adyacentes);
+	free(solucion_mejor.v);
 	return true;
 }
 
@@ -44,6 +96,11 @@ int main(int argc, char **argv)
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
 		solucion.solucionado = false;
+		solucion.W1 = 0;
+		solucion.W2 = 0;
+		solucion.k = 1;
+		solucion.v = (int *)calloc(2 * aristas, sizeof(int));
+		solucion.v[0] = u;
 		resolver(*grafo, u, v, K, &solucion);
 		if(solucion.solucionado){
 			printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
@@ -51,11 +108,11 @@ int main(int argc, char **argv)
 				printf(" %d", solucion.v[i]);
 			}
 			printf("\n");
-			free(solucion.v);
 		}
 		else{
 			printf("no\n");
 		}
+		free(solucion.v);
 		int i;
 		for(i = 0; i < aristas; i++){
 			delete pesos[i];
