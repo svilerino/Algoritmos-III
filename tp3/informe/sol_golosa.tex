@@ -1,5 +1,19 @@
 \section{Heuristicas constructivas golosas I: En cada paso tomar el minimo f2 dentro de las soluciones factibles(con f1 acotada)}
 \subsection{Explicacion detallada del algoritmo propuesto}
+
+El algoritmo propuesto consta de dos etapas: una etapa de inicializaci\'on y luego el algoritmo goloso propiamente dicho.
+
+\subsubsection{Inicializaci\'on}
+
+Nuestra etapa de inicializaci\'on consta en calcular los caminos m\'inimos en cuanto a peso $w_1$ de todos los nodos hacia el nodo de llegada. Ya que el grafo es simple, las aristas no tienen orientaci\'on definida, por lo cual dados dos nodos $v_1$ y $v_2$, el camino de $v_1$ a $v_2$ es igual al camino de $v_2$ a $v_1$. Esto nos permite ejecutar una \'unica vez el algoritmo de Dikjstra desde el nodo de llegada hasta todos los dem\'as y obtener lo buscado.
+
+Una vez obtenidos los caminos m\'inimos en cuanto a peso $w_1$, \'estos nos permiten conocer lo siguiente:
+
+\begin{enumerate}
+\item Al iniciar el algoritmo, aquellos nodos para los cuales no existe un camino de longitud $w_1$ menor a $K$ hasta el nodo llegada, los cuales nuestro algoritmo va a ignorar.
+\item En medio de la ejecuci\'on del algoritmo, llamando $W_{ac}$ a la acumulac\'on de pesos $w_1$ del camino recorrido por el algoritmo hasta ahora, puedo saber si el pr\'oximo nodo a elegir tiene al menos un camino $c$ de longitud menor a $K$ hasta la llegada, es decir si $w_{ac}$ + $long(c)$ $\leq$ $K$. En caso de no tenerlo, nuestro algoritmo va a descartar este nodo y elegir alguno que tenga al menos un camino posible hasta la llegada
+\end{enumerate}
+
 \subsection{Complejidad temporal para el peor caso}
 \subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
 %Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
@@ -7,11 +21,3 @@
 %\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hace falta hablar de eso aca}
 
 % ---------------------------------------------------------------------------
-
-\section{Heuristicas constructivas golosas II: En cada paso tomar el minimo cociente de f1/f2 dentro de las soluciones factibles(con f1 acotada)}
-\subsection{Explicacion detallada del algoritmo propuesto}
-\subsection{Complejidad temporal para el peor caso}
-\subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
-%Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
-%Indicar si es posible que tan mala puede ser la solucion obtenida respecto a la solucion optima
-%\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hace falta hablar de eso aca}
