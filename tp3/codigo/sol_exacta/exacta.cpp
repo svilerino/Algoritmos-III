@@ -52,7 +52,7 @@ bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 		p = g.Peso(u, adyacentes[i]);
 		w1 = p->w1;
 		w2 = p->w2;
-		if(w2 <= K){
+		if(w2 <= K && (solucion_mejor.W1 < 0 || solucion->W1 + w1 < solucion_mejor.W1)){
 			g.QuitarArista(u, adyacentes[i]);
 			solucion->W1 += w1;
 			solucion->W2 += w2;
