@@ -3,17 +3,17 @@ LD=g++
 CFLAGS=-Wall -g
 LDFLAGS=
 RM=rm
-OBJECTS=exacta.o
+OBJECTS=bqlocal.o
 
 .PHONY: all clean
 
-all: exacta
+all: bqlocal
 
 clean:
-	- $(RM) -rf *.o *~ exacta
+	- $(RM) -rf *.o *~ bqlocal
 
-exacta: $(OBJECTS)
-	$(LD) $(LDFLAGS) -o exacta $(OBJECTS)
+bqlocal: $(OBJECTS)
+	$(LD) $(LDFLAGS) -o bqlocal $(OBJECTS)
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) -o "$@" "$<"

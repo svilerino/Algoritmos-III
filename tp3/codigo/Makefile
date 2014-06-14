@@ -3,8 +3,10 @@ RM=rm
 
 all:
 	make -C sol_exacta
+	make -C bqlocal
 
 clean:
-	- $(RM) */*.o */*~ *~
+	- $(RM) -rf */*.o */*~ *~
 	make -C sol_exacta clean
+	make -C bqlocal clean
 
