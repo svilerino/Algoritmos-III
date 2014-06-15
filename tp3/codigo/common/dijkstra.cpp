@@ -88,8 +88,13 @@ list<nodo_t> DijkstraConstruirCamino(nodo_t nodo, const vector<nodo_t> &predeces
  
 int main()
 {
+    //Sea G = (V, E) inicializar lista_adyacentes(n), donde n = #(V), para cada
+    //i natural tal que 0<=i<n es el i-esimo nodo del grafo G en el conjunto V,
+    //se agrega a la lista de nodos en lista_adyacentes[i](recordar es vector<vector<nodo>>)
+    //cada vecino de ese nodo.
     // Recordar insertar dos veces las aristas(ambas direcciones) en un grafo no dirigido
     // pensar en arista entre u y v, v pertenece a vecinos (u) y u pertenece a vecinos(v)
+
     lista_adyacencia_t lista_adyacentes(6);
     // 0 = a
     lista_adyacentes[0].push_back(vecino(1, 7));
