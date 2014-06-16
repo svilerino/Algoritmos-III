@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -std=c++11
 LDFLAGS=
 RM=rm
 OBJECTS=bqlocal.o
