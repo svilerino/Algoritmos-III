@@ -33,6 +33,12 @@ struct nodo_t {
     {
         return costo_w2 < other.costo_w2;
     }
+
+    //operador de igualdad sobre nodo_index
+    bool operator==(const struct nodo_t &other) const
+    {
+        return nodo_index == other.nodo_index;
+    }
 };
 
 //renombre con typedef para mayor legibilidad 

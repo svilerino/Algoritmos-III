@@ -7,7 +7,7 @@
 
 using namespace std;
 
-lista_adyacencia_t& armar_grafo(lista_adyacencia_t& lista_adyacentes, int cantNodos){
+void armar_grafo(lista_adyacencia_t& lista_adyacentes, int cantNodos){
 	//Sea G = (V, E) inicializar lista_adyacentes(n), donde n = #(V), para cada
     //i natural tal que 0<=i<n es el i-esimo nodo del grafo G en el conjunto V,
     //se agrega a la lista de nodos en lista_adyacentes[i](recordar es vector<vector<nodo>>)
@@ -47,7 +47,6 @@ lista_adyacencia_t& armar_grafo(lista_adyacencia_t& lista_adyacentes, int cantNo
         	cout << vecino_iter->nodo_index << endl;
         }
     }
-	return lista_adyacentes;
 }
 
 void custom_set_intersection(VECINOS_CONTAINER<nodo_t>::iterator first1, VECINOS_CONTAINER<nodo_t>::iterator last1,
@@ -76,6 +75,8 @@ VECINOS_CONTAINER<nodo_t> obtenerVecinosEnComun(nodo_index_t k, nodo_index_t k_s
 	return vecinosEnComun;
 }
 
+
+
 void busquedaLocal(list<nodo_index_t> camino, lista_adyacencia_t& lista_adyacentes){
 	
 	list<nodo_index_t>::const_iterator it = camino.begin();
@@ -88,13 +89,18 @@ void busquedaLocal(list<nodo_index_t> camino, lista_adyacencia_t& lista_adyacent
 		//busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
 		//sea menor al peso de la arista directa
 
-//		VECINOS_CONTAINER<nodo_t> vecinosEnComun = obtenerVecinosEnComun(*(it), *(runner_it), lista_adyacentes);
-//		VECINOS_CONTAINER<nodo_t>::const_iterator vecinos_it = vecinosEnComun.begin();
-//		VECINOS_CONTAINER<nodo_t>::const_iterator final_vecinos = vecinosEnComun.end()
-//		while(vecinos_it != final_vecinos){
-//
-//			++vecinos_it;
-//		}
+		//necesito los costos it->vecinos_it y vecinos_it->runner_it
+		//es decir, los costos de las aristas del camino entre it y runner_it			
+
+		VECINOS_CONTAINER<nodo_t> vecinosEnComun = obtenerVecinosEnComun(*(it), *(runner_it), lista_adyacentes);
+		VECINOS_CONTAINER<nodo_t>::const_iterator vecinos_it = vecinosEnComun.begin();
+		VECINOS_CONTAINER<nodo_t>::const_iterator final_vecinos = vecinosEnComun.end();
+		cout << "Vecinos en comun de (" << *it << ") y (" << *runner_it << ")" << endl;
+		while(vecinos_it != final_vecinos){
+			cout << vecinos_it->nodo_index << endl;
+
+			++vecinos_it;
+		}
 		++it;
 		++runner_it;
 	}
@@ -117,7 +123,7 @@ int main(int argc, char **argv){
 	//--------------------------------- Obtengo el grafo ---------------------------------
 	int cantNodos = 6;
  	lista_adyacencia_t lista_adyacentes(cantNodos);
-	lista_adyacentes = armar_grafo(lista_adyacentes, cantNodos);
+	armar_grafo(lista_adyacentes, cantNodos);
 
 	//--------------------------------- Busco solucion inicial ---------------------------
     vector<costo_t> distancia;
