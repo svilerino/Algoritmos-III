@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
-#include "../common/grafo.h"
-#include "../common/parser.h"
+#include "grafo.h"
+#include "parser.h"
 
 using namespace std;
 
