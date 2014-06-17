@@ -57,6 +57,26 @@ public:
 	costo_t obtener_costo_w2_entre_nodos(nodo_t i, nodo_t j);
 
 	void imprimir_camino(ostream& out);
+
+	list<nodo_t>::const_iterator obtener_iterador_begin();
+	list<nodo_t>::const_iterator obtener_iterador_end();
+};
+
+class Vecino{
+private:
+	nodo_t i;
+	nodo_t j;
+	nodo_t en_comun;
+	Arista desde_i_a_comun;
+	Arista desde_j_a_comun;
+public:
+	Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j);
+	~Vecino();
+	nodo_t obtener_nodo_i();
+	nodo_t obtener_nodo_j();
+	nodo_t obtener_nodo_comun();
+	Arista obtener_arista_i_comun();
+	Arista obtener_arista_j_comun();
 };
 
 class Grafo{
@@ -82,12 +102,14 @@ public:
 	~Grafo();
 	
 	//Modificadores
-	void agregar_nodos(int cantidad_nodos = 0);
+	void agregar_nodos(int cantidad_nodos);
 	void agregar_arista(nodo_t i, nodo_t j, costo_t w1, costo_t w2);
 	void quitar_arista(nodo_t i, nodo_t j);
 
 	//Consultas
 	Arista obtener_arista(nodo_t i, nodo_t j);	
+	//pre: 0 <= i <= j < cantidad_nodos y que i,j sean adyacentes
+	list<Vecino> obtener_adyacentes_en_comun(nodo_t i, nodo_t j);
 
 	//Entrada - Salida
 	void imprimir_matriz_adyacencia(ostream& out);
