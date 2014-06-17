@@ -35,7 +35,7 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 
 \State $vector<int> \: distancias[g.\#nodos]$
 \Comment $ O(n) $
-\State $vector<bool> \: visitado[g.\#nodos]$
+\State $vector<bool> \: visitadas[g.\#aristas]$
 \Comment $ O(n) $
 \State $ Dijkstra( g, v_2, distancias) $
 \Comment $ O() $
@@ -43,35 +43,31 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 \Comment $ O(1) $
 \State $ int \: costoCamino = 0 $
 \Comment $ O(1) $
-\State $ visitado[v_1] = true $
+\State $ visitadas[v_1] = true $
 \Comment $ O(1) $
 \State $ vertice \: v_{actual} = v_1 $
 \Comment $ O(1) $
 \While{ $ actual != v_2 \: || \: incidentes= \emptyset $ }
 \Comment $ O(n) $
-
 	\State $ list<eje> \: incidentes = incidentes(v_{actual}, g) $
 	\Comment $ O(m) $
-	\State $ eje \:	 minimo = cabeza(incidentes) $
-	\Comment $ O(1) $
+	\State $ eje \:	 minimo = primeraNoVisitada(incidentes) $
+	\Comment $ O(1) Para\: evitar \:que \:cicle $
 	\For {each $(u,v) \in \: incidentes$}
 	\Comment $ O(m) $
-		\If {$ distancias(v) + costoCamino < k \: \&\& \: costo2(u,v) \leq minimo\: \&\& \: visitados[v] = false $}
+		\If {$ distancias(v) + costoCamino \leq k \: \&\& \: costo2(u,v) \leq minimo\: \&\& \: visitadas[(u,v)] = false $}
 		\Comment $ O(1) $
 			\State $ minimo = (u,v) $
 			\Comment $ O(1) $
 		\EndIf
 	\EndFor
-
 	\State $ Agregar(minimo, camino) $
 	\Comment $ O(1) $
 	\State $ costoCamino \: += costo1(minimo) $
 	\Comment $ O(1) $
 	\State $ v_{actual} = v $
 	\Comment $ O(1) $
-
 \EndWhile
-
 \State $ return \: camino $
 \Comment $ O(1) $
 
@@ -83,7 +79,7 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 
 \subsection{Complejidad temporal para el peor caso}
 
-La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de el nene . El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y recorre como m\'aximo una vez cada v\'ertice (dado el vector visitados), por lo tanto tiene complejidad $O(n)$. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(el nene) + O(n)*(O(m)+O(m)) = O(nm)$. 
+La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de el nene . El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y recorre como m\'aximo una vez cada v\'ertice (dado el vector visitados), por lo tanto tiene complejidad $O(n)$. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(el nene)+ O(n)*(O(m)+O(m)) = O(nm)$. 
 
 \subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
 %Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
