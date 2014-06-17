@@ -124,9 +124,51 @@ void Camino::imprimir_camino(ostream& out){
 	out << "(" << this->camino.back() << ")" << endl;
 }
 
+list<nodo_t>::const_iterator Camino::obtener_iterador_begin(){
+	return this->camino.begin();
+}
+
+list<nodo_t>::const_iterator Camino::obtener_iterador_end(){
+	return this->camino.end();
+}
+
+// -------------- Vecino ---------------------------------
+
+Vecino::Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j){
+	this->i = i;
+	this->j = j;
+	this->en_comun = comun;
+	this->desde_i_a_comun = desde_i;
+	this->desde_j_a_comun = desde_j;
+}
+
+Vecino::~Vecino(){
+
+}
+
+nodo_t Vecino::obtener_nodo_i(){
+	return this->i;
+}
+
+nodo_t Vecino::obtener_nodo_j(){
+	return this->j;
+}
+
+nodo_t Vecino::obtener_nodo_comun(){
+	return this->en_comun;
+}
+
+Arista Vecino::obtener_arista_i_comun(){
+	return this->desde_i_a_comun;
+}
+
+Arista Vecino::obtener_arista_j_comun(){
+	return this->desde_j_a_comun;
+}
+
 // -------------- Grafo ---------------------------------
 
-Grafo::Grafo(int cant_inicial_nodos = 0){
+Grafo::Grafo(int cant_inicial_nodos){
 	this->cantidad_nodos=cant_inicial_nodos;
 	this->cantidad_aristas = 0;
 	nodo_src = 0;
@@ -288,11 +330,11 @@ Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_mini
 		}
 	}
 
-	if(target_a_minimizar == COSTO_W1){
-		cout << "Distancia minima de origen a destino respecto a W1: " << costo_minimo[destino] << endl;	
-	}else if(target_a_minimizar == COSTO_W2){		
-		cout << "Distancia minima de origen a destino respecto a W2: " << costo_minimo[destino] << endl;
-	}	
+	//if(target_a_minimizar == COSTO_W1){
+	//	cout << "Distancia minima de origen a destino respecto a W1: " << costo_minimo[destino] << endl;	
+	//}else if(target_a_minimizar == COSTO_W2){		
+	//	cout << "Distancia minima de origen a destino respecto a W2: " << costo_minimo[destino] << endl;
+	//}	
 	
 	//armo camino
 	Camino c(this->mat_adyacencia);
@@ -305,20 +347,15 @@ Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_mini
 	return c;
 }
 
-// -------------- Main ---------------------------------
-
-int main(int argc, char**argv){
-	Grafo g;
-
-	g.unserialize(cin);
-
-	g.imprimir_matriz_adyacencia(cout);
-
-	Camino c = g.dijkstra(0, 2, COSTO_W1);
-	c.imprimir_camino(cout);
-
-	c = g.dijkstra(0, 2, COSTO_W2);
-	c.imprimir_camino(cout);
-
-	return 0;
+list<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){
+	list<Vecino> res;
+	vector<Arista> adyacentesFila_i = this->mat_adyacencia[i];
+	vector<Arista> adyacentesFila_j = this->mat_adyacencia[j];
+	for(int idx=0;idx<this->cantidad_nodos;idx++){
+		if(adyacentesFila_i[idx].esta_presente() && adyacentesFila_j[idx].esta_presente()){
+			//el nodo idx es adyacente de i y j.
+			res.push_back(Vecino(i, j, idx, adyacentesFila_i[idx], adyacentesFila_j[idx]));
+		}
+	}	
+	return res;
 }
