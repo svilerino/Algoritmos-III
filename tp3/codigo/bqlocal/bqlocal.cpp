@@ -7,104 +7,87 @@
 
 using namespace std;
 
+void agregar_arista(lista_adyacencia_t& lista_adyacentes, nodo_t a, nodo_t b, costo_t w1, costo_t w2){
+    // Recordar agregar dos veces las aristas(ambas direcciones) en un grafo no dirigido
+    // pensar en arista entre u y v, v pertenece a vecinos (u) y u pertenece a vecinos(v)
+	lista_adyacentes[a].CONTAINER_ADD_METHOD(vecino_t(b, w1, w2));
+	lista_adyacentes[b].CONTAINER_ADD_METHOD(vecino_t(a, w1, w2));
+}
+
 void armar_grafo(lista_adyacencia_t& lista_adyacentes, int cantNodos){
 	//Sea G = (V, E) inicializar lista_adyacentes(n), donde n = #(V), para cada
     //i natural tal que 0<=i<n es el i-esimo nodo del grafo G en el conjunto V,
-    //se agrega a la lista de nodos en lista_adyacentes[i](recordar es vector<vector<nodo>>)
+    //se agrega a la lista de nodos en lista_adyacentes[i](recordar es vector<VECINOS_CONTAINER<nodo>>)
     //cada vecino de ese nodo.
-    // Recordar agregar dos veces las aristas(ambas direcciones) en un grafo no dirigido
-    // pensar en arista entre u y v, v pertenece a vecinos (u) y u pertenece a vecinos(v)
 
-    // 0 = a
-    lista_adyacentes[0].CONTAINER_ADD_METHOD(nodo_t(1, 7, 1));
-    lista_adyacentes[0].CONTAINER_ADD_METHOD(nodo_t(2, 9, 3));
-    lista_adyacentes[0].CONTAINER_ADD_METHOD(nodo_t(5, 14, 4));
-    // 1 = b
-    lista_adyacentes[1].CONTAINER_ADD_METHOD(nodo_t(0, 7, 1));
-    lista_adyacentes[1].CONTAINER_ADD_METHOD(nodo_t(2, 10, 1));
-    lista_adyacentes[1].CONTAINER_ADD_METHOD(nodo_t(3, 15, 1));
-    // 2 = c
-    lista_adyacentes[2].CONTAINER_ADD_METHOD(nodo_t(0, 9, 1));
-    lista_adyacentes[2].CONTAINER_ADD_METHOD(nodo_t(1, 10, 1));
-    lista_adyacentes[2].CONTAINER_ADD_METHOD(nodo_t(3, 11, 1));
-    lista_adyacentes[2].CONTAINER_ADD_METHOD(nodo_t(5, 2, 1));
-    // 3 = d
-    lista_adyacentes[3].CONTAINER_ADD_METHOD(nodo_t(1, 15, 1));
-    lista_adyacentes[3].CONTAINER_ADD_METHOD(nodo_t(2, 11, 1));
-    lista_adyacentes[3].CONTAINER_ADD_METHOD(nodo_t(4, 6, 1));
-    // 4 = e
-    lista_adyacentes[4].CONTAINER_ADD_METHOD(nodo_t(3, 6, 1));
-    lista_adyacentes[4].CONTAINER_ADD_METHOD(nodo_t(5, 9, 1));
-    // 5 = f
-    lista_adyacentes[5].CONTAINER_ADD_METHOD(nodo_t(0, 14, 1));
-    lista_adyacentes[5].CONTAINER_ADD_METHOD(nodo_t(2, 2, 1));
-    lista_adyacentes[5].CONTAINER_ADD_METHOD(nodo_t(4, 9, 1));
+	//agregar_arista(nodo a, nodo b, costo w1, costo w2)
+	agregar_arista(0, 1, 2, 3);
+	agregar_arista(0, 2, 2, 3);
 
-    for(int i=0;i<cantNodos;i++){
-    	cout << "Vecinos de " << i << endl;
-    	const VECINOS_CONTAINER<nodo_t> &vecinos = lista_adyacentes[i];
-        for (VECINOS_CONTAINER<nodo_t>::const_iterator vecino_iter = vecinos.begin(); vecino_iter != vecinos.end(); ++vecino_iter){
-        	cout << vecino_iter->nodo_index << endl;
-        }
-    }
+
+    //for(int i=0;i<cantNodos;i++){
+    //	cout << "Vecinos de " << i << endl;
+    //	const VECINOS_CONTAINER<vecino_t> &vecinos = lista_adyacentes[i];
+    //    for (VECINOS_CONTAINER<vecino_t>::const_iterator vecino_iter = vecinos.begin(); vecino_iter != vecinos.end(); ++vecino_iter){
+    //    	cout << vecino_iter->nodo_index << endl;
+    //    }
+    //}
 }
 
-void custom_set_intersection(VECINOS_CONTAINER<nodo_t>::iterator first1, VECINOS_CONTAINER<nodo_t>::iterator last1,
-                          VECINOS_CONTAINER<nodo_t>::iterator first2, VECINOS_CONTAINER<nodo_t>::iterator last2,
-                          VECINOS_CONTAINER<nodo_t>& vecinosEnComun)
-{
-    while (first1 != last1 && first2 != last2) {
-        if (*first1 < *first2) {
-            ++first1;
-        } else  {
-            if (!(*first2 < *first1)) {
-                vecinosEnComun.CONTAINER_ADD_METHOD(*first1++);
-            }
-            ++first2;
-        }
-    }
-}
+//void custom_set_intersection(VECINOS_CONTAINER<vecino_t>::const_iterator first1, VECINOS_CONTAINER<vecino_t>::const_iterator last1,
+//                          VECINOS_CONTAINER<vecino_t>::const_iterator first2, VECINOS_CONTAINER<vecino_t>::const_iterator last2,
+//                          VECINOS_CONTAINER<vecino_t>& vecinosEnComun)
+//{
+//    while (first1 != last1 && first2 != last2) {
+//        if (*first1 < *first2) {
+//            ++first1;
+//        } else  {
+//            if (!(*first2 < *first1)) {
+//                vecinosEnComun.CONTAINER_ADD_METHOD(*first1++);
+//            }
+//            ++first2;
+//        }
+//    }
+//}
 
-VECINOS_CONTAINER<nodo_t> obtenerVecinosEnComun(nodo_index_t k, nodo_index_t k_sig, lista_adyacencia_t& lista_adyacentes){
-	const VECINOS_CONTAINER<nodo_t> &vecinos_k = lista_adyacentes[k];
-	const VECINOS_CONTAINER<nodo_t> &vecinos_k_sig = lista_adyacentes[k_sig];
-	VECINOS_CONTAINER<nodo_t> vecinosEnComun;
-	custom_set_intersection(vecinos_k.begin(), vecinos_k.end(),
-							 vecinos_k_sig.begin(), vecinos_k_sig.end(), 
-							 vecinosEnComun);
-	return vecinosEnComun;
-}
+//VECINOS_CONTAINER<vecino_t> obtenerVecinosEnComun(nodo_t k, nodo_t k_sig, lista_adyacencia_t& lista_adyacentes){
+//	const VECINOS_CONTAINER<vecino_t> &vecinos_k = lista_adyacentes[k];
+//	const VECINOS_CONTAINER<vecino_t> &vecinos_k_sig = lista_adyacentes[k_sig];
+//	VECINOS_CONTAINER<vecino_t> vecinosEnComun;
+//	custom_set_intersection(vecinos_k.begin(), vecinos_k.end(),
+//							 vecinos_k_sig.begin(), vecinos_k_sig.end(), 
+//							 vecinosEnComun);
+//	return vecinosEnComun;
+//}
 
-
-
-void busquedaLocal(list<nodo_index_t> camino, lista_adyacencia_t& lista_adyacentes){
-	
-	list<nodo_index_t>::const_iterator it = camino.begin();
-	list<nodo_index_t>::const_iterator runner_it = camino.begin();
-	runner_it++;
-	list<nodo_index_t>::const_iterator final_camino = camino.end();
-	while(runner_it != final_camino){
-		cout << "Buscando mejorar la conexion (" << *it << ", " << *runner_it << ")" << endl;
-
-		//busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
-		//sea menor al peso de la arista directa
-
-		//necesito los costos it->vecinos_it y vecinos_it->runner_it
-		//es decir, los costos de las aristas del camino entre it y runner_it			
-
-		VECINOS_CONTAINER<nodo_t> vecinosEnComun = obtenerVecinosEnComun(*(it), *(runner_it), lista_adyacentes);
-		VECINOS_CONTAINER<nodo_t>::const_iterator vecinos_it = vecinosEnComun.begin();
-		VECINOS_CONTAINER<nodo_t>::const_iterator final_vecinos = vecinosEnComun.end();
-		cout << "Vecinos en comun de (" << *it << ") y (" << *runner_it << ")" << endl;
-		while(vecinos_it != final_vecinos){
-			cout << vecinos_it->nodo_index << endl;
-
-			++vecinos_it;
-		}
-		++it;
-		++runner_it;
-	}
-}
+//void busquedaLocal(list<nodo_t> camino, lista_adyacencia_t& lista_adyacentes){
+//	
+//	list<nodo_t>::const_iterator it = camino.begin();
+//	list<nodo_t>::const_iterator runner_it = camino.begin();
+//	runner_it++;
+//	list<nodo_t>::const_iterator final_camino = camino.end();
+//	while(runner_it != final_camino){
+//		cout << "Buscando mejorar la conexion (" << *it << ", " << *runner_it << ")" << endl;
+//
+//		//busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
+//		//sea menor al peso de la arista directa
+//
+//		//necesito los costos it->vecinos_it y vecinos_it->runner_it
+//		//es decir, los costos de las aristas del camino entre it y runner_it			
+//
+//		VECINOS_CONTAINER<vecino_t> vecinosEnComun = obtenerVecinosEnComun(*(it), *(runner_it), lista_adyacentes);
+//		VECINOS_CONTAINER<vecino_t>::const_iterator vecinos_it = vecinosEnComun.begin();
+//		VECINOS_CONTAINER<vecino_t>::const_iterator final_vecinos = vecinosEnComun.end();
+//		cout << "Vecinos en comun de (" << *it << ") y (" << *runner_it << ")" << endl;
+//		while(vecinos_it != final_vecinos){
+//			cout << vecinos_it->nodo_index << endl;
+//
+//			++vecinos_it;
+//		}
+//		++it;
+//		++runner_it;
+//	}
+//}
 
 int main(int argc, char **argv){
 	//Sea G=(V,E) un grafo,
@@ -116,8 +99,8 @@ int main(int argc, char **argv){
 	//Caso contrario, este camino sera la solucion inicial factible para comenzar la busqueda local
 	
 	//--------------------------------- Parametros del algoritmo -------------------------
-	nodo_index_t nodo_src = 0;
-	nodo_index_t nodo_dst = 4;
+	nodo_t nodo_src = 0;
+	nodo_t nodo_dst = 4;
 	costo_t limit_w1 = 21;
 
 	//--------------------------------- Obtengo el grafo ---------------------------------
@@ -127,9 +110,9 @@ int main(int argc, char **argv){
 
 	//--------------------------------- Busco solucion inicial ---------------------------
     vector<costo_t> distancia;
-    vector<nodo_index_t> predecesores;
+    vector<vecino_t> predecesores;
     //calcular arbol de caminos minimos desde nodo_src
-    dijkstraCaminosMinimos(nodo_src, lista_adyacentes, distancia, predecesores);
+    dijkstra_caminos_minimos(nodo_src, lista_adyacentes, distancia, predecesores);
     cout << "Distancia minima desde (" << nodo_src << ") hasta (" << nodo_dst << "): " << distancia[nodo_dst] << endl;
     
     //--------------------------------- Valido la factibilidad de la solucion----------------
@@ -147,18 +130,18 @@ int main(int argc, char **argv){
     }
 
     //--------------------------------- Construyo solucion inicial --------------------------    
-    list<nodo_index_t> camino = dijkstraConstruirCamino(nodo_dst, predecesores);
+    list<vecino_t> camino = dijkstra_construir_camino(vecino_t(nodo_dst, 0, 0), predecesores);
     cout << "Camino Minimo: ";
     
     //imprimir camino
-    list<nodo_index_t>::const_iterator iterador;
+    list<vecino_t>::const_iterator iterador;
     for (iterador = camino.begin(); iterador != camino.end(); ++iterador) {
-        cout << (*iterador) << " -> ";
+        cout << "[idx: "<< iterador->nodo_index << "; peso_w1: " << iterador->costo_w1 << "; peso_w2: " << iterador->costo_w2 << "] -> ";
     }
     cout << "Nil" << endl;
 
     //--------------------------------- Comienzo la busqueda local --------------------------    
-    busquedaLocal(camino, lista_adyacentes);
+    //busquedaLocal(camino, lista_adyacentes);
 
     return 0;
 }
