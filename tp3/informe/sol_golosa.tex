@@ -5,35 +5,89 @@ El algoritmo propuesto consta de dos etapas: una etapa de inicializaci\'on y lue
 
 \subsubsection{Inicializaci\'on}
 
-Nuestra etapa de inicializaci\'on consta en calcular los caminos m\'inimos en cuanto a peso $w_1$ de todos los nodos hacia el nodo de llegada. Ya que el grafo es simple, las aristas no tienen orientaci\'on definida, por lo cual dados dos nodos $v_1$ y $v_2$, el camino de $v_1$ a $v_2$ es igual al camino de $v_2$ a $v_1$. Esto nos permite ejecutar una \'unica vez el algoritmo de Dikjstra desde el nodo de llegada hasta todos los dem\'as y obtener lo buscado.
+Nuestra etapa de inicializaci\'on consta en calcular los caminos m\'inimos en cuanto a costo $w_1$ de todos los nodos hacia el nodo de llegada. Ya que el grafo es simple, las aristas no tienen orientaci\'on definida, por lo cual dados dos nodos $v_1$ y $v_2$, el camino de $v_1$ a $v_2$ es igual al camino de $v_2$ a $v_1$. Esto nos permite ejecutar una \'unica vez el algoritmo de Dikjstra desde el nodo de llegada hasta todos los dem\'as y obtener lo buscado.
 
 \vspace{2mm}
 
-Una vez obtenidos los caminos m\'inimos en cuanto a peso $w_1$, \'estos nos permiten conocer lo siguiente:
+Una vez obtenidos los caminos m\'inimos en cuanto a costo $w_1$, \'estos nos permiten conocer lo siguiente:
 
 \begin{enumerate}
-\item Al iniciar el algoritmo, aquellos nodos para los cuales no existe un camino de longitud $w_1$ menor a $K$ hasta el nodo llegada, los cuales nuestro algoritmo va a ignorar.
-\item En medio de la ejecuci\'on del algoritmo, llamando $W_{ac}$ a la acumulac\'on de pesos $w_1$ del camino recorrido por el algoritmo hasta ahora, puedo saber si el nodo de la pro\'oxima arista a elegir tiene al menos un camino $c$ hasta el nodo llegada tal que, el peso del camino formado por la uni\'on de $c$ y el peso $W_{ac}$ recorrido hasta ahora es menor a $K$. En caso de no tenerlo, desde ese nodo no hay un camino v\'alido hasta la llegada, por lo tanto nuestro algoritmo va a descartar esta arista y elegir alguna que tenga al menos un camino posible hasta la llegada. Esto lo podemos conocer, ya que la ejecuci\'on de Dijkstra inicial nos brinda el peso $w_1$ del camino m\'inimo desde el nodo hasta la llegada, por lo tanto  si $W_{ac}$ + $arista$ + $long(minimoCamino)$ $\leq$ $K$ sabemos que existe al menos este camino v\'alido, caso contrario descartamos el nodo.
+\item Al iniciar el algoritmo, aquellos nodos para los cuales no existe un camino de longitud $w_1 \leq K$ hasta el nodo llegada, los cuales nuestro algoritmo va a ignorar.
+\item En medio de la ejecuci\'on del algoritmo, llamando $W_{ac}$ a la acumulac\'on de costos $w_1$ del camino recorrido por el algoritmo hasta ahora, puedo saber si el nodo de la pro\'oxima arista a elegir tiene al menos un camino $c$ hasta el nodo llegada tal que, el costo del camino formado por la uni\'on de $c$ y el recorrido hasta ahora es $\leq K$. En caso de no tenerlo, desde ese nodo no hay un camino v\'alido hasta la llegada, por lo tanto nuestro algoritmo va a descartar esta arista y elegir alguna que tenga al menos un camino posible hasta la llegada. Esto lo podemos conocer, ya que la ejecuci\'on de Dijkstra inicial nos brinda el costo $w_1$ del camino m\'inimo desde el nodo hasta la llegada, por lo tanto  si $W_{ac}$ + $arista$ + $long(minimoCamino)$ $\leq$ $K$ sabemos que existe al menos este camino v\'alido, caso contrario descartamos el nodo.
 \end{enumerate}
 
-Esto nos brinda una propiedad invariante: sabemos que en cada iteraci\'on, el peso acumulado del recorrido hecho es necesariamente menor a $K$, y si al menos existe alg\'un un camino de peso menor a $K$ de salida a destino, el algoritmo necesariamente va a poder llegar al nodo de llegada. Deducimos esto al considerar que, o bien no existe ning\'un camino y  el algoritmo termina en la primera iteraci\'on (ya que Dijkstra indica que los caminos m\'inos de peso $K$ de todos los nodos adyacentes a la salida son mayores a $K$, por lo tanto no hay nodo que elegir), o el algoritmo elige una primera arista (por lo tanto existe un camino). 
+Esto nos brinda una propiedad invariante: sabemos que en cada iteraci\'on, el costo acumulado del recorrido hecho es necesariamente menor a $K$, y si al menos existe alg\'un un camino de costo menor a $K$ de salida a destino, el algoritmo necesariamente va a poder llegar al nodo de llegada. Deducimos esto al considerar que, o bien no existe ning\'un camino y  el algoritmo termina en la primera iteraci\'on (ya que Dijkstra indica que los caminos m\'inos de costo $K$ de todos los nodos adyacentes a la salida son mayores a $K$, por lo tanto no hay nodo que elegir), o el algoritmo elige una primera arista (por lo tanto existe un camino). 
 
 \vspace{2mm}
 
-Si el algoritmo elige una primera arista, pero luego no logra llegar a destino, significa que en alg\'un punto, desde un nodo $v$ no encontr\'o ninguna arista tal que $W_{ac}$ + $arista$ + $long(minimoCamino)$ $\leq$ $K$. Pero esto no puede ocurrir, ya que en la anterior iteraci\'on, tuvo que elegir necesariamente alguna arista con un extremo en $v$, y el invariante del algortimo nos asegura que desde $v$ existe alg\'un camino v\'alido hasta la llegada, lo cual es absurdo porque el algoritmo se detuvo cuando lleg\'o a v. De esta forma concluimos en que, si existe algu\'n camino v\'alido desde la salida hasta la llegada, entonces nuestro algoritmo siempre va a tener como salida un camino v\'alido.
+Si el algoritmo elige una primera arista, pero luego no logra llegar a destino, significa que en alg\'un punto, desde un nodo $v$ no encontr\'o ninguna arista tal que $W_{ac}$ + $arista$ + $long(minimoCamino)$ $\leq$ $K$. Pero esto no puede ocurrir, ya que en la anterior iteraci\'on, tuvo que elegir necesariamente alguna arista con un extremo en $v$, y el invariante del algortimo nos asegura que desde $v$ existe alg\'un camino v\'alido hasta la llegada, lo cual es absurdo porque el algoritmo se detuvo cuando lleg\'o a $v$. De esta forma concluimos en que, si existe algu\'n camino v\'alido desde la salida hasta la llegada, entonces nuestro algoritmo siempre va a tener como salida un camino v\'alido.
 
 \subsubsection{Algoritmo goloso}
 
-A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM usando una heur\'istica golosa. Luego de la ejecuc\'on inicial del algoritmo de Dijkstra, el ciclo principal comienza en el nodo salida y realiza una elecci\'on golosa, la cual es: desde el nodo $v$, descartar las aristas $(v,x)$ incidentes en $v$ tal que $W_{ac}$ + $ss$ + $long(minimoCamino(x))$ $\geq$ $K$. Entre las aristas que quedan, escoger la de menor peso $w_1$. El algoritmo itera hasta alcanzar el nodo llegada (iteraciones acotadas por $m$).
+A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM usando una heur\'istica golosa. Luego de la ejecuc\'on inicial del algoritmo de Dijkstra, el ciclo principal comienza en el nodo salida y realiza una elecci\'on golosa, la cual es: desde el nodo $v$, descartar las aristas $(v,x)$ incidentes en $v$ tal que $W_{ac}$ + $ss$ + $long(minimoCamino(x))$ $\geq$ $K$. Entre las aristas que quedan, escoger la de menor costo $w_1$.(Aqu\'i se encuentra la desici\'on golosa). El algoritmo itera hasta alcanzar el nodo llegada (iteraciones acotadas por $n$).
 
 \subsection{Pseudoc\'odigo}
 
 
+\begin{algorithmic}
+
+\Procedure{$Sol\_Golosa$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k$}{$\rightarrow lista<eje>\: camino$}
+
+\State $vector<int> \: distancias[g.\#nodos]$
+\Comment $ O(n) $
+\State $vector<bool> \: visitado[g.\#nodos]$
+\Comment $ O(n) $
+\State $ Dijkstra( g, v_2, distancias) $
+\Comment $ O() $
+\State $lista<eje> \: camino= \emptyset$
+\Comment $ O(1) $
+\State $ int \: costoCamino = 0 $
+\Comment $ O(1) $
+\State $ visitado[v_1] = true $
+\Comment $ O(1) $
+\State $ vertice \: v_{actual} = v_1 $
+\Comment $ O(1) $
+\While{ $ actual != v_2 \: || \: incidentes= \emptyset $ }
+\Comment $ O(n) $
+
+	\State $ list<eje> \: incidentes = incidentes(v_{actual}, g) $
+	\Comment $ O(m) $
+	\State $ eje \:	 minimo = cabeza(incidentes) $
+	\Comment $ O(1) $
+	\For {each $(u,v) \in \: incidentes$}
+	\Comment $ O(m) $
+		\If {$ distancias(v) + costoCamino < k \: \&\& \: costo2(u,v) \leq minimo\: \&\& \: visitados[v] = false $}
+		\Comment $ O(1) $
+			\State $ minimo = (u,v) $
+			\Comment $ O(1) $
+		\EndIf
+	\EndFor
+
+	\State $ Agregar(minimo, camino) $
+	\Comment $ O(1) $
+	\State $ costoCamino \: += costo1(minimo) $
+	\Comment $ O(1) $
+	\State $ v_{actual} = v $
+	\Comment $ O(1) $
+
+\EndWhile
+
+\State $ return \: camino $
+\Comment $ O(1) $
+
+\EndProcedure
+
+\end{algorithmic}
+
+
 
 \subsection{Complejidad temporal para el peor caso}
+
+La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de el nene . El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y recorre como m\'aximo una vez cada v\'ertice (dado el vector visitados), por lo tanto tiene complejidad $O(n)$. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(el nene) + O(n)*(O(m)+O(m)) = O(nm)$. 
+
 \subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
 %Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
 %Indicar si es posible que tan mala puede ser la solucion obtenida respecto a la solucion optima
-%\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hace falta hablar de eso aca}
+%\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hzym mnn bvgdtc  t ,   sace falta hablar de eso aca}
 
 % ---------------------------------------------------------------------------
