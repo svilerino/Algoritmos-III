@@ -3,8 +3,8 @@
 
 Arista::Arista(){
 	this->presente = false;
-	this->costo_w1 = costo_infinito;
-	this->costo_w2 = costo_infinito;
+	this->costo_w1 = 0;
+	this->costo_w2 = 0;
 }
 
 Arista::Arista(bool pres, costo_t w1, costo_t w2){
@@ -37,8 +37,8 @@ void Arista::marcar_presente(costo_t w1, costo_t w2){
 
 void Arista::desmarcar_presente(){
 	this->presente = false;
-	this->costo_w1 = costo_infinito;
-	this->costo_w2 = costo_infinito;
+	this->costo_w1 = 0;
+	this->costo_w2 = 0;
 }
 
 // -------------- Camino ---------------------------------
@@ -192,11 +192,11 @@ Grafo::~Grafo(){
 void Grafo::agregar_nodos(int cantidad_nodos_nuevos){
 	//agrego cantidad_nodos_nuevos columnas en todas las filas existentes
 	for(int i=0;i < this->cantidad_nodos;i++){
-		this->mat_adyacencia[i].resize(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, costo_infinito, costo_infinito));
+		this->mat_adyacencia[i].resize(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, 0, 0));
 	}
 	
 	//agrego cantidad_nodos_nuevos filas al final de la matriz de adyacencia
-	vector<Arista> vec_fila(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, costo_infinito, costo_infinito));
+	vector<Arista> vec_fila(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, 0, 0));
 	this->mat_adyacencia.resize(this->cantidad_nodos + cantidad_nodos_nuevos, vec_fila);
 	
 	//actualizo cantidad_nodos total del grafo
@@ -229,12 +229,17 @@ Arista Grafo::obtener_arista(nodo_t i, nodo_t j){
 }
 
 void Grafo::imprimir_matriz_adyacencia(ostream& out){	
-	out << "Matriz adyacencia:" << endl;
 	out << "Cantidad nodos: " << this->cantidad_nodos << endl;
 	out << "Cantidad aristas: " << this->cantidad_aristas << endl;
+	out << "Matriz adyacencia:" << endl;
 	for (int i = 0;i<this->cantidad_nodos;i++){
 		for (int j = 0;j<this->cantidad_nodos;j++){
-			out << "|_(" << this->mat_adyacencia[i][j].obtener_costo_w1() << ", " << this->mat_adyacencia[i][j].obtener_costo_w2() << ")_|";
+			out << "|_(" << this->mat_adyacencia[i][j].esta_presente() << ")_|";
+			//if(this->mat_adyacencia[i][j].esta_presente()){
+			//	out << "|_(" << this->mat_adyacencia[i][j].obtener_costo_w1() << ", " << this->mat_adyacencia[i][j].obtener_costo_w2() << ")_|";
+			//}else{
+			//	out << "|_(-1, -1)_|";
+			//}
 		}
 		out << endl;
 	}

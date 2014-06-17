@@ -1,31 +1,5 @@
 #include "grafo.h"
 
-//void custom_set_intersection(VECINOS_CONTAINER<vecino_t>::const_iterator first1, VECINOS_CONTAINER<vecino_t>::const_iterator last1,
-//                          VECINOS_CONTAINER<vecino_t>::const_iterator first2, VECINOS_CONTAINER<vecino_t>::const_iterator last2,
-//                          VECINOS_CONTAINER<vecino_t>& vecinosEnComun)
-//{
-//    while (first1 != last1 && first2 != last2) {
-//        if (*first1 < *first2) {
-//            ++first1;
-//        } else  {
-//            if (!(*first2 < *first1)) {
-//                vecinosEnComun.CONTAINER_ADD_METHOD(*first1++);
-//            }
-//            ++first2;
-//        }
-//    }
-//}
-
-//VECINOS_CONTAINER<vecino_t> obtenerVecinosEnComun(nodo_t k, nodo_t k_sig, lista_adyacencia_t& lista_adyacentes){
-//	const VECINOS_CONTAINER<vecino_t> &vecinos_k = lista_adyacentes[k];
-//	const VECINOS_CONTAINER<vecino_t> &vecinos_k_sig = lista_adyacentes[k_sig];
-//	VECINOS_CONTAINER<vecino_t> vecinosEnComun;
-//	custom_set_intersection(vecinos_k.begin(), vecinos_k.end(),
-//							 vecinos_k_sig.begin(), vecinos_k_sig.end(), 
-//							 vecinosEnComun);
-//	return vecinosEnComun;
-//}
-
 void busquedaLocal(Grafo& g, Camino& camino){
 	list<nodo_t>::const_iterator it = camino.obtener_iterador_begin();
 	list<nodo_t>::const_iterator runner_it = camino.obtener_iterador_begin();
@@ -34,21 +8,38 @@ void busquedaLocal(Grafo& g, Camino& camino){
 	while(runner_it != final_camino){
         nodo_t nodo_i = *it;
         nodo_t nodo_j = *runner_it;
-        costo_t costo_ij = camino.obtener_costo_w1_entre_nodos(nodo_i, nodo_j);
-		cout << "Buscando mejorar la conexion (" << nodo_i << ", " << nodo_j << ")" << endl;
-        cout << "Costo actual w1 de la arista (" << nodo_i << ", " << nodo_j << "): " << costo_ij << endl;
-		//busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
+        costo_t costo_ij_w1 = camino.obtener_costo_w1_entre_nodos(nodo_i, nodo_j);
+        costo_t costo_ij_w2 = camino.obtener_costo_w2_entre_nodos(nodo_i, nodo_j);
+        cout << "Buscando mejorar la conexion (" << nodo_i << ", " << nodo_j << ") agregando un nodo intermedio. Costos actuales    W1: " << costo_ij_w1 << "     W2: " << costo_ij_w2 << endl;
+        //cout << "Costo actual w1 de la arista (" << nodo_i << ", " << nodo_j << "): " << costo_ij_w1 << endl;
+        //cout << "Costo actual w2 de la arista (" << nodo_i << ", " << nodo_j << "): " << costo_ij_w2 << endl;
+		
+        //busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
 		//sea menor al peso de la arista directa
 
         list<Vecino> vecinosEnComun = g.obtener_adyacentes_en_comun(nodo_i, nodo_j);
 		list<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
 		list<Vecino>::iterator final_vecinos = vecinosEnComun.end();
-		cout << "Vecinos en comun de (" << nodo_i << ") y (" << nodo_j << ")" << endl;
+		
+        cout << "Caminos alternativos agregando un nodo en comun entre (" << nodo_i << ") y (" << nodo_j << ")" << endl;
+
 		while(vecinos_it != final_vecinos){
-			cout << vecinos_it->obtener_nodo_comun() << endl;
+            nodo_t nodo_comun = vecinos_it->obtener_nodo_comun();
+
+            costo_t i_comun_w1 = vecinos_it->obtener_arista_i_comun().obtener_costo_w1();
+            costo_t i_comun_w2 = vecinos_it->obtener_arista_i_comun().obtener_costo_w2();
+            
+            costo_t j_comun_w1 = vecinos_it->obtener_arista_j_comun().obtener_costo_w1();
+            costo_t j_comun_w2 = vecinos_it->obtener_arista_j_comun().obtener_costo_w2();
+
+            costo_t costo_i_comun_j_w1 = i_comun_w1 + j_comun_w1;
+            costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;
+            
+            cout << "\tCamino (" << nodo_i << ") --> (" << nodo_comun << ") --> (" << nodo_j << ") Costos Asociados a esta modificacion:    W1: " << costo_i_comun_j_w1 << "     W2: " << costo_i_comun_j_w2 << endl;
 
 			++vecinos_it;
 		}
+        cout << endl << endl;
 		++it;
 		++runner_it;
 	}
