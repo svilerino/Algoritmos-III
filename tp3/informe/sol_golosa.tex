@@ -24,7 +24,7 @@ Si el algoritmo elige una primera arista, pero luego no logra llegar a destino, 
 
 \subsubsection{Algoritmo goloso}
 
-A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM usando una heur\'istica golosa. Luego de la ejecuc\'on inicial del algoritmo de Dijkstra, el ciclo principal comienza en el nodo salida y realiza una elecci\'on golosa, la cual es: desde el nodo $v$, descartar las aristas $(v,x)$ incidentes en $v$ tal que $W_{ac}$ + $ss$ + $long(minimoCamino(x))$ $\geq$ $K$. Entre las aristas que quedan, escoger la de menor costo $w_1$.(Aqu\'i se encuentra la desici\'on golosa). El algoritmo itera hasta alcanzar el nodo llegada (iteraciones acotadas por $n$).
+A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM usando una heur\'istica golosa. Luego de la ejecuc\'on inicial del algoritmo de Dijkstra, el ciclo principal comienza en el nodo salida y realiza una elecci\'on golosa, la cual es: desde el nodo $v$, descartar las aristas $(v,x)$ incidentes en $v$ tal que $W_{ac}$ + $ss$ + $long(minimoCamino(x))$ $\geq$ $K$. Entre las aristas que quedan, escoger la de menor costo $w_1$.(Aqu\'i se encuentra la desici\'on golosa). El algoritmo itera hasta alcanzar el nodo llegada.
 
 \subsection{Pseudoc\'odigo}
 
@@ -52,7 +52,7 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 	\State $ list<eje> \: incidentes = incidentes(v_{actual}, g) $
 	\Comment $ O(m) $
 	\State $ eje \:	 minimo = primeraNoVisitada(incidentes) $
-	\Comment $ O(1) Para\: evitar \:que \:cicle $
+	\Comment $ O(m) Para\: evitar \:que \:cicle $
 	\For {each $(u,v) \in \: incidentes$}
 	\Comment $ O(m) $
 		\If {$ distancias(v) + costoCamino \leq k \: \&\& \: costo2(u,v) \leq minimo\: \&\& \: visitadas[(u,v)] = false $}
@@ -74,16 +74,24 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 \EndProcedure
 
 \end{algorithmic}
-
-
-
 \subsection{Complejidad temporal para el peor caso}
 
 La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de el nene . El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y recorre como m\'aximo una vez cada v\'ertice (dado el vector visitados), por lo tanto tiene complejidad $O(n)$. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(el nene)+ O(n)*(O(m)+O(m)) = O(nm)$. 
 
-\subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
-%Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
-%Indicar si es posible que tan mala puede ser la solucion obtenida respecto a la solucion optima
-%\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hzym mnn bvgdtc  t ,   sace falta hablar de eso aca}
+\subsection{Nivel de optimalidad de las soluciones}
 
-% ---------------------------------------------------------------------------
+A continuaci\'on vamos a exponer casos en los que la heur\'istica es muy poco eficiente.
+\subsubsection{Costos $w_1$ despreciables}
+
+Nuestra heur\'istica se basa fuertemente en asegurarse de que el camino encontrado efectivamente llegue al v\'ertice final, y que el costo $w_1$ acumulado sea menor a $k$, y por esto, uno de sus principales fuerets es el descarte de aristas para los cuales no existen caminos v\'alidos. Pero, si los costos $w_1$ de las aristas son despreciables, es decir, sus valores son muy pequenos (no nulos), de tal forma que el costo de cualquier camino que no repite v\'ertices es siempre menor a $K$, el algoritmo entero se reduce a la elecci\'on golosa de, en cada iteraci\'on, elegir la arista incidente de menor peso y agregarla al camino. Esto puede traer consecuencias como \'esta:
+
+\begin{center}
+\includegraphics[scale=0.7]{grafoCaminoMasLargo.png}
+\end{center}
+\vspace{2mm}
+
+La familia de grafos en la cual para todo camino entre dos nodos (que no repita v\'ertices) su costo $w_1$ es siempre menor a $k$. En estos casos el m\'etodo de desici\'on y descarte del algoritmo es inefectivo y s\'olo prima la desici\'on golosa. Vemos en este grafo, que las aristas de menor coste $w_2$ (en color rojo) forman una suceci\'on con un coste final $w_2$ m\'as alto que el camino \'optimo (en verde). Los n\'umeros junto a cada arista son los costos $w_1$, y omitimos los costos $w_2$.
+
+\vspace{2mm}
+
+Hay que destacar que podr\'ia generarse un grafo con una suceci\'on arbitrariamente larga de aristas tal que para cada nodo, la arista de menor peso $w_2$ pertenezca a ella, y que la \'unica arista que incida en el v\'ertice de llegada sea la \'ultima. De esta forma, podemos generarnos grafos de esta familia en los cuales la soluci\'on de nuestra heur\'stica est\'a tan lejos de la \'optima como queramos. De todas formas, el algoritmo nunca se va a quedar ciclando infinitamente, ya que como los costos son no nulos, en alg\'un punto el algoritmo va a descartar la arista que lo lleva de nuevo al ciclo ya que el costo $w_1$ del ciclo + el del camino recorrido ya no va a ser menor o igual a $k$.
