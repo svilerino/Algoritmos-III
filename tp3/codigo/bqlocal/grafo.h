@@ -74,6 +74,7 @@ private:
 	Arista desde_j_a_comun;
 public:
 	Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j);
+	Vecino();
 	~Vecino();
 	nodo_t obtener_nodo_i();
 	nodo_t obtener_nodo_j();
@@ -96,6 +97,9 @@ private:
 	Camino camino_obtenido;
 	//dado el camino, podemos obtener los pesos de cada "salto" indexando en la matriz de adyacencia el costo de cada salto
 	//tanto para w1 como w2
+
+	//metodos auxiliares
+	bool mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2, Vecino& mejor_vecino);
 
 public:
 	//constructor y destructor
@@ -122,8 +126,14 @@ public:
 	void unserialize(istream& in);
 
 	//Algoritmos
+	//Realiza la busqueda local sobre una solucion inicial factible creada por dijkstra sobre COSTO_W1 entre src y dst
+	void busqueda_local_entre_pares_insertando();
+	void busqueda_local_entre_triplas_salteando();
+	void busqueda_local_entre_triplas_reemplazando_intermedio();
+	//Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
 	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
-	void busqueda_local();
+	//Devuelve el camino minimo entre origen y destino y quedan modificados por referencia los costos_minimos y los predecesores de todos los nodos de G
+	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor);
 };
 
 #endif

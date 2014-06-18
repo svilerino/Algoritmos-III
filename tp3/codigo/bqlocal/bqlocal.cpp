@@ -32,7 +32,7 @@ int main(int argc, char **argv){
     c.imprimir_camino(cout);
 
     //--------------------------------- Comienzo la busqueda local -------------------    
-    g.busqueda_local();
+    g.busqueda_local_entre_pares_insertando();
 
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout);

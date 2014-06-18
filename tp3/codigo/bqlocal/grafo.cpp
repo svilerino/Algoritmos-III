@@ -151,6 +151,15 @@ Vecino::Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j)
 	this->desde_j_a_comun = desde_j;
 }
 
+Vecino::Vecino(){
+	this->i = 0;
+	this->j = 0;
+	this->en_comun = 0;
+	//aristas constructor por defecto
+	//this->desde_i_a_comun = desde_i;
+	//this->desde_j_a_comun = desde_j;
+}
+
 Vecino::~Vecino(){
 
 }
@@ -304,7 +313,11 @@ void Grafo::unserialize(istream& in){
 Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
 	vector<costo_t> costo_minimo;
 	vector<nodo_t> predecesor;
+	return this->dijkstra(origen, destino, target_a_minimizar, costo_minimo, predecesor);
+}
 
+//Devuelve el camino minimo entre origen y destino y quedan modificados por referencia los costos_minimos y los predecesores de todos los nodos de G
+Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor){
 	//inicializacion
 	int n = this->cantidad_nodos;
 	costo_minimo.clear();
@@ -390,7 +403,52 @@ nodo_t Grafo::obtener_nodo_destino(){
 	return this->nodo_dst;
 }
 
-void Grafo::busqueda_local(){
+bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2, Vecino& mejor_vecino){	
+    cout << "Buscando mejorar la conexion (" << nodo_i << ")----[" << costo_ij_w1 << ", " << costo_ij_w2 << "]---->(" << nodo_j << ") agregando un nodo intermedio..." << endl;
+    //busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
+	//sea menor al peso de la arista directa
+ 	list<Vecino> vecinosEnComun = this->obtener_adyacentes_en_comun(nodo_i, nodo_j);
+	list<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
+	list<Vecino>::iterator final_vecinos = vecinosEnComun.end();
+	
+    //me fijo todos los caminos alternativos agregando un nodo entre los nodos ij,
+    //me quedo con la mejor y despues del while, si hay mejora, la aplico al camino.
+    list<Vecino>::iterator mejor_vecino_it = vecinosEnComun.end();//inicializamos en algo que indique que no hay mejora
+	costo_t mejor_camino_ij_w2 = costo_ij_w2;
+	while(vecinos_it != final_vecinos){
+        costo_t i_comun_w1 = vecinos_it->obtener_arista_i_comun().obtener_costo_w1();
+        costo_t i_comun_w2 = vecinos_it->obtener_arista_i_comun().obtener_costo_w2();
+        costo_t j_comun_w1 = vecinos_it->obtener_arista_j_comun().obtener_costo_w1();
+        costo_t j_comun_w2 = vecinos_it->obtener_arista_j_comun().obtener_costo_w2();
+        costo_t costo_i_comun_j_w1 = i_comun_w1 + j_comun_w1;
+        costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;
+		costo_t hipotetico_w1_total_camino = (total_w1 - costo_ij_w1 + costo_i_comun_j_w1);
+		costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
+			
+		//veamos si el camino es una solucion factible
+		if(hipotetico_w1_total_camino < this->obtener_limite_w1()){
+			//es factible, veamos si mejora al ultimo mejor revisado
+			if(costo_i_comun_j_w2 < mejor_camino_ij_w2){
+				//encontre mejora!
+				//actualizo variables
+				mejor_camino_ij_w2 = hipotetico_w2_total_camino;
+				mejor_vecino_it = vecinos_it;
+			}
+		}//else{
+			//si no lo es, ignoramos esta modificacion al sendero
+			//cout << "\tDescartando este cambio. No ofrece mejora sobre w2 o se pasa de la cota de w1" << endl;
+		//}
+		++vecinos_it;
+	}
+	if(mejor_vecino_it != final_vecinos){
+		mejor_vecino = *mejor_vecino_it;		
+		return true;
+	}
+	return false;
+ }
+
+void Grafo::busqueda_local_entre_pares_insertando(){
+	//caso donde reemplazo un camino vk---->vk+1 por otro vk---->vj---->vk+1 tal que mejora w2 y w1 no se pasa en el costo total del camino
 	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
 	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_begin();
 	runner_it++;
@@ -403,52 +461,22 @@ void Grafo::busqueda_local(){
         nodo_t nodo_i = *it;
         nodo_t nodo_j = *runner_it;
         costo_t costo_ij_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_i, nodo_j);
-        costo_t costo_ij_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_i, nodo_j);
-        cout << "Buscando mejorar la conexion (" << nodo_i << ")----[" << costo_ij_w1 << ", " << costo_ij_w2 << "]---->(" << nodo_j << ") agregando un nodo intermedio..." << endl;
-        //busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
-		//sea menor al peso de la arista directa
+    	costo_t costo_ij_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_i, nodo_j);
 
-        list<Vecino> vecinosEnComun = this->obtener_adyacentes_en_comun(nodo_i, nodo_j);
-		list<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
-		list<Vecino>::iterator final_vecinos = vecinosEnComun.end();
-		
-        //me fijo todos los caminos alternativos agregando un nodo entre los nodos ij,
-        //me quedo con la mejor y despues del while, si hay mejora, la aplico al camino.
-        list<Vecino>::iterator mejor_vecino_it = vecinosEnComun.end();//inicializamos en algo que indique que no hay mejora
-		costo_t mejor_camino_ij_w2 = costo_ij_w2;
-		while(vecinos_it != final_vecinos){
-            costo_t i_comun_w1 = vecinos_it->obtener_arista_i_comun().obtener_costo_w1();
-            costo_t i_comun_w2 = vecinos_it->obtener_arista_i_comun().obtener_costo_w2();
-            costo_t j_comun_w1 = vecinos_it->obtener_arista_j_comun().obtener_costo_w1();
-            costo_t j_comun_w2 = vecinos_it->obtener_arista_j_comun().obtener_costo_w2();
-            costo_t costo_i_comun_j_w1 = i_comun_w1 + j_comun_w1;
-            costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;
-			costo_t hipotetico_w1_total_camino = (total_w1 - costo_ij_w1 + costo_i_comun_j_w1);
-			costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
-				
-			//veamos si el camino es una solucion factible
-			if(hipotetico_w1_total_camino < this->obtener_limite_w1()){
-				//es factible, veamos si mejora al ultimo mejor revisado
-				if(costo_i_comun_j_w2 < mejor_camino_ij_w2){
-					//encontre mejora!
-					//actualizo variables
-					mejor_camino_ij_w2 = hipotetico_w2_total_camino;
-					mejor_vecino_it = vecinos_it;
-				}
-			}//else{
-				//si no lo es, ignoramos esta modificacion al sendero
-				//cout << "\tDescartando este cambio. No ofrece mejora sobre w2 o se pasa de la cota de w1" << endl;
-			//}
-			++vecinos_it;
-		}
+    	Vecino mejor_conexion_ij;
+    	//le paso una ref a una var tipo vecino, si devuelve true, se escribe por referencia el mejor camino, sino, no cambia lo que le pasamos.
+        bool encontre_mejora = mejorar_conexion_entre_pares(nodo_i, nodo_j,
+        										 costo_ij_w1, costo_ij_w2,
+        										 total_w1, total_w2,
+        										 mejor_conexion_ij);
 
 		//hay que ver si encontramos una mejora
-		if(mejor_vecino_it != final_vecinos){
-            nodo_t nodo_comun = mejor_vecino_it->obtener_nodo_comun();
-            costo_t i_comun_w1 = mejor_vecino_it->obtener_arista_i_comun().obtener_costo_w1();
-            costo_t i_comun_w2 = mejor_vecino_it->obtener_arista_i_comun().obtener_costo_w2();
-            costo_t j_comun_w1 = mejor_vecino_it->obtener_arista_j_comun().obtener_costo_w1();
-            costo_t j_comun_w2 = mejor_vecino_it->obtener_arista_j_comun().obtener_costo_w2();
+		if(encontre_mejora){//la funcion asegura que si dio true, me da el vecino por puntero en mejor_conexion_ij
+            nodo_t nodo_comun = mejor_conexion_ij.obtener_nodo_comun();
+            costo_t i_comun_w1 = mejor_conexion_ij.obtener_arista_i_comun().obtener_costo_w1();
+            costo_t i_comun_w2 = mejor_conexion_ij.obtener_arista_i_comun().obtener_costo_w2();
+            costo_t j_comun_w1 = mejor_conexion_ij.obtener_arista_j_comun().obtener_costo_w1();
+            costo_t j_comun_w2 = mejor_conexion_ij.obtener_arista_j_comun().obtener_costo_w2();
             costo_t costo_i_comun_j_w1 = i_comun_w1 + j_comun_w1;
             costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;
 			cout << "\tSe encontro una posible mejora. Ahora el sendero entre los nodos (" << nodo_i << ") y (" << nodo_j << ") es " << endl;
@@ -466,5 +494,16 @@ void Grafo::busqueda_local(){
 		++it;
 		++runner_it;
 	}
-	cout << "Todo: Buscar la maxima mejora entre los pares, esta es la mejor solucion de la vecindad de los caminos que difieren en un nodo" << endl;
+	cout << "Actualmente se iteran todos los pares (it, runner_it) y se verifica si mejorarian la solucion actual" << endl;
+	cout << "Todo: Buscar la maxima mejora entre todos los pares(it, runner_it), esta es la mejor solucion de la vecindad de los caminos que difieren en un nodo" << endl;
+	cout << "Modificar el camino actual segun la maxima mejora de la vecindad y actualizar las estructuras de la solucion obtenida en la clase Grafo/Camino/etc" << endl;
+}
+
+
+void busqueda_local_entre_triplas_salteando(){
+	//aca van el caso en los que salteo un nodo vk---->vk+1---->vk+2 convirtiendolo en vk---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino
+}
+
+void busqueda_local_entre_triplas_reemplazando_intermedio(){
+	//y el caso en que reemplazo vk+1 por otro vecino comun vj, convirtiendo vk---->vk+1---->vk+2 en vk---->vj---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino
 }
