@@ -30,7 +30,7 @@ void setW2(void *p, float w)
 
 bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 {
-	Solucion solucion_mejor;
+	Solucion solucion_mejor, solucion_vieja;
 	int cantidad_aristas, *adyacentes, i;
 	peso *p;
 	float w2, w1;
@@ -40,6 +40,11 @@ bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 	solucion_mejor.W2 = -1;
 	solucion_mejor.k = 0;
 	solucion_mejor.v = (int *)calloc(2 * g.CantidadAristas(), sizeof(int));
+	solucion_vieja.W1 = solucion->W1;
+	solucion_vieja.W2 = solucion->W2;
+	solucion_vieja.k = solucion->k;
+	solucion_vieja.v = (int *)calloc(2 * g.CantidadAristas(), sizeof(int));
+	memcpy(solucion_vieja.v, solucion->v, 2 * g.CantidadAristas() * sizeof(int));
 
 	if(u == v){
 		free(solucion_mejor.v);
@@ -65,9 +70,10 @@ bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 					memcpy(solucion_mejor.v, solucion->v, 2 * g.CantidadAristas() * sizeof(int));
 				}
 			}
-			solucion->k--;
-			solucion->W1 -= w1;
-			solucion->W2 -= w2;
+			solucion->W1 = solucion_vieja.W1;
+			solucion->W2 = solucion_vieja.W2;
+			solucion->k = solucion_vieja.k;
+			memcpy(solucion->v, solucion_vieja.v, 2 * g.CantidadAristas() * sizeof(int));
 			g.AgregarArista(u, adyacentes[i], p);
 		}
 	}
@@ -79,6 +85,7 @@ bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 	}
 	free(adyacentes);
 	free(solucion_mejor.v);
+	free(solucion_vieja.v);
 	return solucionado;
 }
 
