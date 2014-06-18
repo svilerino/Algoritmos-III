@@ -11,6 +11,7 @@
 using namespace std;
 
 typedef int nodo_t;
+typedef int longuitud_t;
 typedef double costo_t;
 typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
 
@@ -44,6 +45,7 @@ private:
 	costo_t costo_camino_w2;
 	matriz_adyacencia_t mat_adyacencia;
 public:
+	Camino();
 	Camino(matriz_adyacencia_t& mat_adyacencia);	
 	~Camino();
 
@@ -60,6 +62,7 @@ public:
 
 	list<nodo_t>::const_iterator obtener_iterador_begin();
 	list<nodo_t>::const_iterator obtener_iterador_end();
+	longuitud_t obtener_longuitud_camino();
 };
 
 class Vecino{
@@ -90,9 +93,7 @@ private:
 	nodo_t nodo_src;
 	nodo_t nodo_dst;
 	costo_t cota_w1;
-	costo_t costo_obtenido_w1;
-	costo_t costo_obtenido_w2;	
-	list<nodo_t> camino_obtenido;
+	Camino camino_obtenido;
 	//dado el camino, podemos obtener los pesos de cada "salto" indexando en la matriz de adyacencia el costo de cada salto
 	//tanto para w1 como w2
 
@@ -110,6 +111,10 @@ public:
 	Arista obtener_arista(nodo_t i, nodo_t j);	
 	//pre: 0 <= i <= j < cantidad_nodos y que i,j sean adyacentes
 	list<Vecino> obtener_adyacentes_en_comun(nodo_t i, nodo_t j);
+	nodo_t obtener_nodo_origen();
+	nodo_t obtener_nodo_destino();
+	costo_t obtener_limite_w1();
+	Camino& obtener_camino_solucion();
 
 	//Entrada - Salida
 	void imprimir_matriz_adyacencia(ostream& out);
@@ -117,7 +122,8 @@ public:
 	void unserialize(istream& in);
 
 	//Algoritmos
-	Camino dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
+	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
+	void busqueda_local();
 };
 
 #endif

@@ -49,6 +49,11 @@ Camino::Camino(matriz_adyacencia_t& mat_adyacencia){
 	this->costo_camino_w2 = 0;
 }
 
+Camino::Camino(){
+	this->costo_camino_w1 = 0;
+	this->costo_camino_w2 = 0;
+}
+
 Camino::~Camino(){
 
 }
@@ -70,7 +75,7 @@ void Camino::agregar_nodo_adelante(nodo_t target){
 	costo_t costo_agregado_w1 = 0;
 	costo_t costo_agregado_w2 = 0;
 	if(this->camino.size()>0){
-		nodo_t penultimo_nodo = camino.back();
+		nodo_t penultimo_nodo = camino.front();
 		costo_agregado_w1 = obtener_costo_w1_entre_nodos(penultimo_nodo, target);
 		costo_agregado_w2 = obtener_costo_w2_entre_nodos(penultimo_nodo, target);
 		this->costo_camino_w1 += costo_agregado_w1;	
@@ -92,7 +97,7 @@ costo_t Camino::obtener_costo_w1_entre_nodos(nodo_t i, nodo_t j){
 	if(this->mat_adyacencia[i][j].esta_presente()){
 		return this->mat_adyacencia[i][j].obtener_costo_w1();
 	}else{
-		cerr << "Costo infinito(no son adyacentes) entre nodos (" << i << " y (" << j << ")" << endl;
+		cerr << "Costo infinito(no son adyacentes) entre nodos (" << i << ") y (" << j << ")" << endl;
 		return costo_infinito;
 	}	
 }
@@ -102,7 +107,7 @@ costo_t Camino::obtener_costo_w2_entre_nodos(nodo_t i, nodo_t j){
 	if(this->mat_adyacencia[i][j].esta_presente()){
 		return this->mat_adyacencia[i][j].obtener_costo_w2();
 	}else{
-		cerr << "Costo infinito(no son adyacentes) entre nodos (" << i << " y (" << j << ")" << endl;
+		cerr << "Costo infinito(no son adyacentes) entre nodos (" << i << ") y (" << j << ")" << endl;
 		return costo_infinito;
 	}	
 }
@@ -117,7 +122,7 @@ void Camino::imprimir_camino(ostream& out){
 	list<nodo_t>::iterator runner_it = this->camino.begin();
 	runner_it++;	
 	while(runner_it != this->camino.end()){
-		out << "(" << *it << ")" << "--[" << this->obtener_costo_w1_entre_nodos(*it, *runner_it) << ", " << this->obtener_costo_w2_entre_nodos(*it, *runner_it) << "]-->";
+		out << "(" << *it << ")" << "----[" << this->obtener_costo_w1_entre_nodos(*it, *runner_it) << ", " << this->obtener_costo_w2_entre_nodos(*it, *runner_it) << "]---->";
 		++it;
 		++runner_it;
 	}	
@@ -130,6 +135,10 @@ list<nodo_t>::const_iterator Camino::obtener_iterador_begin(){
 
 list<nodo_t>::const_iterator Camino::obtener_iterador_end(){
 	return this->camino.end();
+}
+
+longuitud_t Camino::obtener_longuitud_camino(){
+	return this->camino.size();
 }
 
 // -------------- Vecino ---------------------------------
@@ -174,8 +183,6 @@ Grafo::Grafo(int cant_inicial_nodos){
 	nodo_src = 0;
 	nodo_dst = 0;
 	cota_w1 = 0;
-	costo_obtenido_w1 = 0;
-	costo_obtenido_w2 = 0;
 	
 	//camino_obtenido se inicializa por defecto;
 	
@@ -247,12 +254,20 @@ void Grafo::imprimir_matriz_adyacencia(ostream& out){
 	out << endl;
 }
 
+costo_t Grafo::obtener_limite_w1(){
+	return this->cota_w1;
+}
+
+Camino& Grafo::obtener_camino_solucion(){
+	return this->camino_obtenido;
+}
+
 void Grafo::serialize(ostream& out){
-	out << this->costo_obtenido_w1 << " ";
-	out << this->costo_obtenido_w2 << " ";
-	out << this->camino_obtenido.size() << " ";
-	list<nodo_t>::iterator it = this->camino_obtenido.begin();
-	while(it != camino_obtenido.end()){
+	out << this->camino_obtenido.obtener_costo_total_w1_camino() << " ";
+	out << this->camino_obtenido.obtener_costo_total_w2_camino() << " ";
+	out << this->camino_obtenido.obtener_longuitud_camino() << " ";
+	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
+	while(it != camino_obtenido.obtener_iterador_end()){
 		out << *it << " ";
 		++it;
 	}
@@ -286,7 +301,7 @@ void Grafo::unserialize(istream& in){
 }
 
 //Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
-Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
+Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
 	vector<costo_t> costo_minimo;
 	vector<nodo_t> predecesor;
 
@@ -343,13 +358,15 @@ Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_mini
 	
 	//armo camino
 	Camino c(this->mat_adyacencia);
-	
-	nodo_t nodo = destino;	
+	nodo_t nodo = destino;
 	do{
+		//cout << nodo << " " ;
 		c.agregar_nodo_adelante(nodo);
 		nodo = predecesor[nodo];
 	}while(nodo != predecesor_nulo);
-	return c;
+	//cout << origen << endl;	
+	this->camino_obtenido = c;
+	return this->camino_obtenido;
 }
 
 list<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){
@@ -363,4 +380,91 @@ list<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){
 		}
 	}	
 	return res;
+}
+
+nodo_t Grafo::obtener_nodo_origen(){
+	return this->nodo_src;
+}
+
+nodo_t Grafo::obtener_nodo_destino(){
+	return this->nodo_dst;
+}
+
+void Grafo::busqueda_local(){
+	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
+	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_begin();
+	runner_it++;
+	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_end();
+	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
+	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
+
+    cout << "Costo total del camino:   W1: " << total_w1 << "    W2: " << total_w2 << endl << endl;
+	while(runner_it != final_camino){
+        nodo_t nodo_i = *it;
+        nodo_t nodo_j = *runner_it;
+        costo_t costo_ij_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_i, nodo_j);
+        costo_t costo_ij_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_i, nodo_j);
+        cout << "Buscando mejorar la conexion (" << nodo_i << ")----[" << costo_ij_w1 << ", " << costo_ij_w2 << "]---->(" << nodo_j << ") agregando un nodo intermedio..." << endl;
+        //busco alguna conexion de 2 aristas entre vecinos en comun tal que la suma de esas 2 aristas
+		//sea menor al peso de la arista directa
+
+        list<Vecino> vecinosEnComun = this->obtener_adyacentes_en_comun(nodo_i, nodo_j);
+		list<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
+		list<Vecino>::iterator final_vecinos = vecinosEnComun.end();
+		
+        //me fijo todos los caminos alternativos agregando un nodo entre los nodos ij,
+        //me quedo con la mejor y despues del while, si hay mejora, la aplico al camino.
+        list<Vecino>::iterator mejor_vecino_it = vecinosEnComun.end();//inicializamos en algo que indique que no hay mejora
+		costo_t mejor_camino_ij_w2 = costo_ij_w2;
+		while(vecinos_it != final_vecinos){
+            costo_t i_comun_w1 = vecinos_it->obtener_arista_i_comun().obtener_costo_w1();
+            costo_t i_comun_w2 = vecinos_it->obtener_arista_i_comun().obtener_costo_w2();
+            costo_t j_comun_w1 = vecinos_it->obtener_arista_j_comun().obtener_costo_w1();
+            costo_t j_comun_w2 = vecinos_it->obtener_arista_j_comun().obtener_costo_w2();
+            costo_t costo_i_comun_j_w1 = i_comun_w1 + j_comun_w1;
+            costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;
+			costo_t hipotetico_w1_total_camino = (total_w1 - costo_ij_w1 + costo_i_comun_j_w1);
+			costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
+				
+			//veamos si el camino es una solucion factible
+			if(hipotetico_w1_total_camino < this->obtener_limite_w1()){
+				//es factible, veamos si mejora al ultimo mejor revisado
+				if(costo_i_comun_j_w2 < mejor_camino_ij_w2){
+					//encontre mejora!
+					//actualizo variables
+					mejor_camino_ij_w2 = hipotetico_w2_total_camino;
+					mejor_vecino_it = vecinos_it;
+				}
+			}//else{
+				//si no lo es, ignoramos esta modificacion al sendero
+				//cout << "\tDescartando este cambio. No ofrece mejora sobre w2 o se pasa de la cota de w1" << endl;
+			//}
+			++vecinos_it;
+		}
+
+		//hay que ver si encontramos una mejora
+		if(mejor_vecino_it != final_vecinos){
+            nodo_t nodo_comun = mejor_vecino_it->obtener_nodo_comun();
+            costo_t i_comun_w1 = mejor_vecino_it->obtener_arista_i_comun().obtener_costo_w1();
+            costo_t i_comun_w2 = mejor_vecino_it->obtener_arista_i_comun().obtener_costo_w2();
+            costo_t j_comun_w1 = mejor_vecino_it->obtener_arista_j_comun().obtener_costo_w1();
+            costo_t j_comun_w2 = mejor_vecino_it->obtener_arista_j_comun().obtener_costo_w2();
+            costo_t costo_i_comun_j_w1 = i_comun_w1 + j_comun_w1;
+            costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;
+			cout << "\tSe encontro una posible mejora. Ahora el sendero entre los nodos (" << nodo_i << ") y (" << nodo_j << ") es " << endl;
+            cout << "\tCamino (" << nodo_i << ")----[" << i_comun_w1 << ", " << i_comun_w2 <<  "]---->(" << nodo_comun << ")----[" << j_comun_w1 << ", " << j_comun_w2 << "]---->(" << nodo_j;
+            cout <<	") Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_i_comun_j_w1 << "     W2: " << costo_i_comun_j_w2 << endl;
+
+			costo_t hipotetico_w1_total_camino = (total_w1 - costo_ij_w1 + costo_i_comun_j_w1);
+			costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
+
+			cout << "\tSi aplicamos este cambio los costos del camino total quedarian:   W1: " << hipotetico_w1_total_camino << "    W2: "  << hipotetico_w2_total_camino << endl;
+		}else{
+			cout << "\tNo se encontro mejora." << endl;
+		}
+        cout << endl;
+		++it;
+		++runner_it;
+	}
+	cout << "Todo: Buscar la maxima mejora entre los pares, esta es la mejor solucion de la vecindad de los caminos que difieren en un nodo" << endl;
 }
