@@ -1,7 +1,62 @@
-\section{Algoritmo exacto para la resolucion de CACM}
-\subsection{Explicacion detallada del algoritmo propuesto}
-\subsection{Complejidad temporal para el peor caso}
-\subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
-%Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
-%Indicar si es posible que tan mala puede ser la solucion obtenida respecto a la solucion optima
-%\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hace falta hablar de eso aca}
+\section{Algoritmo exacto para la resoluci\'on de CACM}
+
+\subsection{Notaci\'on} \label{exacto:notacion}
+
+\begin{itemize}
+	\item $G$ $=$ Grafo al que se le quiere encontrar el \emph{CACM}
+	\item $P$ $=$ El camino a encontrar
+	\item $v, w$ $=$ Los nodos de origen y destino del camino $P$ a encontrar
+	\item $K$ $=$ Cota superior del peso $\omega_2$ del camino $P$ a encontrar
+\end{itemize}
+
+\subsection{Explicaci\'on detallada del algoritmo propuesto} \label{exacto:explicacion}
+
+El algoritmo que se propone para encontrar la soluci\'on exacta al poblema del \emph{CACM}, consiste en encontrar todos los caminos simples de $v$ a $w$
+y encontrar el camino $P$ que tenga el menor peso $\omega_1$ pero que $\omega_2$ sea menor que $K$.
+
+Se propone realizar un backtracking que s\'olo chequee los caminos que no superen a $K$ el peso de $\omega_2$, y que descarte los caminos en cuanto
+detecta que no puede mejorar una soluci\'on que ya tenga almacenada como candidato a ser la de menor peso $\omega_1$.
+
+\begin{algorithm}[!h]
+\caption{cacm\_exacto} \label{exacto:pseudo}
+\end{algorithm}
+\begin{algorithmic}[1]
+	\Require \emph{grafo}: el grafo al cual se tiene que encontrar el \emph{CACM}
+	\Require \emph{v}: el nodo de origen
+	\Require \emph{w}: el nodo de destino
+	\Require \emph{K}: cota del peso $\omega_2$
+	\Require \emph{solucion}: posible soluci\'on que se tiene hasta el momento. Por aca se recibe un camino posible y se actualiza en cada llamada recursiva con el mejor camino encontrado. Cuando terminen todas las llamadas recursivas, se retorna por aca el \emph{CACM} encontrado. En la primera llamada se debe llamar con una soluci\'on que s\'olo contenga al nodo de partida $v$.
+	\Statex
+	\Ensure Retorna $verdarero$ si encontr\'o un camino de $v$ a $w$, $falso$ si no encontr\'o camino.
+	\Statex
+	\Procedure{cacm\_exacto}{$Grafo$: grafo, $Nodo$: v, $Nodo$: w, $Real$: K, $Camino$: solucion}{$\to$ $bool$}
+		\If{v $=$ w}
+			\State return $verdadero$
+		\EndIf
+		
+		\State solucion\_vieja $\gets$ solucion
+		\State solucion\_mejor $\gets$ $[]$
+
+		\For{u $\gets$ \Call{adyacentes}{grafo, v}}
+			\If{$\omega_2(u) < K$ $\land$ (mejor\_solcion $=$ $[]$ $\lor$ $\omega_1(solucion) + \omega_1(u) < \omega_1(solucion\_mejor))$}
+				\State \Call{quitar\_arista}{grafo, v, u}
+				\State \Call{agregar\_al\_final}{solucion, u}
+				\State encontre $\gets$ \Call{cacm\_exacto}{grafo, u, w, K $-$ $\omega_2(u)$, solucion}
+				\If{encontre $\land$ (mejor\_solucion $=$ $[]$ $\lor$ $\omega_1(solucion) < \omega_1(solucion\_mejor)$)}
+					\State mejor\_solucion $\gets$ solucion
+				\EndIf
+				\State \Call{agregar\_arista}{grafo, v, u}
+				\State solucion $\gets$ solucion\_vieja
+			\EndIf
+		\EndFor
+		\If{solucion\_mejor $\neq$ $[]$}
+			\State solucion $\gets$ solucion\_mejor
+		\EndIf
+		\State return solucion\_mejor $\neq$ $[]$
+	\EndProcedure
+\end{algorithmic}
+
+\subsection{Complejidad temporal para el peor caso} \label{exacto:complejidad}
+
+\subsection{Experimentaci\'on de p\'erformance} \label{exacto:experimentacion}
+
