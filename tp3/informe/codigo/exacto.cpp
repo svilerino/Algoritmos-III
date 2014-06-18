@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
-#include "../common/grafo.h"
-#include "../common/parser.h"
+#include "grafo.h"
+#include "parser.h"
 
 using namespace std;
 
@@ -13,7 +13,6 @@ typedef struct peso{
 } peso;
 
 typedef struct Solucion{
-	bool solucionado;
 	float W1;
 	float W2;
 	int k;
@@ -31,19 +30,23 @@ void setW2(void *p, float w)
 
 bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 {
-	Solucion solucion_mejor;
+	Solucion solucion_mejor, solucion_vieja;
 	int cantidad_aristas, *adyacentes, i;
 	peso *p;
 	float w2, w1;
+	bool solucionado = false;
 
-	solucion_mejor.solucionado = false;
 	solucion_mejor.W1 = -1;
 	solucion_mejor.W2 = -1;
 	solucion_mejor.k = 0;
 	solucion_mejor.v = (int *)calloc(2 * g.CantidadAristas(), sizeof(int));
+	solucion_vieja.W1 = solucion->W1;
+	solucion_vieja.W2 = solucion->W2;
+	solucion_vieja.k = solucion->k;
+	solucion_vieja.v = (int *)calloc(2 * g.CantidadAristas(), sizeof(int));
+	memcpy(solucion_vieja.v, solucion->v, 2 * g.CantidadAristas() * sizeof(int));
 
 	if(u == v){
-		solucion->solucionado = true;
 		free(solucion_mejor.v);
 		return true;
 	}
@@ -58,24 +61,23 @@ bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 			solucion->W2 += w2;
 			solucion->v[solucion->k] = adyacentes[i];
 			solucion->k++;
-			resolver(g, adyacentes[i], v, K - w2, solucion);
-			if(solucion->solucionado){
+			if(resolver(g, adyacentes[i], v, K - w2, solucion)){
 				if(solucion_mejor.W1 < 0 || solucion_mejor.W1 > solucion->W1){
-					solucion_mejor.solucionado = solucion->solucionado;
+					solucionado = true;
 					solucion_mejor.W1 = solucion->W1;
 					solucion_mejor.W2 = solucion->W2;
 					solucion_mejor.k = solucion->k;
 					memcpy(solucion_mejor.v, solucion->v, 2 * g.CantidadAristas() * sizeof(int));
 				}
 			}
-			solucion->k--;
-			solucion->W1 -= w1;
-			solucion->W2 -= w2;
+			solucion->W1 = solucion_vieja.W1;
+			solucion->W2 = solucion_vieja.W2;
+			solucion->k = solucion_vieja.k;
+			memcpy(solucion->v, solucion_vieja.v, 2 * g.CantidadAristas() * sizeof(int));
 			g.AgregarArista(u, adyacentes[i], p);
 		}
 	}
-	if(solucion_mejor.solucionado){
-		solucion->solucionado = solucion_mejor.solucionado;
+	if(solucionado){
 		solucion->W1 = solucion_mejor.W1;
 		solucion->W2 = solucion_mejor.W2;
 		solucion->k = solucion_mejor.k;
@@ -83,7 +85,8 @@ bool resolver(Grafo<peso> &g, int u, int v, int K, Solucion *solucion)
 	}
 	free(adyacentes);
 	free(solucion_mejor.v);
-	return true;
+	free(solucion_vieja.v);
+	return solucionado;
 }
 
 int main(int argc, char **argv)
@@ -95,14 +98,12 @@ int main(int argc, char **argv)
 
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
-		solucion.solucionado = false;
 		solucion.W1 = 0;
 		solucion.W2 = 0;
 		solucion.k = 1;
 		solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 		solucion.v[0] = u;
-		resolver(*grafo, u, v, K, &solucion);
-		if(solucion.solucionado){
+		if(resolver(*grafo, u, v, K, &solucion)){
 			printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
 			for(i = 0; i < solucion.k; i++){
 				printf(" %d", solucion.v[i]);
