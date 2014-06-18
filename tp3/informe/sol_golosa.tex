@@ -1,4 +1,4 @@
-\section{Heuristicas constructivas golosas I: En cada paso tomar el minimo f2 dentro de las soluciones factibles(con f1 acotada)}
+\section{Heur\'istica Golosa}
 \subsection{Explicacion detallada del algoritmo propuesto}
 
 El algoritmo propuesto consta de dos etapas: una etapa de inicializaci\'on y luego el algoritmo goloso propiamente dicho.
@@ -15,6 +15,14 @@ Una vez obtenidos los caminos m\'inimos en cuanto a costo $w_1$, \'estos nos per
 \item Al iniciar el algoritmo, aquellos nodos para los cuales no existe un camino de longitud $w_1 \leq K$ hasta el nodo llegada, los cuales nuestro algoritmo va a ignorar.
 \item En medio de la ejecuci\'on del algoritmo, llamando $W_{ac}$ a la acumulac\'on de costos $w_1$ del camino recorrido por el algoritmo hasta ahora, puedo saber si el nodo de la pro\'oxima arista a elegir tiene al menos un camino $c$ hasta el nodo llegada tal que, el costo del camino formado por la uni\'on de $c$ y el recorrido hasta ahora es $\leq K$. En caso de no tenerlo, desde ese nodo no hay un camino v\'alido hasta la llegada, por lo tanto nuestro algoritmo va a descartar esta arista y elegir alguna que tenga al menos un camino posible hasta la llegada. Esto lo podemos conocer, ya que la ejecuci\'on de Dijkstra inicial nos brinda el costo $w_1$ del camino m\'inimo desde el nodo hasta la llegada, por lo tanto  si $W_{ac}$ + $arista$ + $long(minimoCamino)$ $\leq$ $K$ sabemos que existe al menos este camino v\'alido, caso contrario descartamos el nodo.
 \end{enumerate}
+
+
+\begin{center}
+\includegraphics[scale=0.6]{inicializacion.png}
+\end{center}
+\vspace{2mm}
+
+
 
 Esto nos brinda una propiedad invariante: sabemos que en cada iteraci\'on, el costo acumulado del recorrido hecho es necesariamente menor a $K$, y si al menos existe alg\'un un camino de costo menor a $K$ de salida a destino, el algoritmo necesariamente va a poder llegar al nodo de llegada. Deducimos esto al considerar que, o bien no existe ning\'un camino y  el algoritmo termina en la primera iteraci\'on (ya que Dijkstra indica que los caminos m\'inos de costo $K$ de todos los nodos adyacentes a la salida son mayores a $K$, por lo tanto no hay nodo que elegir), o el algoritmo elige una primera arista (por lo tanto existe un camino). 
 
@@ -95,3 +103,7 @@ La familia de grafos en la cual para todo camino entre dos nodos (que no repita 
 \vspace{2mm}
 
 Hay que destacar que podr\'ia generarse un grafo con una suceci\'on arbitrariamente larga de aristas tal que para cada nodo, la arista de menor peso $w_2$ pertenezca a ella, y que la \'unica arista que incida en el v\'ertice de llegada sea la \'ultima. De esta forma, podemos generarnos grafos de esta familia en los cuales la soluci\'on de nuestra heur\'stica est\'a tan lejos de la \'optima como queramos. De todas formas, el algoritmo nunca se va a quedar ciclando infinitamente, ya que como los costos son no nulos, en alg\'un punto el algoritmo va a descartar la arista que lo lleva de nuevo al ciclo ya que el costo $w_1$ del ciclo + el del camino recorrido ya no va a ser menor o igual a $k$.
+
+\subsubsection{Costos $w_1$ nulos}
+
+En el caso de que las aristas tengan costos $w_1$ nulos, y halla en el grafo un ciclo de pesos $w_2$ m\'inimos el algoritmo no va a terminar.	
