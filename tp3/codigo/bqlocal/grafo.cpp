@@ -156,8 +156,6 @@ Vecino::Vecino(){
 	this->j = 0;
 	this->en_comun = 0;
 	//aristas constructor por defecto
-	//this->desde_i_a_comun = desde_i;
-	//this->desde_j_a_comun = desde_j;
 }
 
 Vecino::~Vecino(){
@@ -198,6 +196,7 @@ Grafo::Grafo(int cant_inicial_nodos){
 	//inicializo matriz de adyacencia
 	vector<Arista> vec_fila(cantidad_nodos, Arista(false, 0, 0));
 	this->mat_adyacencia.resize(cantidad_nodos, vec_fila);
+	this->lista_adyacencia.resize(cantidad_nodos);
 }
 
 Grafo::~Grafo(){
@@ -208,13 +207,16 @@ Grafo::~Grafo(){
 void Grafo::agregar_nodos(int cantidad_nodos_nuevos){
 	//agrego cantidad_nodos_nuevos columnas en todas las filas existentes
 	for(int i=0;i < this->cantidad_nodos;i++){
-		this->mat_adyacencia[i].resize(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, 0, 0));
+		this->mat_adyacencia[i].resize(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, 0, 0));		
 	}
 	
 	//agrego cantidad_nodos_nuevos filas al final de la matriz de adyacencia
 	vector<Arista> vec_fila(this->cantidad_nodos + cantidad_nodos_nuevos, Arista(false, 0, 0));
 	this->mat_adyacencia.resize(this->cantidad_nodos + cantidad_nodos_nuevos, vec_fila);
 	
+	//redimensiono lista adyacencias
+	this->lista_adyacencia.resize(cantidad_nodos + cantidad_nodos_nuevos);
+
 	//actualizo cantidad_nodos total del grafo
 	this->cantidad_nodos+=cantidad_nodos_nuevos;
 }
@@ -224,6 +226,10 @@ void Grafo::agregar_arista(nodo_t i, nodo_t j, costo_t w1, costo_t w2){
 	//marco doble, no es un digrafo
 	this->mat_adyacencia[i][j].marcar_presente(w1, w2);
 	this->mat_adyacencia[j][i].marcar_presente(w1, w2);
+
+	this->lista_adyacencia[i].push_back(make_pair(j, obtener_arista(i, j)));
+	this->lista_adyacencia[j].push_back(make_pair(i, obtener_arista(i, j)));
+
 	if(!arista.esta_presente()){
 		this->cantidad_aristas++;
 	}
@@ -234,6 +240,10 @@ void Grafo::quitar_arista(nodo_t i, nodo_t j){
 	//desmarco doble, no es un digrafo
 	this->mat_adyacencia[i][j].desmarcar_presente();
 	this->mat_adyacencia[j][i].desmarcar_presente();
+
+	this->lista_adyacencia[i].remove(make_pair(j, arista));
+	this->lista_adyacencia[j].remove(make_pair(i, arista));
+
 	if(arista.esta_presente()){
 		this->cantidad_aristas--;
 	}	
@@ -251,13 +261,26 @@ void Grafo::imprimir_matriz_adyacencia(ostream& out){
 	for (int i = 0;i<this->cantidad_nodos;i++){
 		for (int j = 0;j<this->cantidad_nodos;j++){
 			out << "|_(" << this->mat_adyacencia[i][j].esta_presente() << ")_|";
-			//if(this->mat_adyacencia[i][j].esta_presente()){
-			//	out << "|_(" << this->mat_adyacencia[i][j].obtener_costo_w1() << ", " << this->mat_adyacencia[i][j].obtener_costo_w2() << ")_|";
-			//}else{
-			//	out << "|_(-1, -1)_|";
-			//}
 		}
 		out << endl;
+	}
+	out << endl;
+	out << endl;
+}
+
+void Grafo::imprimir_lista_adyacencia(ostream& out){	
+	out << "Cantidad nodos: " << this->cantidad_nodos << endl;
+	out << "Cantidad aristas: " << this->cantidad_aristas << endl;
+	out << "Lista adyacencia:" << endl;
+	for (int i = 0;i<this->cantidad_nodos;i++){
+		out << "Vecinos de [" << i << "]: ";
+		list<pair<nodo_t, Arista> >::iterator adyacentes_i_it = this->lista_adyacencia[i].begin();
+		list<pair<nodo_t, Arista> >::iterator final_it = this->lista_adyacencia[i].end();
+		while(adyacentes_i_it != final_it){
+			out << "(" << adyacentes_i_it->first << ") ----> ";
+			adyacentes_i_it++;
+		}
+		out << "Nil" << endl;
 	}
 	out << endl;
 	out << endl;
@@ -269,6 +292,14 @@ costo_t Grafo::obtener_limite_w1(){
 
 Camino& Grafo::obtener_camino_solucion(){
 	return this->camino_obtenido;
+}
+
+int Grafo::obtener_cantidad_nodos(){
+	return this->cantidad_nodos;
+}
+
+int Grafo::obtener_cantidad_aristas(){
+	return this->cantidad_aristas;
 }
 
 void Grafo::serialize(ostream& out){
@@ -338,37 +369,55 @@ Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_min
 
 		//Para cada vecino de u, obtengo el vector fila de la matriz de adyacencia
 		//de dicho nodo e itero sobre todos, quedandome con las aristas presentes			
-		int vecino_candidato = 0;
-		vector<Arista> vecinos = this->mat_adyacencia[nodo_u];
-		while(vecino_candidato < this->cantidad_nodos){
-			if(vecinos[vecino_candidato].esta_presente()){
-				//hacer algo con este vecino
-				nodo_t nodo_v = vecino_candidato;
-				costo_t cost_v = (target_a_minimizar == COSTO_W1) ? vecinos[nodo_v].obtener_costo_w1() : vecinos[nodo_v].obtener_costo_w2();
-				int costo_a_v_pasando_por_u = cost_to_u + cost_v;
-				//si mejora, sobreescribo el camino y su costo
-				if(costo_a_v_pasando_por_u < costo_minimo[nodo_v]){
-					//elimino de la cola de nodos la distancia vieja
-					cola.erase(make_pair(costo_minimo[nodo_v], nodo_v));
-					
-					//actualizo estructuras
-					costo_minimo[nodo_v] = costo_a_v_pasando_por_u;
-					predecesor[nodo_v] = nodo_u;
 
-					//sobreescribo la distancia en la cola de nodos la distancia nueva
-					cola.insert(make_pair(costo_minimo[nodo_v], nodo_v));
-				}
+//		Implementacion con lista de adyacencia
+		list<pair<nodo_t, Arista> >::iterator adyacentes_i_it = this->lista_adyacencia[nodo_u].begin();
+		list<pair<nodo_t, Arista> >::iterator final_it = this->lista_adyacencia[nodo_u].end();
+		while(adyacentes_i_it != final_it){
+			nodo_t nodo_v = adyacentes_i_it->first;
+			costo_t cost_v = (target_a_minimizar == COSTO_W1) ? (adyacentes_i_it->second).obtener_costo_w1() : (adyacentes_i_it->second).obtener_costo_w2();
+			int costo_a_v_pasando_por_u = cost_to_u + cost_v;
+			//si mejora, sobreescribo el camino y su costo
+			if(costo_a_v_pasando_por_u < costo_minimo[nodo_v]){
+				//elimino de la cola de nodos la distancia vieja
+				cola.erase(make_pair(costo_minimo[nodo_v], nodo_v));
+				
+				//actualizo estructuras
+				costo_minimo[nodo_v] = costo_a_v_pasando_por_u;
+				predecesor[nodo_v] = nodo_u;
+
+				//sobreescribo la distancia en la cola de nodos la distancia nueva
+				cola.insert(make_pair(costo_minimo[nodo_v], nodo_v));
 			}
-			vecino_candidato++;
+			adyacentes_i_it++;
 		}
+
+//		Implementacion con matriz de adyacencia
+//		nodo_t vecino_candidato = 0;
+//		vector<Arista> vecinos = this->mat_adyacencia[nodo_u];
+//		while(vecino_candidato < this->cantidad_nodos){
+//			if(vecinos[vecino_candidato].esta_presente()){
+//				//hacer algo con este vecino
+//				nodo_t nodo_v = vecino_candidato;
+//				costo_t cost_v = (target_a_minimizar == COSTO_W1) ? vecinos[nodo_v].obtener_costo_w1() : vecinos[nodo_v].obtener_costo_w2();
+//				int costo_a_v_pasando_por_u = cost_to_u + cost_v;
+//				//si mejora, sobreescribo el camino y su costo
+//				if(costo_a_v_pasando_por_u < costo_minimo[nodo_v]){
+//					//elimino de la cola de nodos la distancia vieja
+//					cola.erase(make_pair(costo_minimo[nodo_v], nodo_v));
+//					
+//					//actualizo estructuras
+//					costo_minimo[nodo_v] = costo_a_v_pasando_por_u;
+//					predecesor[nodo_v] = nodo_u;
+//
+//					//sobreescribo la distancia en la cola de nodos la distancia nueva
+//					cola.insert(make_pair(costo_minimo[nodo_v], nodo_v));
+//				}
+//			}
+//			vecino_candidato++;
+//		}
 	}
 
-	//if(target_a_minimizar == COSTO_W1){
-	//	cout << "Distancia minima de origen a destino respecto a W1: " << costo_minimo[destino] << endl;	
-	//}else if(target_a_minimizar == COSTO_W2){		
-	//	cout << "Distancia minima de origen a destino respecto a W2: " << costo_minimo[destino] << endl;
-	//}	
-	
 	//armo camino
 	Camino c(this->mat_adyacencia);
 	nodo_t nodo = destino;
@@ -500,10 +549,53 @@ void Grafo::busqueda_local_entre_pares_insertando(){
 }
 
 
-void busqueda_local_entre_triplas_salteando(){
+void Grafo::busqueda_local_entre_triplas_salteando(){
 	//aca van el caso en los que salteo un nodo vk---->vk+1---->vk+2 convirtiendolo en vk---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino
 }
 
-void busqueda_local_entre_triplas_reemplazando_intermedio(){
+void Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
 	//y el caso en que reemplazo vk+1 por otro vecino comun vj, convirtiendo vk---->vk+1---->vk+2 en vk---->vj---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino
+}
+
+void Grafo::breadth_first_search(nodo_t origen, vector<distancia_t>& distancias){
+	distancias.clear();
+	distancias.resize(this->cantidad_nodos, distancia_infinita);
+	queue<nodo_t> cola;
+	vector<bool> visitado(this->cantidad_nodos, false);//inicializo todos los nodos sin visitar
+	cola.push(origen);
+	visitado[origen] = true;
+	distancias[origen] = 0;//dist(src, src) = 0
+
+	while(!cola.empty()){
+		nodo_t target = cola.front();//obtengo el primero
+		cola.pop();//desencolo el primero
+
+		//para todos los vecinos de target
+//		Implementacion con lista de adyacencia
+		list<pair<nodo_t, Arista> >::iterator adyacentes_i_it = this->lista_adyacencia[target].begin();
+		list<pair<nodo_t, Arista> >::iterator final_it = this->lista_adyacencia[target].end();
+		while(adyacentes_i_it != final_it){
+			nodo_t vecino_candidato = adyacentes_i_it->first;
+			if(!visitado[vecino_candidato]){
+				cola.push(vecino_candidato);
+				visitado[vecino_candidato] = true;
+				distancias[vecino_candidato] = distancias[target] + 1;
+			}
+			adyacentes_i_it++;
+		}
+
+//		Implementacion con matriz de adyacencia		
+//		nodo_t vecino_candidato = 0;
+//		vector<Arista> vecinos = this->mat_adyacencia[target];
+//		while(vecino_candidato < this->cantidad_nodos){
+//			if(vecinos[vecino_candidato].esta_presente()){
+//				if(!visitado[vecino_candidato]){
+//					cola.push(vecino_candidato);
+//					visitado[vecino_candidato] = true;
+//					distancias[vecino_candidato] = distancias[target] + 1;
+//				}
+//			}
+//			vecino_candidato++;
+//		}
+	}
 }

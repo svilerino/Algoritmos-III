@@ -9,6 +9,7 @@ int main(int argc, char **argv){
 	nodo_t nodo_src = g.obtener_nodo_origen();
 	nodo_t nodo_dst = g.obtener_nodo_destino();
     g.imprimir_matriz_adyacencia(cout);
+    g.imprimir_lista_adyacencia(cout);
 	
 	//--------------------------------- Busco solucion inicial ----------------------
     Camino c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
@@ -28,7 +29,6 @@ int main(int argc, char **argv){
         cout << "...Ok!!" << endl;
     }
 
-    //imprimir camino
     c.imprimir_camino(cout);
 
     //--------------------------------- Comienzo la busqueda local -------------------    
@@ -37,5 +37,12 @@ int main(int argc, char **argv){
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout);
     cout << endl;
+
+    ////Ejemplo BFS para obtener caminos minimos en "cantidad de aristas a origen"
+    //vector<distancia_t> distancias_en_pasos;
+    //g.breadth_first_search(nodo_src, distancias_en_pasos);
+    //for(int i=0;i<g.obtener_cantidad_nodos();i++){
+    //    cout << "Distancia de ("<< nodo_src << ") a (" << i << "): " << distancias_en_pasos[i] << " aristas" << endl;
+    //}
     return 0;
 }

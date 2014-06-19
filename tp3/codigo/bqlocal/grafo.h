@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <queue>
 #include <string>
 #include <limits>
 
@@ -12,10 +13,12 @@ using namespace std;
 
 typedef int nodo_t;
 typedef int longuitud_t;
+typedef double distancia_t;
 typedef double costo_t;
 typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
 
 const costo_t costo_infinito = numeric_limits<double>::infinity();
+const distancia_t distancia_infinita = numeric_limits<double>::infinity();
 const costo_t costo_nulo = 0;
 const nodo_t predecesor_nulo = -1;
 
@@ -34,9 +37,17 @@ public:
 	void marcar_presente(costo_t w1, costo_t w2);
 	costo_t obtener_costo_w1();
 	costo_t obtener_costo_w2();
+
+	bool operator== (const Arista &other) const
+	{
+	    return (other.presente == this->presente &&
+	            other.costo_w1 == this->costo_w1 &&
+	            other.costo_w2 == this->costo_w2);
+	}
 };
 
 typedef vector<vector<Arista> > matriz_adyacencia_t;
+typedef vector<list<pair<nodo_t, Arista> > > lista_adyacencia_t;
 
 class Camino{
 private:
@@ -87,6 +98,7 @@ class Grafo{
 private:
 	//atributos
 	matriz_adyacencia_t mat_adyacencia;
+	lista_adyacencia_t lista_adyacencia;
 	int cantidad_nodos;
 	int cantidad_aristas;
 	
@@ -112,6 +124,8 @@ public:
 	void quitar_arista(nodo_t i, nodo_t j);
 
 	//Consultas
+	int obtener_cantidad_nodos();
+	int obtener_cantidad_aristas();
 	Arista obtener_arista(nodo_t i, nodo_t j);	
 	//pre: 0 <= i <= j < cantidad_nodos y que i,j sean adyacentes
 	list<Vecino> obtener_adyacentes_en_comun(nodo_t i, nodo_t j);
@@ -122,6 +136,7 @@ public:
 
 	//Entrada - Salida
 	void imprimir_matriz_adyacencia(ostream& out);
+	void imprimir_lista_adyacencia(ostream& out);
 	void serialize(ostream& out);
 	void unserialize(istream& in);
 
@@ -134,6 +149,8 @@ public:
 	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
 	//Devuelve el camino minimo entre origen y destino y quedan modificados por referencia los costos_minimos y los predecesores de todos los nodos de G
 	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor);
+	//Dado un nodo_t origen se calcula para cada nodo, la distancia minima en cantidad de aristas de peso constante 1 de cualquier nodo a origen
+	void breadth_first_search(nodo_t origen, vector<distancia_t>& distancias_en_aristas_a_origen);
 };
 
 #endif
