@@ -73,6 +73,7 @@ private:
 	costo_t costo_camino_w1;
 	costo_t costo_camino_w2;
 	matriz_adyacencia_t mat_adyacencia;
+	bool eliminar_ciclo();
 public:
 	Camino();
 	Camino(matriz_adyacencia_t& mat_adyacencia);	
@@ -97,6 +98,14 @@ public:
 	//Se reemplazara la conexion directa entre i y j por i -> encomun -> j indicado por el Vecino pasado
 	//por parametro. Devuelve true si se inserto, false sino.
 	bool insertar_nodo(Vecino& at);
+
+	//pre: at.obtener_nodo_i() y at.obtener_nodo_i() deben pertenecer al camino
+	//Se reemplazara la conexion i..loquesea..j por i -> encomun -> j indicado por el Vecino pasado
+	//por parametro. Devuelve true si se inserto, false sino.
+	bool mejorar_tripla(Vecino& at);
+
+	bool realizar_salto_entre_3_nodos(nodo_t punto_de_salto);
+	bool eliminar_ciclos();	
 };
 
 class Grafo{
@@ -118,6 +127,9 @@ private:
 	//metodos auxiliares
 	bool mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
 	 Vecino& mejor_vecino);
+
+	bool mejorar_conexion_salteando(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
+	 Arista& mejor_vecino);
 
 public:
 	//constructor y destructor

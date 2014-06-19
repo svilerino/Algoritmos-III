@@ -29,11 +29,31 @@ int main(int argc, char **argv){
         cout << "...Ok!!" << endl;
     }
 
+    cout << "Camino inicial: ";
     c.imprimir_camino(cout);
+    cout << endl;
 
     //--------------------------------- Comienzo la busqueda local -------------------    
     //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
-    while(!g.busqueda_local_entre_pares_insertando());
+//    while(g.busqueda_local_entre_pares_insertando());
+//    cout << "Finalizo la busqueda local insertando entre pares porque no se obtuvo ninguna mejora." << endl;
+//    
+//    cout << endl << endl << endl << endl << endl;
+//    
+//    while(g.busqueda_local_entre_triplas_reemplazando_intermedio());
+//    cout << "Finalizo la busqueda local reemplazando entre triplas porque no se obtuvo ninguna mejora." << endl;
+
+    while(g.busqueda_local_entre_triplas_salteando());
+    cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvo ninguna mejora." << endl;
+
+//    bool res_local_pares = false;
+//    bool res_local_triplas_intermedio = false;
+//    bool res_local_triplas_salteando = false;
+//    do{
+//        res_local_pares = g.busqueda_local_entre_pares_insertando();
+//        res_local_triplas_intermedio = g.busqueda_local_entre_triplas_reemplazando_intermedio();
+//        res_local_triplas_salteando = g.g.busqueda_local_entre_triplas_salteando();
+//    }while(res_local_pares || res_local_triplas_intermedio || res_local_triplas_salteando);
 
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout);

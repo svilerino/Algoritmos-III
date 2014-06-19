@@ -1,0 +1,1 @@
+reset && make clean all && valgrind --leak-check=full ./bqlocal < grafo_example_2.txt 
