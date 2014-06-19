@@ -8,8 +8,8 @@ int main(int argc, char **argv){
     costo_t limit_w1 = g.obtener_limite_w1();
 	nodo_t nodo_src = g.obtener_nodo_origen();
 	nodo_t nodo_dst = g.obtener_nodo_destino();
-    g.imprimir_matriz_adyacencia(cout);
-    g.imprimir_lista_adyacencia(cout);
+    //g.imprimir_matriz_adyacencia(cout);
+    //g.imprimir_lista_adyacencia(cout);
 	
 	//--------------------------------- Busco solucion inicial ----------------------
     Camino c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
@@ -32,7 +32,8 @@ int main(int argc, char **argv){
     c.imprimir_camino(cout);
 
     //--------------------------------- Comienzo la busqueda local -------------------    
-    g.busqueda_local_entre_pares_insertando();
+    //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
+    while(!g.busqueda_local_entre_pares_insertando());
 
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout);

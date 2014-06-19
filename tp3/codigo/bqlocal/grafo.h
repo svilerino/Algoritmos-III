@@ -49,6 +49,24 @@ public:
 typedef vector<vector<Arista> > matriz_adyacencia_t;
 typedef vector<list<pair<nodo_t, Arista> > > lista_adyacencia_t;
 
+class Vecino{
+private:
+	nodo_t i;
+	nodo_t j;
+	nodo_t en_comun;
+	Arista desde_i_a_comun;
+	Arista desde_j_a_comun;
+public:
+	Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j);
+	Vecino();
+	~Vecino();
+	nodo_t obtener_nodo_i();
+	nodo_t obtener_nodo_j();
+	nodo_t obtener_nodo_comun();
+	Arista obtener_arista_i_comun();
+	Arista obtener_arista_j_comun();
+};
+
 class Camino{
 private:
 	list<nodo_t> camino;
@@ -74,24 +92,11 @@ public:
 	list<nodo_t>::const_iterator obtener_iterador_begin();
 	list<nodo_t>::const_iterator obtener_iterador_end();
 	longuitud_t obtener_longuitud_camino();
-};
 
-class Vecino{
-private:
-	nodo_t i;
-	nodo_t j;
-	nodo_t en_comun;
-	Arista desde_i_a_comun;
-	Arista desde_j_a_comun;
-public:
-	Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j);
-	Vecino();
-	~Vecino();
-	nodo_t obtener_nodo_i();
-	nodo_t obtener_nodo_j();
-	nodo_t obtener_nodo_comun();
-	Arista obtener_arista_i_comun();
-	Arista obtener_arista_j_comun();
+	//pre: at.obtener_nodo_i() y at.obtener_nodo_i() deben pertenecer al camino
+	//Se reemplazara la conexion directa entre i y j por i -> encomun -> j indicado por el Vecino pasado
+	//por parametro. Devuelve true si se inserto, false sino.
+	bool insertar_nodo(Vecino& at);
 };
 
 class Grafo{
@@ -111,7 +116,8 @@ private:
 	//tanto para w1 como w2
 
 	//metodos auxiliares
-	bool mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2, Vecino& mejor_vecino);
+	bool mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
+	 Vecino& mejor_vecino);
 
 public:
 	//constructor y destructor
@@ -142,9 +148,9 @@ public:
 
 	//Algoritmos
 	//Realiza la busqueda local sobre una solucion inicial factible creada por dijkstra sobre COSTO_W1 entre src y dst
-	void busqueda_local_entre_pares_insertando();
-	void busqueda_local_entre_triplas_salteando();
-	void busqueda_local_entre_triplas_reemplazando_intermedio();
+	bool busqueda_local_entre_pares_insertando();
+	bool busqueda_local_entre_triplas_salteando();
+	bool busqueda_local_entre_triplas_reemplazando_intermedio();
 	//Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
 	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
 	//Devuelve el camino minimo entre origen y destino y quedan modificados por referencia los costos_minimos y los predecesores de todos los nodos de G
