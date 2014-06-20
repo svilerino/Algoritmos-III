@@ -121,7 +121,19 @@ Podemos ver en un ejemplo c\'omo si el grafo posee un conjunto de nodos, tal que
 
 \subsection{Explicacion detallada de la heur\'istica propuesta}
 
-Para solucionar estos problemas agregamos un BFS
+De forma de solucionar estos problemas y evitar que el algoritmo se aleje arbitrariamente del nodo de llegada , determinamos mejorar la inicializaci\'on de la heur\'istica, y junto con la ejecuc\'on de Dijkstra, realizar una b\'usqueda en anchura BFS, con el objetivo de determinar la distancia en saltos o aristas de todos los nodos a la llegada. De esta forma, si nos aseguramos de que en cada iteraci\'on, la b\'usqueda golosa reduzca esa distancia, el algoritmo va terminar en el nodo destino.
+
+\vspace{2mm}
+
+De esta forma, la desici\'on golosa queda:
+
+\begin{enumerate}
+\item Desc 
+\item 
+\item 
+\end{enumerate}
+
+
 
 \subsection{Pseudoc\'odigo}
 
