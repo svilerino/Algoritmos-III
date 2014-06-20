@@ -129,11 +129,19 @@ void Camino::imprimir_camino(ostream& out){
 	out << "(" << this->camino.back() << ")" << endl;
 }
 
-list<nodo_t>::const_iterator Camino::obtener_iterador_begin(){
+list<nodo_t>::const_iterator Camino::obtener_iterador_const_begin(){
 	return this->camino.begin();
 }
 
-list<nodo_t>::const_iterator Camino::obtener_iterador_end(){
+list<nodo_t>::const_iterator Camino::obtener_iterador_const_end(){
+	return this->camino.end();
+}
+
+list<nodo_t>::iterator Camino::obtener_iterador_begin(){
+	return this->camino.begin();
+}
+
+list<nodo_t>::iterator Camino::obtener_iterador_end(){
 	return this->camino.end();
 }
 
@@ -286,22 +294,6 @@ bool Camino::insertar_nodo(Vecino& at){
 	this->costo_camino_w2 = (this->obtener_costo_total_w2_camino() - costo_ij_w2 + costo_i_comun_j_w2);
 	return true;
 }
-
-bool Camino::eliminar_ciclos(){
-	bool elimine_alguno = false;
-	bool ciclo_nuevo = false;
-	do{
-		ciclo_nuevo = this->eliminar_ciclo();
-		elimine_alguno = elimine_alguno || ciclo_nuevo;
-	}while(ciclo_nuevo);
-	return elimine_alguno;
-}
-
-bool Camino::eliminar_ciclo(){
-	//TODO: pensar esto...
-	return false;
-}
-
 // -------------- Vecino ---------------------------------
 
 Vecino::Vecino(nodo_t i, nodo_t j, nodo_t comun, Arista desde_i, Arista desde_j){
@@ -467,8 +459,8 @@ void Grafo::serialize(ostream& out){
 	out << this->camino_obtenido.obtener_costo_total_w1_camino() << " ";
 	out << this->camino_obtenido.obtener_costo_total_w2_camino() << " ";
 	out << this->camino_obtenido.obtener_longuitud_camino() << " ";
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
-	while(it != camino_obtenido.obtener_iterador_end()){
+	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
+	while(it != camino_obtenido.obtener_iterador_const_end()){
 		out << *it << " ";
 		++it;
 	}
@@ -675,7 +667,19 @@ bool Grafo::mejorar_conexion_salteando(nodo_t nodo_i, nodo_t nodo_j, costo_t cos
 }
 
 bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
- Vecino& mejor_vecino){    
+ Vecino& mejor_vecino){
+
+	//SEA LA VECINDAD Vc = {Caminos C' tal que difieran de C en tan solo un nodo}
+
+	//DEFINO UNA TABOO LIST COMO UNA LISTA EN LA CUAL VOY A DESCARTAR LAS SOLUCIONES QUE USEN NODOS DE DICHA LISTA
+	//ESTO ES NECESARIO PARA EVITAR LA GENERACION DE CICLOS EN EL CASO DE AGREGAR UN NODO AL SUBDIVIDIR UNA ARISTA O REEMPLAZAR UN NODO
+	//INTERMEDIO ENTRE OTROS DOS. SI EL NODO ELEGIDO YA PERTENECIA AL CAMINO, SE GENERAN CICLOS Y NO QUEREMOS ESTO YA QUE BUSCAMOS UN CAMINO MINIMO.
+	//SI MANTENEMOS DISJUNTOS EL CONJUNTO DE NODOS DEL CAMINO ACTUAL Y LOS NODOS RESTANTES DEL GRAFO, CUALQUIER ELECCION QUE HAGAMOS NO GENERARA CICLOS.
+
+	//OTRA OPCION SERIA NO RESTRINGIR LA ELECCION DE LAS SOLUCIONES DE LA VECINDAD, PERO DEBERIAMOS LUEGO REALIZAR UNA PODA DE CICLOS DEL CAMINO
+	//CREEMOS QUE ESTA OPCION SERIA MEJOR, PORQUE AGREGANDO EL NODO SE MEJORA LA SOLUCION, Y ELIMINANDO EL CICLO, SE MEJORA AUN MAS, PERO A NUESTRO ENTENDER
+	//DEJA DE SER BUSQUEDA LOCAL, DADO QUE LA SOLUCION QUE SURJA DE ESTO PUEDE NO ESTAR EN LA VECINDAD Vc
+
     //busco la conexion entre i y j pasando por un nodo intermedio tal que minimice la distancia de w2 sin pasarme de la cota total de w1 para el camino
  	list<Vecino> vecinosEnComun = this->obtener_adyacentes_en_comun(nodo_i, nodo_j);
 	list<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
@@ -697,10 +701,24 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 		//veamos si el camino es una solucion factible
 		if(hipotetico_w1_total_camino < this->obtener_limite_w1()){
 			//es factible, veamos si mejora al ultimo mejor revisado
-			if(costo_i_comun_j_w2 < mejor_camino_ij_w2){
-				//encontre mejora, actualizo variables
-				mejor_camino_ij_w2 = hipotetico_w2_total_camino;
-				mejor_vecino_it = vecinos_it;
+
+			//VEAMOS ADEMAS, QUE NO ESTE EN NUESTRA TABOO LIST(QUE NO PERTENEZCA AL CAMINO DE LA SOL. ACTUAL)
+			list<nodo_t>::iterator it_end = this->camino_obtenido.obtener_iterador_end();
+			list<nodo_t>::iterator found_it = this->camino_obtenido.obtener_iterador_begin();
+			nodo_t nodo_comun = vecinos_it->obtener_nodo_comun();
+			while((found_it != it_end) && (*found_it != nodo_comun)){
+				found_it++;
+			}
+			if(found_it == it_end){
+				//el nodo no esta en la taboo list
+				if(costo_i_comun_j_w2 < mejor_camino_ij_w2){
+					//encontre mejora, actualizo variables
+					mejor_camino_ij_w2 = hipotetico_w2_total_camino;
+					mejor_vecino_it = vecinos_it;
+				}				
+			}else{
+				//taboo list skipped!
+				cerr << "Salteamos el nodo (" << nodo_comun << ") como candidato a mejorar la solucion actual porque al pertenecer al camino generaria un ciclo" << endl;
 			}
 		}
 		++vecinos_it;
@@ -722,10 +740,10 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 //constante O(1), en total esto nos da un costo cuadratico O(n**2)
 bool Grafo::busqueda_local_entre_pares_insertando(){
 	cout << "-------------------------------Comienza iteracion de busqueda local insertando entre pares--------------------------------" << endl;
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
-	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_begin();
+	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_const_begin();
 	runner_it++;
-	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_end();
+	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_const_end();
 	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
 	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
 
@@ -808,19 +826,9 @@ bool Grafo::busqueda_local_entre_pares_insertando(){
 			return false;
 		}
 
-		//Hay que eliminar los posibles ciclos que quedaron
-		cout << "Analizando y eliminando ciclos en la solucion nueva...";
-		if(this->camino_obtenido.eliminar_ciclos()){
-			cout << "Se elimino al menos un ciclo" << endl;
-		}
-		cout << "Ok!" << endl;
-
         cout << endl << "Nueva solucion obtenida: ";
         this->camino_obtenido.imprimir_camino(cout);
-		cout << "Nuevos costos totales del camino:   W1: " << mejor_costo_w1 << "    W2: "  << mejor_costo_w2 << endl;
-
-		cout << endl << endl << endl;
-		cout << "Fijarse que si el nodo que agrego ya estaba en el camino, se arma un ciclo! (ALTO YAO)!!" << endl;
+		cout << "Nuevos costos totales del camino:   W1: " << mejor_costo_w1 << "    W2: "  << mejor_costo_w2 << endl;		
 	}else{
 		cout << "No se pudo mejorar la solucion." << endl;
 	}
@@ -837,13 +845,13 @@ bool Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
 
 	//aca vale size(camino)>=3
 
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
-	list<nodo_t>::const_iterator it_sig = this->camino_obtenido.obtener_iterador_begin();
-	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_begin();
+	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it_sig = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_const_begin();
 	it_sig++;
 	runner_it++;runner_it++;
 
-	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_end();
+	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_const_end();
 	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
 	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
 
@@ -936,19 +944,10 @@ bool Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
 			return false;
 		}
 
-		//Hay que eliminar los posibles ciclos que quedaron
-		cout << "Analizando y eliminando ciclos en la solucion nueva...";
-		if(this->camino_obtenido.eliminar_ciclos()){
-			cout << "Se elimino al menos un ciclo" << endl;
-		}
-		cout << "Ok!" << endl;
-
         cout << endl << "Nueva solucion obtenida: ";
         this->camino_obtenido.imprimir_camino(cout);
 		cout << "Nuevos costos totales del camino:   W1: " << mejor_costo_w1 << "    W2: "  << mejor_costo_w2 << endl;
-		
-		cout << endl << endl << endl;
-		cout << "Fijarse que si el nodo que agrego ya estaba en el camino, se arma un ciclo! (ALTO YAO)!!" << endl;
+			
 	}else{
 		cout << "No se pudo mejorar la solucion." << endl;
 	}
@@ -965,13 +964,13 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 
 	//aca vale size(camino)>=3
 
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_begin();
-	list<nodo_t>::const_iterator it_sig = this->camino_obtenido.obtener_iterador_begin();
-	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_begin();
+	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it_sig = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_const_begin();
 	it_sig++;
 	runner_it++;runner_it++;
 
-	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_end();
+	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_const_end();
 	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
 	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
 

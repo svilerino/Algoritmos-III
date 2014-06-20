@@ -73,7 +73,6 @@ private:
 	costo_t costo_camino_w1;
 	costo_t costo_camino_w2;
 	matriz_adyacencia_t mat_adyacencia;
-	bool eliminar_ciclo();
 public:
 	Camino();
 	Camino(matriz_adyacencia_t& mat_adyacencia);	
@@ -90,8 +89,10 @@ public:
 
 	void imprimir_camino(ostream& out);
 
-	list<nodo_t>::const_iterator obtener_iterador_begin();
-	list<nodo_t>::const_iterator obtener_iterador_end();
+	list<nodo_t>::iterator obtener_iterador_begin();
+	list<nodo_t>::iterator obtener_iterador_end();
+	list<nodo_t>::const_iterator obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator obtener_iterador_const_end();
 	longuitud_t obtener_longuitud_camino();
 
 	//pre: at.obtener_nodo_i() y at.obtener_nodo_i() deben pertenecer al camino
@@ -105,7 +106,6 @@ public:
 	bool mejorar_tripla(Vecino& at);
 
 	bool realizar_salto_entre_3_nodos(nodo_t punto_de_salto);
-	bool eliminar_ciclos();	
 };
 
 class Grafo{
