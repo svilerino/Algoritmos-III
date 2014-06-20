@@ -42,9 +42,9 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 
 \Procedure{$Sol\_Golosa$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k$}{$\rightarrow lista<eje>\: camino$}
 
-\State $vector<int> \: distancias[g.\#nodos]$
+\State $vector<int> \: costos[g.\#nodos]$
 \Comment $ O(n) $
-\State $ Dijkstra( g, v_2, distancias) $
+\State $ Dijkstra( g, v_2, costos) $
 \Comment $ O() $
 \State $lista<eje> \: camino= \emptyset$
 \Comment $ O(1) $
@@ -57,10 +57,10 @@ A continuaci\'on se ejecuta el ciclo principal del algoritmo, que genera el CACM
 	\State $ list<eje> \: incidentes = incidentes(v_{actual}, g) $
 	\Comment $ O(m) $
 	\State $ eje \:	 minimo = cab(incidentes) $
-	\Comment $ O(m) Para\: evitar \:que \:cicle $
+	\Comment $ O(1)$
 	\For {each $(u,v) \in \: incidentes$}
 	\Comment $ O(m) $
-		\If {$ distancias(v) + costoCamino \leq k \: \&\& \: costo2(u,v) \leq minimo$}
+		\If {$ costos(v) + costoCamino \leq k \: \&\& \: costo2(u,v) \leq minimo$}
 		\Comment $ O(1) $
 			\State $ minimo = (u,v) $
 			\Comment $ O(1) $
@@ -125,15 +125,15 @@ De forma de solucionar estos problemas y evitar que el algoritmo se aleje arbitr
 
 \vspace{2mm}
 
+Esto desencadena en una clara limitaci\'on en los caminos que va a dar como resultado dado que, al pedir que la pr\'oxima arista a elegir reduzca la distancia en saltos a llegada a menos 1 en todas las itereaciones, s\'olo vamos a obtener como resultado caminos con distancia en saltos menor o igual a la distancia en saltos de la salida a la llegada. Pero consideramos que ganamos mucho m\'as con el hecho de asegurarnos que en todo caso el algoritmo termine, llegue al nodo destino, y por medio de un camino v\'alido (si existe al menos uno).
+
 De esta forma, la desici\'on golosa queda:
 
 \begin{enumerate}
-\item Desc 
-\item 
-\item 
+\item Entre los nodos para los cuales existe un camino cuyo costo sumado al cumulado es $\leq K$:
+\item Entre los nodos que reducen la distancia en saltos a la llegada en al menos 1:
+\item Elegir el nodo con la arista de menor peso $w_2$
 \end{enumerate}
-
-
 
 \subsection{Pseudoc\'odigo}
 
@@ -142,16 +142,19 @@ De esta forma, la desici\'on golosa queda:
 
 \Procedure{$Sol\_Golosa$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k$}{$\rightarrow lista<eje>\: camino$}
 
+\State $vector<int> \: costos[g.\#nodos]$
+\Comment $ O(n) $
 \State $vector<int> \: distancias[g.\#nodos]$
 \Comment $ O(n) $
-\State $ Dijkstra( g, v_2, distancias) $
+\State $ Dijkstra( g, v_2, costos) $
 \Comment $ O() $
+\State $ Bfs( g, v_2, distancias) $
+\Comment $ O(n+m) $
 \State $lista<eje> \: camino= \emptyset$
 \Comment $ O(1) $
 \State $ int \: costoCamino = 0 $
 \Comment $ O(1) $
-\State $ visitadas[v_1] = true $
-\Comment $ O(1) $
+\State $ int \: distanciaLlegada = distancias[v_1]$
 \State $ vertice \: v_{actual} = v_1 $
 \Comment $ O(1) $
 \While{ $ actual != v_2 \: || \: incidentes= \emptyset $ }
@@ -159,10 +162,10 @@ De esta forma, la desici\'on golosa queda:
 	\State $ list<eje> \: incidentes = incidentes(v_{actual}, g) $
 	\Comment $ O(m) $
 	\State $ eje \:	 minimo = cab(incidentes) $
-	\Comment $ O(m) Para\: evitar \:que \:cicle $
+	\Comment $ O(1)$
 	\For {each $(u,v) \in \: incidentes$}
 	\Comment $ O(m) $
-		\If {$ distancias(v) + costoCamino \leq k \: \&\& \: costo2(u,v) \leq minimo$}
+		\If {$ costos(v) + costoCamino \leq k \: \&\& \: costo2(u,v) \leq minimo  \&\& distancias(u,v) < distanciaLlegada$}
 		\Comment $ O(1) $
 			\State $ minimo = (u,v) $
 			\Comment $ O(1) $
@@ -174,6 +177,7 @@ De esta forma, la desici\'on golosa queda:
 	\Comment $ O(1) $
 	\State $ v_{actual} = v $
 	\Comment $ O(1) $
+	\State $distanciaLlegada = distanciaLlegada - 1 $
 \EndWhile
 \State $ return \: camino $
 \Comment $ O(1) $
@@ -182,11 +186,7 @@ De esta forma, la desici\'on golosa queda:
 
 \end{algorithmic}
 
-
-
-
 \subsection{Complejidad temporal para el peor caso}
 
-La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de $O(n^2)$ . El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y recorre como m\'aximo una vez cada v\'ertice (dado el vector visitados), por lo tanto tiene complejidad $O(n)$. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(n^2)+ O(n)*(O(m)+O(m)) = O(nm)$. 
+La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de $O(n^2)$, y luego un Bfs, $O(n+m)$. El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y va a iterar tantas veces como la distancia en saltos desde el nodo salida hasta el nodo llegada. Est n\'umero est\'a acotado por la cantidad de nodos, por lo que $\in O(n)$. Sabemos que el algoritmo no va a repetir v\'ertices ya que  en cada iteraci\'on se mueve a un nodo con distancia en saltos estrictamente menor al anterior. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(n^2)+ O(n+m)+ O(n)*(O(m)+O(m)) = O(nm)$. 
 
-en realidad depende de la distancia en saltos de salida a llegada que esta acotada tambien por en ;).
