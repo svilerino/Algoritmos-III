@@ -1077,3 +1077,15 @@ Camino Grafo::crear_camino_vacio(){
 	Camino c(this->mat_adyacencia);
 	return c;
 }
+
+list<Grafo> Grafo::parsear_varias_instancias(){
+	list<Grafo> instancias;
+    //parseo todas las instancias
+    do{
+        Grafo i(0);
+        i.unserialize(cin);
+        instancias.push_back(i);
+    }while(!cin.eof());
+    cout << "[Parse input]Se leyeron " << instancias.size() << " instancias de stdin" << endl << endl;
+    return instancias;
+}

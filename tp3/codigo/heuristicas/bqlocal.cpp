@@ -2,8 +2,12 @@
 // -------------- Main ---------------------------------
 
 int main(int argc, char **argv){
+    list<Grafo> instancias = Grafo::parsear_varias_instancias();
+
+    //TODO POR AHORA SOLO PROCESA LA PRIMER INSTANCIA!!
+
     //---------------------------- Obtengo el grafo y los parametros ----------------
-    Grafo g(0);
+    Grafo g = instancias.front();
     g.unserialize(cin);
     costo_t limit_w1 = g.obtener_limite_w1();
 	nodo_t nodo_src = g.obtener_nodo_origen();

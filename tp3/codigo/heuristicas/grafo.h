@@ -174,6 +174,9 @@ public:
 
 	//Camino Factory
 	Camino crear_camino_vacio();
+
+	//Metodos utilitarios
+	static list<Grafo> parsear_varias_instancias();
 };
 
 #endif
