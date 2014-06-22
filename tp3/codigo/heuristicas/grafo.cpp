@@ -1147,11 +1147,11 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
         sort(candidatos.begin(), candidatos.end(), compare_w2);
 
         if(tipo_ejecucion == DETERMINISTICO){
-        	cout <<"DETERMINISTICO" << endl;
+        	//cout <<"DETERMINISTICO" << endl;
     		candidatos.resize(1);
     		//elimino todos salvo el minimo factible sobre w2
     	}else if(tipo_ejecucion == RCL_POR_VALOR){
-    		cout <<"RCL_POR_VALOR" << endl;
+    		//cout <<"RCL_POR_VALOR" << endl;
     		pair<nodo_t, Arista> minimo = candidatos.front();
     		double valor_limite = (parametro_beta + 1) * minimo.second.obtener_costo_w2();
     		vector<pair<nodo_t, Arista> >::iterator it = candidatos.begin();
@@ -1169,7 +1169,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
     			it++;
     		}
     	}else if(tipo_ejecucion == RCL_POR_CANTIDAD){
-    		cout <<"RCL_POR_CANTIDAD" << endl;
+    		//cout <<"RCL_POR_CANTIDAD" << endl;
 			int cantidad_trim = (int) parametro_beta;
 			if (cantidad_trim < 1){
 				cerr << "EH, EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO PAPAAA, LE PONGO 1!!" << endl;
