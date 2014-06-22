@@ -1072,3 +1072,8 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 	}
 	return hay_mejoras_para_el_camino;
 }
+
+Camino Grafo::crear_camino_vacio(){
+	Camino c(this->mat_adyacencia);
+	return c;
+}

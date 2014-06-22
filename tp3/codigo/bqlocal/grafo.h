@@ -171,6 +171,9 @@ public:
 	void dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor);
 	//Dado un nodo_t origen se calcula para cada nodo, la distancia minima en cantidad de aristas de peso constante 1 de cualquier nodo a origen
 	void breadth_first_search(nodo_t origen, vector<distancia_t>& distancias_en_aristas_a_origen);
+
+	//Camino Factory
+	Camino crear_camino_vacio();
 };
 
 #endif
