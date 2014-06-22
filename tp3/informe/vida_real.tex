@@ -2,7 +2,7 @@
 \subsection{Notaci\'on y definiciones iniciales}
 Sea un grafo G = (V,E) un grafo simple. Definimos el costo asociado a una funcion $f:E \rightarrow \mathbb{R}_+$ de un camino P = $<v_{1}, \dots, v_{k-1}, v_{k}>$ de la siguiente forma:
 \begin{center}
-	$costo_f$($P$) = $\sum_{i=1}^{k} f(v_i$)
+	$costo_f$($P$) = $\sum_{i=1}^{k-1} f(v_i v_{i+1}$)
 \end{center}
 
 \subsection{Viaje en ruta: Minimizar la distancia de viaje dada una cantidad fija de dinero}

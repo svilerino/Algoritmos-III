@@ -12,17 +12,17 @@ int main(int argc, char **argv){
 	
     //---------------------------- Inicializo los vectores y datos ----------------
 
-    vector<int> costos;
-    vector<int> predecesores;
+    vector<costo_t> costos;
+    vector<nodo_t> predecesores;
     g.dijkstra(nodo_dst, COSTO_W1, costos, predecesores);
 
-    vector<int> distancias;
+    vector<distancia_t> distancias;
     g.breadth_first_search(nodo_dst, distancias);
 
     Camino camino = g.crear_camino_vacio();
     camino.agregar_nodo(nodo_src);
-    int costoCamino = 0;
-    int distanciaLlegada = distancias[nodo_src];
+    costo_t costoCamino = 0;
+    distancia_t distanciaLlegada = distancias[nodo_src];
 
     nodo_t actual = nodo_src;
 
@@ -30,9 +30,11 @@ int main(int argc, char **argv){
 
     while(actual != nodo_dst)
     {
-        list<pair<nodo_t, Arista> > vecinos = obtener_lista_vecinos(target);
-        if(vecinos.empty())
+        list<pair<nodo_t, Arista> > vecinos = g.obtener_lista_vecinos(actual);
+        if(vecinos.empty()){
             break;
+        }
+
         list<pair<nodo_t, Arista> >::iterator incidentes_i_it = vecinos.begin();
         list<pair<nodo_t, Arista> >::iterator final_it = vecinos.end();
 
@@ -40,21 +42,21 @@ int main(int argc, char **argv){
 
         while(incidentes_i_it != final_it)
         {
-                if( (costos(incidentes_i_it->first) + costoCamino <= limit_w1) && (obtener_costo_w1(incidentes_i_it->second) <= minimo.second) && (distancias[incidentes_i_it] < distanciaLlegada))
+                if( (costos[incidentes_i_it->first] + costoCamino <= limit_w1) && 
+                    ((incidentes_i_it->second).obtener_costo_w1() <= (minimo.second).obtener_costo_w1()) &&
+                     (distancias[incidentes_i_it->first] < distanciaLlegada))
                 {
                     minimo = *incidentes_i_it;
                 }
 
                 camino.agregar_nodo(incidentes_i_it->first);
-                costoCamino += obtener_costo_w1(incidentes_i_it->second);
+                costoCamino += (incidentes_i_it->second).obtener_costo_w1();
                 actual = incidentes_i_it->first;
                 distanciaLlegada--;
-
         }
-
     }
 
-    camino.agregar_nodo(final_it->first);
+   // camino.agregar_nodo(final_it->first);
 
     cout << "Salida del algoritmo: " << endl;
     camino.imprimir_camino(cout);
