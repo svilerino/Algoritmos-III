@@ -446,7 +446,7 @@ void Grafo::establecer_camino_solucion(Camino c){
 	this->camino_obtenido = c;
 }
 
-Camino& Grafo::obtener_camino_solucion(){
+Camino Grafo::obtener_camino_solucion(){
 	return this->camino_obtenido;
 }
 
@@ -1074,6 +1074,20 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 	return hay_mejoras_para_el_camino;
 }
 
+bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
+	//typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
+	switch(tipo_ejecucion){
+		case BQL_SUBDIVIDIR_PARES:
+			return busqueda_local_entre_pares_insertando();
+		case BQL_CONTRAER_TRIPLAS_A_PARES:		
+			return busqueda_local_entre_triplas_salteando();
+		case BQL_MEJORAR_CONEXION_TRIPLAS:		
+			return busqueda_local_entre_triplas_reemplazando_intermedio();
+	}
+	cerr << "busqueda_local: tipo ejecucion invalido!" << endl;
+	return false;	
+}
+
 list<Grafo> Grafo::parsear_varias_instancias(){
 	list<Grafo> instancias;
     //parseo todas las instancias
@@ -1100,7 +1114,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 	
 	//voy a filtrar todos los candidatos factibles localmente (que elegir dicho candidato no me pase de la cota de w1
 	//y que me acerco a destino) y finalmente, segun el tipo de ejecucion voy a hacer una de las siguientes cosas:
-	//	- DETERMINISTICO: tomo el minimo respecto a w2
+	//	- RCL_DETERMINISTICO: tomo el minimo respecto a w2
 	//  - RCL_POR_CANTIDAD: ordeno el vector segun w2 y resizeo a los primeros parametro_beta elementos. Esto me da los parametro_beta elementos mas chicos segun w2
 	//	- RCL_POR_VALOR: ordeno el vector segun w2 y elimino los menores que (minimo_w2 * (1 + parametro_beta)). Esto me da los candidatos que se acercan parametro_beta % al minimo_w2
 
@@ -1146,8 +1160,8 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
         //ordeno los candidatos factibles, sobre la funcion w2 de menor a mayor
         sort(candidatos.begin(), candidatos.end(), compare_w2);
 
-        if(tipo_ejecucion == DETERMINISTICO){
-        	//cout <<"DETERMINISTICO" << endl;
+        if(tipo_ejecucion == RCL_DETERMINISTICO){
+        	//cout <<"RCL_DETERMINISTICO" << endl;
     		candidatos.resize(1);
     		//elimino todos salvo el minimo factible sobre w2
     	}else if(tipo_ejecucion == RCL_POR_VALOR){
@@ -1170,13 +1184,15 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
     		}
     	}else if(tipo_ejecucion == RCL_POR_CANTIDAD){
     		//cout <<"RCL_POR_CANTIDAD" << endl;
-			int cantidad_trim = (int) parametro_beta;
+			uint cantidad_trim = (int) parametro_beta;
 			if (cantidad_trim < 1){
 				cerr << "EH, EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO PAPAAA, LE PONGO 1!!" << endl;
 				cantidad_trim = 1;
 			}
-			candidatos.resize(cantidad_trim);
-    		//elimino todos salvo el minimo factible sobre w2
+			if(cantidad_trim > candidatos.size()){
+				//dejo solo los primeros cantidad_trim elementos mas chicos respecto a w2.
+				candidatos.resize(cantidad_trim);				
+			}
     	}
 	}
 
@@ -1192,7 +1208,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 	return candidatos;
 }
 
-//typedef enum tipo_ejecucion_golosa_t {DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
+//typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
 	//---------------------------- Inicializo los vectores y datos ----------------
     nodo_t nodo_dst = obtener_nodo_destino();
@@ -1226,7 +1242,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 
         //Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
         pair<nodo_t, Arista> minimo;
-    	if(tipo_ejecucion == DETERMINISTICO){
+    	if(tipo_ejecucion == RCL_DETERMINISTICO){
     		//el metodo obtener_lista_restringida_candidatos me devuelve un unico elemento, el de la decision greedy 
 			minimo = candidatos.front();        		        		
     	}else if(tipo_ejecucion == RCL_POR_VALOR || tipo_ejecucion == RCL_POR_CANTIDAD){

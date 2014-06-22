@@ -12,8 +12,6 @@ int main(int argc, char **argv){
     costo_t limit_w1 = g.obtener_limite_w1();
 	nodo_t nodo_src = g.obtener_nodo_origen();
 	nodo_t nodo_dst = g.obtener_nodo_destino();
-    //g.imprimir_matriz_adyacencia(cout);
-    //g.imprimir_lista_adyacencia(cout);
 	
 	//--------------------------------- Busco solucion inicial ----------------------
     Camino c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
@@ -38,37 +36,22 @@ int main(int argc, char **argv){
     c.imprimir_camino(cout);
     cout << endl;
 
-    //--------------------------------- Comienzo la busqueda local -------------------    
+    //--------------------------------- Comienzo la busqueda local -------------------   
+    //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
+
     //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
-//    while(g.busqueda_local_entre_pares_insertando());
-//    cout << "Finalizo la busqueda local insertando entre pares porque no se obtuvo ninguna mejora." << endl;
-//    
-//    cout << endl << endl << endl << endl << endl;
-//    
-//    while(g.busqueda_local_entre_triplas_reemplazando_intermedio());
-//    cout << "Finalizo la busqueda local reemplazando entre triplas porque no se obtuvo ninguna mejora." << endl;
+    while(g.busqueda_local(BQL_SUBDIVIDIR_PARES));
+    cout << "Finalizo la busqueda local insertando entre pares porque no se obtuvo ninguna mejora." << endl;
+    
+    //while(g.busqueda_local(BQL_MEJORAR_CONEXION_TRIPLAS));
+    //cout << "Finalizo la busqueda local reemplazando entre triplas porque no se obtuvo ninguna mejora." << endl;
 
-    while(g.busqueda_local_entre_triplas_salteando());
-    cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvo ninguna mejora." << endl;
-
-//    bool res_local_pares = false;
-//    bool res_local_triplas_intermedio = false;
-//    bool res_local_triplas_salteando = false;
-//    do{
-//        //res_local_pares = g.busqueda_local_entre_pares_insertando();
-//        res_local_triplas_intermedio = g.busqueda_local_entre_triplas_reemplazando_intermedio();
-//        res_local_triplas_salteando = g.busqueda_local_entre_triplas_salteando();
-//    }while(res_local_pares || res_local_triplas_intermedio || res_local_triplas_salteando);
+    //while(g.busqueda_local(BQL_CONTRAER_TRIPLAS_A_PARES));
+    //cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvo ninguna mejora." << endl;
 
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout);
     cout << endl;
 
-    ////Ejemplo BFS para obtener caminos minimos en "cantidad de aristas a origen"
-    //vector<distancia_t> distancias_en_pasos;
-    //g.breadth_first_search(nodo_src, distancias_en_pasos);
-    //for(int i=0;i<g.obtener_cantidad_nodos();i++){
-    //    cout << "Distancia de ("<< nodo_src << ") a (" << i << "): " << distancias_en_pasos[i] << " aristas" << endl;
-    //}
     return 0;
 }

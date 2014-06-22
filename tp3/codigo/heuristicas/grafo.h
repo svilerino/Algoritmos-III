@@ -18,7 +18,9 @@ typedef int longuitud_t;
 typedef double distancia_t;
 typedef double costo_t;
 typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
-typedef enum tipo_ejecucion_golosa_t {DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
+typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
+typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
+typedef enum criterio_terminacion_grasp_t {CRT_K_ITERS_SIN_MEJORA, CRT_K_ITERS_LIMIT_REACHED, CRT_SOLUTION_GOOD_ENOUGH} criterio_terminacion_grasp_t;
 
 const costo_t costo_infinito = numeric_limits<double>::infinity();
 const distancia_t distancia_infinita = numeric_limits<double>::infinity();
@@ -139,6 +141,9 @@ private:
 	vector<pair<nodo_t, Arista> > obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta, vector<costo_t>& costos,
 	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion);
 
+	bool busqueda_local_entre_pares_insertando();
+	bool busqueda_local_entre_triplas_salteando();
+	bool busqueda_local_entre_triplas_reemplazando_intermedio();
 public:
 	//constructor y destructor
 	Grafo(int cant_inicial_nodos);
@@ -160,7 +165,7 @@ public:
 	nodo_t obtener_nodo_origen();
 	nodo_t obtener_nodo_destino();
 	costo_t obtener_limite_w1();
-	Camino& obtener_camino_solucion();
+	Camino obtener_camino_solucion();
 	void establecer_camino_solucion(Camino c);
 
 	//Entrada - Salida
@@ -171,9 +176,7 @@ public:
 
 	//Algoritmos
 	//Realiza la busqueda local sobre una solucion inicial factible creada por dijkstra sobre COSTO_W1 entre src y dst
-	bool busqueda_local_entre_pares_insertando();
-	bool busqueda_local_entre_triplas_salteando();
-	bool busqueda_local_entre_triplas_reemplazando_intermedio();
+	bool busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion);
 	//Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
 	Camino dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
 	//Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro

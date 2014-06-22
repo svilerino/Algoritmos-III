@@ -11,7 +11,8 @@ int main(int argc, char **argv){
     //g.imprimir_matriz_adyacencia(cout);
 	
     double parametro_beta=1;
-    Camino camino = g.obtener_solucion_golosa(DETERMINISTICO, parametro_beta);
+    //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
+    Camino camino = g.obtener_solucion_golosa(RCL_DETERMINISTICO, parametro_beta);
     g.establecer_camino_solucion(camino);
 
     cout << endl << "Camino obtenido con golosa" << endl;
