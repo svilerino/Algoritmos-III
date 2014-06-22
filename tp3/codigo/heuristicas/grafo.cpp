@@ -97,7 +97,7 @@ costo_t Camino::obtener_costo_w1_entre_nodos(nodo_t i, nodo_t j){
 	if(this->mat_adyacencia[i][j].esta_presente()){
 		return this->mat_adyacencia[i][j].obtener_costo_w1();
 	}else{
-		cerr << "Costo infinito(no son adyacentes) entre nodos (" << i << ") y (" << j << ")" << endl;
+		cerr << "Costo w1 infinito(no son adyacentes) entre nodos (" << i << ") y (" << j << ")" << endl;
 		return costo_infinito;
 	}	
 }
@@ -107,7 +107,7 @@ costo_t Camino::obtener_costo_w2_entre_nodos(nodo_t i, nodo_t j){
 	if(this->mat_adyacencia[i][j].esta_presente()){
 		return this->mat_adyacencia[i][j].obtener_costo_w2();
 	}else{
-		cerr << "Costo infinito(no son adyacentes) entre nodos (" << i << ") y (" << j << ")" << endl;
+		cerr << "Costo w2 infinito(no son adyacentes) entre nodos (" << i << ") y (" << j << ")" << endl;
 		return costo_infinito;
 	}	
 }
@@ -209,7 +209,6 @@ bool Camino::mejorar_tripla(Vecino& at){
 
 	list<nodo_t>::iterator insertion_target = this->camino.begin();
 	list<nodo_t>::iterator final_it = this->camino.end();
-	list<nodo_t>::iterator target_it = this->camino.end();
 	while(insertion_target != final_it){
 		if(*insertion_target == nodo_target){	
 			insertion_target++;
