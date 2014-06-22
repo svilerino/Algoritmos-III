@@ -645,6 +645,14 @@ list<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){
 	return res;
 }
 
+vector<Arista> Grafo::obtener_vector_fila_vecinos(nodo_t target){
+	return this->mat_adyacencia[target];
+}
+
+list<pair<nodo_t, Arista> > Grafo::obtener_lista_vecinos(nodo_t target){
+	return this->lista_adyacencia[target];
+}
+
 nodo_t Grafo::obtener_nodo_origen(){
 	return this->nodo_src;
 }

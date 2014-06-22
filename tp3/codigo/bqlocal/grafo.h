@@ -142,6 +142,8 @@ public:
 	void quitar_arista(nodo_t i, nodo_t j);
 
 	//Consultas
+	vector<Arista> obtener_vector_fila_vecinos(nodo_t target);
+	list<pair<nodo_t, Arista> > obtener_lista_vecinos(nodo_t target);
 	int obtener_cantidad_nodos();
 	int obtener_cantidad_aristas();
 	Arista obtener_arista(nodo_t i, nodo_t j);	
