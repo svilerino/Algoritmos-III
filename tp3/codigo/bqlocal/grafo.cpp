@@ -497,11 +497,23 @@ void Grafo::unserialize(istream& in){
 Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
 	vector<costo_t> costo_minimo;
 	vector<nodo_t> predecesor;
-	return this->dijkstra(origen, destino, target_a_minimizar, costo_minimo, predecesor);
+	this->dijkstra(origen, target_a_minimizar, costo_minimo, predecesor);
+	
+	//armar camino entre origen y destino
+	Camino c(this->mat_adyacencia);
+	nodo_t nodo = destino;
+	do{
+		//cout << nodo << " " ;
+		c.agregar_nodo_adelante(nodo);
+		nodo = predecesor[nodo];
+	}while(nodo != predecesor_nulo);
+	//cout << origen << endl;	
+	this->camino_obtenido = c;
+	return this->camino_obtenido;
 }
 
-//Devuelve el camino minimo entre origen y destino y quedan modificados por referencia los costos_minimos y los predecesores de todos los nodos de G
-Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor){
+//Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro
+void Grafo::dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor){
 	//inicializacion
 	int n = this->cantidad_nodos;
 	costo_minimo.clear();
@@ -570,18 +582,6 @@ Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_min
 //			vecino_candidato++;
 //		}
 	}
-
-	//armo camino
-	Camino c(this->mat_adyacencia);
-	nodo_t nodo = destino;
-	do{
-		//cout << nodo << " " ;
-		c.agregar_nodo_adelante(nodo);
-		nodo = predecesor[nodo];
-	}while(nodo != predecesor_nulo);
-	//cout << origen << endl;	
-	this->camino_obtenido = c;
-	return this->camino_obtenido;
 }
 
 void Grafo::breadth_first_search(nodo_t origen, vector<distancia_t>& distancias){
