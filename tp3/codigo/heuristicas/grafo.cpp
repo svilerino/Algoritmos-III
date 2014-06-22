@@ -426,8 +426,8 @@ void Grafo::imprimir_lista_adyacencia(ostream& out){
 	out << "Lista adyacencia:" << endl;
 	for (int i = 0;i<this->cantidad_nodos;i++){
 		out << "Vecinos de [" << i << "]: ";
-		list<pair<nodo_t, Arista> >::iterator adyacentes_i_it = this->lista_adyacencia[i].begin();
-		list<pair<nodo_t, Arista> >::iterator final_it = this->lista_adyacencia[i].end();
+		lista_adyacentes::iterator adyacentes_i_it = this->lista_adyacencia[i].begin();
+		lista_adyacentes::iterator final_it = this->lista_adyacencia[i].end();
 		while(adyacentes_i_it != final_it){
 			out << "(" << adyacentes_i_it->first << ") ----> ";
 			adyacentes_i_it++;
@@ -440,6 +440,10 @@ void Grafo::imprimir_lista_adyacencia(ostream& out){
 
 costo_t Grafo::obtener_limite_w1(){
 	return this->cota_w1;
+}
+
+void Grafo::establecer_camino_solucion(Camino c){
+	this->camino_obtenido = c;
 }
 
 Camino& Grafo::obtener_camino_solucion(){
@@ -493,7 +497,7 @@ void Grafo::unserialize(istream& in){
 }
 
 //Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
-Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
+Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
 	vector<costo_t> costo_minimo;
 	vector<nodo_t> predecesor;
 	this->dijkstra(origen, target_a_minimizar, costo_minimo, predecesor);
@@ -506,9 +510,7 @@ Camino& Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_min
 		c.agregar_nodo_adelante(nodo);
 		nodo = predecesor[nodo];
 	}while(nodo != predecesor_nulo);
-	//cout << origen << endl;	
-	this->camino_obtenido = c;
-	return this->camino_obtenido;
+	return c;
 }
 
 //Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro
@@ -535,8 +537,8 @@ void Grafo::dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<cost
 		//de dicho nodo e itero sobre todos, quedandome con las aristas presentes			
 
 //		Implementacion con lista de adyacencia
-		list<pair<nodo_t, Arista> >::iterator adyacentes_i_it = this->lista_adyacencia[nodo_u].begin();
-		list<pair<nodo_t, Arista> >::iterator final_it = this->lista_adyacencia[nodo_u].end();
+		lista_adyacentes::iterator adyacentes_i_it = this->lista_adyacencia[nodo_u].begin();
+		lista_adyacentes::iterator final_it = this->lista_adyacencia[nodo_u].end();
 		while(adyacentes_i_it != final_it){
 			nodo_t nodo_v = adyacentes_i_it->first;
 			costo_t cost_v = (target_a_minimizar == COSTO_W1) ? (adyacentes_i_it->second).obtener_costo_w1() : (adyacentes_i_it->second).obtener_costo_w2();
@@ -598,8 +600,8 @@ void Grafo::breadth_first_search(nodo_t origen, vector<distancia_t>& distancias)
 
 		//para todos los vecinos de target
 //		Implementacion con lista de adyacencia
-		list<pair<nodo_t, Arista> >::iterator adyacentes_i_it = this->lista_adyacencia[target].begin();
-		list<pair<nodo_t, Arista> >::iterator final_it = this->lista_adyacencia[target].end();
+		lista_adyacentes::iterator adyacentes_i_it = this->lista_adyacencia[target].begin();
+		lista_adyacentes::iterator final_it = this->lista_adyacencia[target].end();
 		while(adyacentes_i_it != final_it){
 			nodo_t vecino_candidato = adyacentes_i_it->first;
 			if(!visitado[vecino_candidato]){
@@ -648,7 +650,7 @@ vector<Arista> Grafo::obtener_vector_fila_vecinos(nodo_t target){
 	return this->mat_adyacencia[target];
 }
 
-list<pair<nodo_t, Arista> > Grafo::obtener_lista_vecinos(nodo_t target){
+lista_adyacentes Grafo::obtener_lista_vecinos(nodo_t target){
 	return this->lista_adyacencia[target];
 }
 
@@ -1072,11 +1074,6 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 	return hay_mejoras_para_el_camino;
 }
 
-Camino Grafo::crear_camino_vacio(){
-	Camino c(this->mat_adyacencia);
-	return c;
-}
-
 list<Grafo> Grafo::parsear_varias_instancias(){
 	list<Grafo> instancias;
     //parseo todas las instancias
@@ -1087,4 +1084,80 @@ list<Grafo> Grafo::parsear_varias_instancias(){
     }while(!cin.eof());
     cout << "[Parse input]Se leyeron " << instancias.size() << " instancias de stdin" << endl << endl;
     return instancias;
+}
+
+vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t actual, vector<costo_t>& costos,
+	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion){
+	vector<pair<nodo_t, Arista> > lista;
+	lista_adyacentes vecinos = this->obtener_lista_vecinos(actual);
+	if(!vecinos.empty()){
+		lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
+        lista_adyacentes::iterator final_it = vecinos.end();
+        pair<nodo_t, Arista> minimo = vecinos.front();
+        while(incidentes_i_it != final_it){
+            if( (costos[incidentes_i_it->first] + costoCamino <= this->cota_w1) && 
+                ((incidentes_i_it->second).obtener_costo_w2() <= (minimo.second).obtener_costo_w2()) &&
+                 (distancias[incidentes_i_it->first] < distanciaLlegada)){
+                minimo = *incidentes_i_it;
+            }
+            incidentes_i_it++;
+        }
+		lista.push_back(minimo);
+	}
+	return lista;
+}
+
+//typedef enum tipo_ejecucion_golosa_t {DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
+Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion){
+	//---------------------------- Inicializo los vectores y datos ----------------
+    nodo_t nodo_dst = obtener_nodo_destino();
+    
+    vector<costo_t> costos;
+    vector<nodo_t> predecesores;
+    this->dijkstra(nodo_dst, COSTO_W1, costos, predecesores);
+
+    vector<distancia_t> distancias;
+    this->breadth_first_search(nodo_dst, distancias);
+
+    Camino camino(this->mat_adyacencia);
+    camino.agregar_nodo(nodo_src);
+    costo_t costoCamino = 0;
+    distancia_t distanciaLlegada = distancias[nodo_src];
+
+    //--------------------------Comienza la busqueda golosa ----------------
+
+    nodo_t actual = nodo_src;
+    cout << "Nodo inicial: " << actual << endl;
+
+    while(actual != nodo_dst){
+       
+        vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, costos, distancias, costoCamino, distanciaLlegada, tipo_ejecucion);
+
+        cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
+        if(candidatos.empty()){
+        	cerr << "[Golosa] Candidatos vacio" << endl;
+        	break;
+        }
+        //Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
+        pair<nodo_t, Arista> minimo;
+    	if(tipo_ejecucion == DETERMINISTICO){
+    		//el metodo obtener_lista_restringida_candidatos me devuelve un unico elemento, el de la decision greedy 
+			minimo = candidatos.front();        		        		
+    	}else if(tipo_ejecucion == RCL_POR_VALOR || tipo_ejecucion == RCL_POR_CANTIDAD){
+        	std::default_random_engine generator;
+			std::uniform_int_distribution<int> distribution(0, candidatos.size() - 1);
+			int candidato_random = distribution(generator);
+			minimo = candidatos[candidato_random];        		
+    	}
+
+        cout << "\tEl mejor vecino segun decision greedy para el nodo (" << actual << ") es (";
+        cout << minimo.first << ") con un costo (w1: " << (minimo.second).obtener_costo_w1() << ", w2: " << (minimo.second).obtener_costo_w2() << ")" << endl;
+        cout << endl;
+
+        camino.agregar_nodo(minimo.first);
+        costoCamino += (minimo.second).obtener_costo_w2();
+        actual = minimo.first;
+        distanciaLlegada--;
+    }
+    return camino;
 }

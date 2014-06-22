@@ -17,6 +17,7 @@ int main(int argc, char **argv){
 	
 	//--------------------------------- Busco solucion inicial ----------------------
     Camino c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
+    g.establecer_camino_solucion(c);
 
     //--------------------------------- Valido la factibilidad de la solucion----------------
     cout << "Se requiere un camino entre (" << nodo_src << ") y (" << nodo_dst<< ") que no exceda el costo " << limit_w1;
@@ -54,9 +55,9 @@ int main(int argc, char **argv){
 //    bool res_local_triplas_intermedio = false;
 //    bool res_local_triplas_salteando = false;
 //    do{
-//        res_local_pares = g.busqueda_local_entre_pares_insertando();
+//        //res_local_pares = g.busqueda_local_entre_pares_insertando();
 //        res_local_triplas_intermedio = g.busqueda_local_entre_triplas_reemplazando_intermedio();
-//        res_local_triplas_salteando = g.g.busqueda_local_entre_triplas_salteando();
+//        res_local_triplas_salteando = g.busqueda_local_entre_triplas_salteando();
 //    }while(res_local_pares || res_local_triplas_intermedio || res_local_triplas_salteando);
 
     cout << "Salida del algoritmo: " << endl;

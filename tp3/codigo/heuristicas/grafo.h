@@ -8,6 +8,7 @@
 #include <queue>
 #include <string>
 #include <limits>
+#include <random>
 
 using namespace std;
 
@@ -16,6 +17,7 @@ typedef int longuitud_t;
 typedef double distancia_t;
 typedef double costo_t;
 typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
+typedef enum tipo_ejecucion_golosa_t {DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 
 const costo_t costo_infinito = numeric_limits<double>::infinity();
 const distancia_t distancia_infinita = numeric_limits<double>::infinity();
@@ -47,7 +49,8 @@ public:
 };
 
 typedef vector<vector<Arista> > matriz_adyacencia_t;
-typedef vector<list<pair<nodo_t, Arista> > > lista_adyacencia_t;
+typedef list<pair<nodo_t, Arista> > lista_adyacentes;
+typedef vector<lista_adyacentes> lista_adyacencia_t;
 
 class Vecino{
 private:
@@ -131,6 +134,10 @@ private:
 	bool mejorar_conexion_salteando(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
 	 Arista& mejor_vecino);
 
+	//Golosa
+	vector<pair<nodo_t, Arista> > obtener_lista_restringida_candidatos(nodo_t actual, vector<costo_t>& costos,
+	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion);
+
 public:
 	//constructor y destructor
 	Grafo(int cant_inicial_nodos);
@@ -143,7 +150,7 @@ public:
 
 	//Consultas
 	vector<Arista> obtener_vector_fila_vecinos(nodo_t target);
-	list<pair<nodo_t, Arista> > obtener_lista_vecinos(nodo_t target);
+	lista_adyacentes obtener_lista_vecinos(nodo_t target);
 	int obtener_cantidad_nodos();
 	int obtener_cantidad_aristas();
 	Arista obtener_arista(nodo_t i, nodo_t j);	
@@ -153,6 +160,7 @@ public:
 	nodo_t obtener_nodo_destino();
 	costo_t obtener_limite_w1();
 	Camino& obtener_camino_solucion();
+	void establecer_camino_solucion(Camino c);
 
 	//Entrada - Salida
 	void imprimir_matriz_adyacencia(ostream& out);
@@ -166,14 +174,14 @@ public:
 	bool busqueda_local_entre_triplas_salteando();
 	bool busqueda_local_entre_triplas_reemplazando_intermedio();
 	//Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
-	Camino& dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
+	Camino dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
 	//Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro
 	void dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor);
 	//Dado un nodo_t origen se calcula para cada nodo, la distancia minima en cantidad de aristas de peso constante 1 de cualquier nodo a origen
 	void breadth_first_search(nodo_t origen, vector<distancia_t>& distancias_en_aristas_a_origen);
 
-	//Camino Factory
-	Camino crear_camino_vacio();
+	//Golosa
+	Camino obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion);
 
 	//Metodos utilitarios
 	static list<Grafo> parsear_varias_instancias();
