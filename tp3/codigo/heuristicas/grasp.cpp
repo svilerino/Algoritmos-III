@@ -8,10 +8,11 @@ int main(int argc, char **argv){
     //TODO POR AHORA SE PROCESA LA PRIMERA INSTANCIA PARSEADA NOMAS!!
     Grafo g = instancias.front();
 	
+    double parametro_beta = 1.5;
     bool hay_mejora = false;
     do{
     	//typedef enum tipo_ejecucion_golosa_t {DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
-    	Camino camino = g.obtener_solucion_golosa(RCL_POR_VALOR);
+    	Camino camino = g.obtener_solucion_golosa(RCL_POR_VALOR, parametro_beta);
     	cout << "Solucion inicial de la greedy:" << endl;
     	camino.imprimir_camino(cout);
 		g.establecer_camino_solucion(camino);

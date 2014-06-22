@@ -10,7 +10,8 @@ int main(int argc, char **argv){
     Grafo g = instancias.front();
     //g.imprimir_matriz_adyacencia(cout);
 	
-    Camino camino = g.obtener_solucion_golosa(DETERMINISTICO);
+    double parametro_beta=1;
+    Camino camino = g.obtener_solucion_golosa(DETERMINISTICO, parametro_beta);
     g.establecer_camino_solucion(camino);
 
     cout << endl << "Camino obtenido con golosa" << endl;

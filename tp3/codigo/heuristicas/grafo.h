@@ -8,6 +8,7 @@
 #include <queue>
 #include <string>
 #include <limits>
+#include <algorithm>
 #include <random>
 
 using namespace std;
@@ -37,8 +38,8 @@ public:
 	bool esta_presente();
 	void desmarcar_presente();
 	void marcar_presente(costo_t w1, costo_t w2);
-	costo_t obtener_costo_w1();
-	costo_t obtener_costo_w2();
+	costo_t obtener_costo_w1() const;
+	costo_t obtener_costo_w2() const;
 
 	bool operator== (const Arista &other) const
 	{
@@ -135,7 +136,7 @@ private:
 	 Arista& mejor_vecino);
 
 	//Golosa
-	vector<pair<nodo_t, Arista> > obtener_lista_restringida_candidatos(nodo_t actual, vector<costo_t>& costos,
+	vector<pair<nodo_t, Arista> > obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta, vector<costo_t>& costos,
 	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion);
 
 public:
@@ -181,7 +182,7 @@ public:
 	void breadth_first_search(nodo_t origen, vector<distancia_t>& distancias_en_aristas_a_origen);
 
 	//Golosa
-	Camino obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion);
+	Camino obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta);
 
 	//Metodos utilitarios
 	static list<Grafo> parsear_varias_instancias();

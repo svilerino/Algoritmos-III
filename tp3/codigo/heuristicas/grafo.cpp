@@ -21,11 +21,11 @@ bool Arista::esta_presente(){
 	return this->presente;
 }
 
-costo_t Arista::obtener_costo_w1(){
+costo_t Arista::obtener_costo_w1() const {
 	return this->costo_w1;	
 }
 
-costo_t Arista::obtener_costo_w2(){
+costo_t Arista::obtener_costo_w2() const {
 	return this->costo_w2;	
 }
 
@@ -1086,29 +1086,114 @@ list<Grafo> Grafo::parsear_varias_instancias(){
     return instancias;
 }
 
-vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t actual, vector<costo_t>& costos,
-	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion){
-	vector<pair<nodo_t, Arista> > lista;
-	lista_adyacentes vecinos = this->obtener_lista_vecinos(actual);
+bool compare_w2(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
+{
+    return (i.second).obtener_costo_w2() < (j.second).obtener_costo_w2();
+}
+
+//parametro beta en RCL_POR_VALOR indica el porcentaje a alejarse del mejor candidato
+//parametro beta en RCL_POR_CANTIDAD indica la candidad de "mejores" candidatos a elegir
+vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta,
+	vector<costo_t>& costos, vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion){
+	
+	vector<pair<nodo_t, Arista> > candidatos;
+	
+	//voy a filtrar todos los candidatos factibles localmente (que elegir dicho candidato no me pase de la cota de w1
+	//y que me acerco a destino) y finalmente, segun el tipo de ejecucion voy a hacer una de las siguientes cosas:
+	//	- DETERMINISTICO: tomo el minimo respecto a w2
+	//  - RCL_POR_CANTIDAD: ordeno el vector segun w2 y resizeo a los primeros parametro_beta elementos. Esto me da los parametro_beta elementos mas chicos segun w2
+	//	- RCL_POR_VALOR: ordeno el vector segun w2 y elimino los menores que (minimo_w2 * (1 + parametro_beta)). Esto me da los candidatos que se acercan parametro_beta % al minimo_w2
+
+	lista_adyacentes vecinos = this->obtener_lista_vecinos(actual);	
 	if(!vecinos.empty()){
 		lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
         lista_adyacentes::iterator final_it = vecinos.end();
-        pair<nodo_t, Arista> minimo = vecinos.front();
+
+		//recolecto los factibles locales        
         while(incidentes_i_it != final_it){
-            if( (costos[incidentes_i_it->first] + costoCamino <= this->cota_w1) && 
-                ((incidentes_i_it->second).obtener_costo_w2() <= (minimo.second).obtener_costo_w2()) &&
-                 (distancias[incidentes_i_it->first] < distanciaLlegada)){
-                minimo = *incidentes_i_it;
+        	bool no_me_paso_w1 = (costos[incidentes_i_it->first] + costoCamino <= this->cota_w1);
+        	bool me_acerco_a_destino = (distancias[incidentes_i_it->first] < distanciaLlegada);
+        	if(no_me_paso_w1 && me_acerco_a_destino){
+                pair<nodo_t, Arista> target = *incidentes_i_it;
+				candidatos.push_back(target);
             }
             incidentes_i_it++;
         }
-		lista.push_back(minimo);
+
+        if(candidatos.size()<1){
+        	//ehh no hay factibles, ALTO YAO. esto no podia ocurrir segun el informe...
+        	//esta demostrado que no ocurre, pero lo valido por si las moscas
+        	cerr << "Lista de cantidatos factibles vacia (condicion requerida: no se pasa de w1 y se acerca a destino) en el nodo (" << actual << ")" << endl;
+        	cerr << "Lista de nodos vecinos:" << endl;
+        	lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
+        	lista_adyacentes::iterator final_it = vecinos.end();
+        	while(incidentes_i_it != final_it){
+	        	cerr << "(" << incidentes_i_it->first << ") costos w1: " << incidentes_i_it->second.obtener_costo_w1() << " costos w2:";
+	        	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
+	            incidentes_i_it++;
+        	}
+        }//else{
+//        	cerr << "Lista de nodos factibles:" << endl;
+//	    	vector<pair<nodo_t, Arista> >::iterator incidentes_i_it = candidatos.begin();
+//	    	vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
+//	    	while(incidentes_i_it != final_it){
+//	        	cerr << "(" << incidentes_i_it->first << ") costos w1: " << incidentes_i_it->second.obtener_costo_w1() << " costos w2:";
+//	        	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
+//	            incidentes_i_it++;
+//	    	}
+//        }
+
+        //ordeno los candidatos factibles, sobre la funcion w2 de menor a mayor
+        sort(candidatos.begin(), candidatos.end(), compare_w2);
+
+        if(tipo_ejecucion == DETERMINISTICO){
+        	cout <<"DETERMINISTICO" << endl;
+    		candidatos.resize(1);
+    		//elimino todos salvo el minimo factible sobre w2
+    	}else if(tipo_ejecucion == RCL_POR_VALOR){
+    		cout <<"RCL_POR_VALOR" << endl;
+    		pair<nodo_t, Arista> minimo = candidatos.front();
+    		double valor_limite = (parametro_beta + 1) * minimo.second.obtener_costo_w2();
+    		vector<pair<nodo_t, Arista> >::iterator it = candidatos.begin();
+    		vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
+
+    		//filtro los que se pasen del valor limite
+    		while(it != final_it){
+    			if(it->second.obtener_costo_w2() > valor_limite){
+    				it = candidatos.erase(it);
+    				if(it == final_it){
+    					//caso donde borro el ultimo, me queda final_it y no puedo hacerle ++ porque estalla
+    					break;
+    				}
+    			}
+    			it++;
+    		}
+    	}else if(tipo_ejecucion == RCL_POR_CANTIDAD){
+    		cout <<"RCL_POR_CANTIDAD" << endl;
+			int cantidad_trim = (int) parametro_beta;
+			if (cantidad_trim < 1){
+				cerr << "EH, EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO PAPAAA, LE PONGO 1!!" << endl;
+				cantidad_trim = 1;
+			}
+			candidatos.resize(cantidad_trim);
+    		//elimino todos salvo el minimo factible sobre w2
+    	}
 	}
-	return lista;
+
+//   	cerr << "Lista de nodos factibles filtrados:" << endl;
+//   	vector<pair<nodo_t, Arista> >::iterator incidentes_i_it = candidatos.begin();
+//   	vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
+//   	while(incidentes_i_it != final_it){
+//       	cerr << "(" << incidentes_i_it->first << ") costos w1: " << incidentes_i_it->second.obtener_costo_w1() << " costos w2:";
+//       	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
+//           incidentes_i_it++;
+//   	}      
+	
+	return candidatos;
 }
 
 //typedef enum tipo_ejecucion_golosa_t {DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
-Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion){
+Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
 	//---------------------------- Inicializo los vectores y datos ----------------
     nodo_t nodo_dst = obtener_nodo_destino();
     
@@ -1131,13 +1216,14 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion){
 
     while(actual != nodo_dst){
        
-        vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, costos, distancias, costoCamino, distanciaLlegada, tipo_ejecucion);
+        vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, parametro_beta, costos, distancias, costoCamino, distanciaLlegada, tipo_ejecucion);
 
         cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
         if(candidatos.empty()){
         	cerr << "[Golosa] Candidatos vacio" << endl;
         	break;
         }
+
         //Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
         pair<nodo_t, Arista> minimo;
     	if(tipo_ejecucion == DETERMINISTICO){
@@ -1145,9 +1231,13 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion){
 			minimo = candidatos.front();        		        		
     	}else if(tipo_ejecucion == RCL_POR_VALOR || tipo_ejecucion == RCL_POR_CANTIDAD){
         	std::default_random_engine generator;
-			std::uniform_int_distribution<int> distribution(0, candidatos.size() - 1);
-			int candidato_random = distribution(generator);
-			minimo = candidatos[candidato_random];        		
+			//generacion numero random c++11 con distribucion uniforme
+			random_device rd;
+		    mt19937 gen(rd());
+		    uniform_int_distribution<> dis(0, candidatos.size()-1);
+			int candidato_random = dis(gen);
+			//indexo con el numero random obtenido
+			minimo = candidatos[candidato_random];   		
     	}
 
         cout << "\tEl mejor vecino segun decision greedy para el nodo (" << actual << ") es (";
