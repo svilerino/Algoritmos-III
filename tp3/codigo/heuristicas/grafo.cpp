@@ -565,6 +565,10 @@ void Grafo::dijkstra(nodo_t origen, nodo_t nodo_origen_a_ignorar, tipo_costo_t t
 			nodo_t nodo_v = adyacentes_i_it->first;
 
 
+			//como se explica en el informe, para la sol golosa
+			//queremos ignorar todos los caminos que pasen por cierto nodo
+			//de esta forma me aseguro que dijkstra nunca va a considerar
+			//mejorar un camino(o armarlo) pasando por este nodo.
 			if(nodo_v == nodo_origen_a_ignorar){
 				adyacentes_i_it++;
 				continue;
