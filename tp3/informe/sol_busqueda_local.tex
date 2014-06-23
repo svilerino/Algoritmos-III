@@ -1,7 +1,46 @@
 \section{Heuristicas de busqueda local}
 \subsection{Explicacion detallada del algoritmo propuesto}
+Sea $s$ una solucion factible, es decir, un camino entre $u,v$ tal que el costo del camino $w_1 \leq K$,
+para plantear esta heur\'istica definimos $N(s) = \{ $ conjunto de soluciones vecinas de s$\}$ = $\{$ caminos entre u,v tal que $w_1 \leq K$ y difieren en solo un nodo de $s\}$.\\
+
+Se plantearon 3 posibles enfoques para aplicar busqueda local sobre esta vecindad, a continuacion se explicar\'an cada uno.
+\subsubsection{Obtencion de la solucion inicial factible}
+
+Para obtener la solucion inicial factible de nuestra heur\'istica ejecutamos el algoritmo de camino m\'inimo de Dijkstra, entre los nodos u y v, sobre la funcion $w_1$, acto seguido validamos si $dist(w_1, src, dst) > K$ entonces no existe soluci\'on factible, caso contrario tenemos una soluci\'on factible inicial para comenzar las 
+iteraciones de busqueda local.
+
+\subsubsection{Criterio de terminaci\'on}
+El criterio de terminacion fue repetir las iteraciones sobre las nuevas soluciones que se iban obteniendo, hasta que no se obtiene mejora.
+Nota: siempre se aplica uno solo de los 3 metodos a las iteraciones, es decir, no se combinan.
+
+\subsubsection{Reemplazar un nodo intermedio en una 3-upla consecutiva de nodos del camino}
+Si el camino tiene longuitud 2, es decir hay una arista directa entre $u,v$ , no hay nada que hacer en este caso, caso contrario, sea $S = \{u,...,v_l, v_{l+1}, v_{l+2}, v_{l+3} ..., v\}$ la solucion actual. Lo que hace en este caso es iterar sobre todas las 3-uplas consecutivas del camino, en este ejemplo sea $(vl, v_{l+1}, v_{l+2})$ una 3-upla, $(v_{l+1}, v_{l+2}, v_{l+3})$ la siguiente a iterar, etc...\\ \\
+Para cada 3-upla iterada se revisan los vecinos en comun entre los extremos de la 3-upla buscando una mejor conexi\'on entre extremos reemplazando el nodo intermedio 
+como se indica en el grafico debajo, es decir, se busca una nueva conexion entre los extremos tal que, si el nuevo nodo intermedio es $v_t$, vale que:
+\begin{itemize}
+	\item Mejore la conexion de la 3-upla respecto a $w_2$, $w_2(vl, v_{t}) + w_2(vt, v_{l+2}) < w_2(vl, v_{l+1}) + w_2(v_{l+1}, v_{l+2})$
+	\item Este cambio, reflejado en la nueva solucion candidata S', no sobrepase la cota K establecida sobre $w_1$, es decir, sea factible.
+\end{itemize}
+
+
+	INSERTAR GRAFICO ACA!
+
+
+Una iteracion consiste en recorrer todas las 3-uplas del camino obteniendo de los vecinos en com\'un de los extremos de cada 3-upla, si es posible, la mejor forma de mejorar esta conexion, ademas recordando la mejor 3-upla para aplicar la mejora a lo largo de la iteraci\'on, tal que el camino resultante de aplicar esta mejora sea el minimo sobre $w_2$ en la vecindad $N(s)$. Mas formalmente, se busca una solucion vecina del camino S, tal que siendo $w_1(P), w_2(P)$ los costos sobre $w_1$ y $w_2$ respectivamente de una solucion, y $S' = S \setminus \{(v_k, v_{k+1}); (v_{k+1}, v_{k+2})\} \cup \{(v_k, v_t);(v_t, v_{k+2})\}$ la nueva solucion obtenida, entonces valga que:
+\begin{itemize}
+	\item Sea factible, pertenezca a $N(S)$, $ w_1(S') \leq K$
+	\item Sea minima respecto de $w_2$ en la vecindad $N(S)$, $w_2(S') \leq w_2(T)$ $ \forall$ $ T \in N(S) $
+\end{itemize}
+
+
+\subsubsection{Insertar un nodo intermedio en un par consecutivo de nodos del camino}
+Este enfoque es basicamente igual al anterior, solo que en lugar de iterar sobre 3-uplas reemplazando el nodo intermedio, se itera sobre pares consecutivos de nodos de la solucion S $(v_k, v_{k+1})$ buscando si existe, un vecino en comun entre los extremos tal que el sendero $(v_k, v_t, v_{k+1})$ tenga costo menor(de forma minima entre los vecinos) sobre $w_2$ que la arista directa y que reflejado en la solucion candidata S' que surge de aplicar este cambio, siga siengo factible($w_2(S') \leq K$). La iteracion de sigue siendo sobre toda la vecindad $N(S)$ y quedandose con el mejor $S' \in N(S)$ posible.
+
 \subsection{Complejidad temporal para el peor caso}
 \subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
 %Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
 %Indicar si es posible que tan mala puede ser la solucion obtenida respecto a la solucion optima
 %\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hace falta hablar de eso aca}
+\subsection{Casos bien y casos mal}
+\subsection{Taboo list caminos del ciclo}
+\subsection{Porque elegir la mejor 3-upla de cada it y no la primera, pensar en siguientes iteraciones que podrian ser mejor}
