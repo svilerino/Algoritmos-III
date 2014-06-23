@@ -1,1 +1,1 @@
-reset && make clean all && valgrind --leak-check=full ./grasp < grafo_example_2.txt 
+reset && make clean all && valgrind --leak-check=full ./grasp < grafo_example.txt 

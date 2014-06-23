@@ -2,12 +2,14 @@
 // -------------- Main ---------------------------------
 
 int main(int argc, char **argv){
-    list<Grafo> instancias = Grafo::parsear_varias_instancias();
+    list<Grafo> instancias = Grafo::parsear_varias_instancias(FORMATO_1_N_CLOSED);
 
     //TODO POR AHORA SOLO PROCESA LA PRIMER INSTANCIA!!
 
     //---------------------------- Obtengo el grafo y los parametros ----------------
     Grafo g = instancias.front();
+    g.imprimir_lista_adyacencia(cout);
+    //g.imprimir_matriz_adyacencia(cout);
 
     costo_t limit_w1 = g.obtener_limite_w1();
 	nodo_t nodo_src = g.obtener_nodo_origen();
@@ -50,7 +52,7 @@ int main(int argc, char **argv){
     //cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvo ninguna mejora." << endl;
 
     cout << "Salida del algoritmo: " << endl;
-    g.serialize(cout);
+    g.serialize(cout, FORMATO_1_N_CLOSED);
     cout << endl;
 
     return 0;

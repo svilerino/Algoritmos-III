@@ -429,7 +429,7 @@ void Grafo::imprimir_lista_adyacencia(ostream& out){
 		lista_adyacentes::iterator adyacentes_i_it = this->lista_adyacencia[i].begin();
 		lista_adyacentes::iterator final_it = this->lista_adyacencia[i].end();
 		while(adyacentes_i_it != final_it){
-			out << "(" << adyacentes_i_it->first << ") ----> ";
+			out << "(" << adyacentes_i_it->first << ") --(" << this->mat_adyacencia[i][adyacentes_i_it->first].obtener_costo_w1() << ", " << this->mat_adyacencia[i][adyacentes_i_it->first].obtener_costo_w2() << ")--> ";
 			adyacentes_i_it++;
 		}
 		out << "Nil" << endl;
@@ -458,27 +458,37 @@ int Grafo::obtener_cantidad_aristas(){
 	return this->cantidad_aristas;
 }
 
-void Grafo::serialize(ostream& out){
+void Grafo::serialize(ostream& out, formato_salida_t formato){
 	out << this->camino_obtenido.obtener_costo_total_w1_camino() << " ";
 	out << this->camino_obtenido.obtener_costo_total_w2_camino() << " ";
 	out << this->camino_obtenido.obtener_longuitud_camino() << " ";
 	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
 	while(it != camino_obtenido.obtener_iterador_const_end()){
-		out << *it << " ";
+		out << ( (formato == FORMATO_1_N_CLOSED) ? ( (*it) + 1 ) : *it ) << " ";
 		++it;
 	}
 }
 
-void Grafo::unserialize(istream& in){
+bool Grafo::unserialize(istream& in, formato_entrada_t formato){
 	//primera linea:
 	//n m u v K
 	//cant nodos, cant aristas, src, dst, K(cota w1)
 	int cant_nodos_nuevos = 0, cantidad_aristas_nuevas = 0;
 	in >> cant_nodos_nuevos;
+
+	if(cant_nodos_nuevos == 0){
+		return false;//es la ultima linea de la entrada!!
+	}
+
 	in >> cantidad_aristas_nuevas;
 	in >> this->nodo_src;
 	in >> this->nodo_dst;
 	in >> this->cota_w1;
+
+	if(formato == FORMATO_1_N_CLOSED){
+		this->nodo_src--;
+		this->nodo_dst--;
+	}
 
 	this->agregar_nodos(cant_nodos_nuevos);
 
@@ -491,9 +501,16 @@ void Grafo::unserialize(istream& in){
 		in >> nodo_b;
 		in >> costo_w1;
 		in >> costo_w2;
+
+		if(formato == FORMATO_1_N_CLOSED){
+			nodo_a--;
+			nodo_b--;
+		}
+
 		this->agregar_arista(nodo_a, nodo_b, costo_w1, costo_w2);
 		count++;
 	}
+	return true;
 }
 
 //Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
@@ -1096,14 +1113,16 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 	return false;	
 }
 
-list<Grafo> Grafo::parsear_varias_instancias(){
+list<Grafo> Grafo::parsear_varias_instancias(formato_entrada_t formato){
 	list<Grafo> instancias;
     //parseo todas las instancias
+    bool instancia_valida = true;
     do{
         Grafo i(0);
-        i.unserialize(cin);
-        instancias.push_back(i);
-    }while(!cin.eof());
+        instancia_valida = i.unserialize(cin, formato);
+        if(instancia_valida)
+        	instancias.push_back(i);
+    }while(instancia_valida);
     cout << "[Parse input]Se leyeron " << instancias.size() << " instancias de stdin" << endl << endl;
     return instancias;
 }

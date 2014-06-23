@@ -21,6 +21,8 @@ typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
 typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
 typedef enum criterio_terminacion_grasp_t {CRT_K_ITERS_SIN_MEJORA, CRT_K_ITERS_LIMIT_REACHED, CRT_SOLUTION_GOOD_ENOUGH} criterio_terminacion_grasp_t;
+typedef enum formato_entrada_t {FORMATO_0_N_OPEN, FORMATO_1_N_CLOSED} formato_entrada_t;
+typedef formato_entrada_t formato_salida_t;
 
 const costo_t costo_infinito = numeric_limits<double>::infinity();
 const distancia_t distancia_infinita = numeric_limits<double>::infinity();
@@ -171,8 +173,8 @@ public:
 	//Entrada - Salida
 	void imprimir_matriz_adyacencia(ostream& out);
 	void imprimir_lista_adyacencia(ostream& out);
-	void serialize(ostream& out);
-	void unserialize(istream& in);
+	void serialize(ostream& out, formato_salida_t formato);
+	bool unserialize(istream& in, formato_entrada_t formato);
 
 	//Algoritmos
 	//Realiza la busqueda local sobre una solucion inicial factible creada por dijkstra sobre COSTO_W1 entre src y dst
@@ -188,7 +190,7 @@ public:
 	Camino obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta);
 
 	//Metodos utilitarios
-	static list<Grafo> parsear_varias_instancias();
+	static list<Grafo> parsear_varias_instancias(formato_entrada_t formato);
 };
 
 #endif

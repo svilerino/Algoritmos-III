@@ -3,11 +3,12 @@
 
 int main(int argc, char **argv){
     //---------------------------- Obtengo el grafo y los parametros ----------------
-    list<Grafo> instancias = Grafo::parsear_varias_instancias();
+    list<Grafo> instancias = Grafo::parsear_varias_instancias(FORMATO_1_N_CLOSED);
 
     //TODO POR AHORA SE PROCESA LA PRIMERA INSTANCIA PARSEADA NOMAS!!
     Grafo g = instancias.front();    
-
+    g.imprimir_lista_adyacencia(cout);
+    //g.imprimir_matriz_adyacencia(cout);
 
     //----- Configuracion del criterio de terminacion de GRASP -----
 
@@ -54,7 +55,7 @@ int main(int argc, char **argv){
         //me fijo si esta solucion es mejor que la que tenia guardada, de ser asi actualizo el maximo y guardo la sol actual como la nueva mejor.
         costo_t costo_solucion_actual = camino.obtener_costo_total_w2_camino();
         if(costo_solucion_actual < costo_mejor_solucion){
-            costo_mejor_solucion = costo_solucion_actual;            
+            costo_mejor_solucion = costo_solucion_actual;
             mejor_solucion = g.obtener_camino_solucion();
             //reseteo el contador
             cant_iters_sin_mejora = 0;
@@ -77,7 +78,7 @@ int main(int argc, char **argv){
     cout << endl << "Se cumplio el criterio de terminacion." << endl;
 
     cout << "Salida del algoritmo: " << endl;
-    g.serialize(cout);
+    g.serialize(cout, FORMATO_1_N_CLOSED);
     cout << endl;
     return 0;
 }
