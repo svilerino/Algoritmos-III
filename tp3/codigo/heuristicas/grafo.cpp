@@ -342,6 +342,7 @@ Grafo::Grafo(int cant_inicial_nodos){
 	nodo_src = 0;
 	nodo_dst = 0;
 	cota_w1 = 0;
+	sol_valida = false;
 	
 	//camino_obtenido se inicializa por defecto;
 	
@@ -459,13 +460,17 @@ int Grafo::obtener_cantidad_aristas(){
 }
 
 void Grafo::serialize(ostream& out, formato_salida_t formato){
-	out << this->camino_obtenido.obtener_costo_total_w1_camino() << " ";
-	out << this->camino_obtenido.obtener_costo_total_w2_camino() << " ";
-	out << this->camino_obtenido.obtener_longuitud_camino() << " ";
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
-	while(it != camino_obtenido.obtener_iterador_const_end()){
-		out << ( (formato == FORMATO_1_N_CLOSED) ? ( (*it) + 1 ) : *it ) << " ";
-		++it;
+	if(this->sol_valida){
+		out << this->camino_obtenido.obtener_costo_total_w1_camino() << " ";
+		out << this->camino_obtenido.obtener_costo_total_w2_camino() << " ";
+		out << this->camino_obtenido.obtener_longuitud_camino() << " ";
+		list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
+		while(it != camino_obtenido.obtener_iterador_const_end()){
+			out << ( (formato == FORMATO_1_N_CLOSED) ? ( (*it) + 1 ) : *it ) << " ";
+			++it;
+		}		
+	}else{
+		out << "no";
 	}
 }
 
@@ -1296,4 +1301,8 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
         distanciaLlegada--;
     }
     return camino;
+}
+
+void Grafo::establecer_se_encontro_solucion(bool se_encontro){
+	this->sol_valida = se_encontro;
 }

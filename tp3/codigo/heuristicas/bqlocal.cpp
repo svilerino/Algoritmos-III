@@ -51,6 +51,8 @@ int main(int argc, char **argv){
     //while(g.busqueda_local(BQL_CONTRAER_TRIPLAS_A_PARES));
     //cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvo ninguna mejora." << endl;
 
+    g.establecer_se_encontro_solucion(true);
+
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
     cout << endl;

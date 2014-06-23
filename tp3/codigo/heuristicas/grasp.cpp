@@ -77,6 +77,8 @@ int main(int argc, char **argv){
 
     cout << endl << "Se cumplio el criterio de terminacion." << endl;
 
+    g.establecer_se_encontro_solucion(true);
+
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
     cout << endl;

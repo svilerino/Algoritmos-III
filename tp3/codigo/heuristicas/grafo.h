@@ -129,6 +129,7 @@ private:
 	nodo_t nodo_dst;
 	costo_t cota_w1;
 	Camino camino_obtenido;
+	bool sol_valida;
 	//dado el camino, podemos obtener los pesos de cada "salto" indexando en la matriz de adyacencia el costo de cada salto
 	//tanto para w1 como w2
 
@@ -191,6 +192,7 @@ public:
 
 	//Metodos utilitarios
 	static list<Grafo> parsear_varias_instancias(formato_entrada_t formato);
+	void establecer_se_encontro_solucion(bool se_encontro);
 };
 
 #endif

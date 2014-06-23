@@ -19,6 +19,8 @@ int main(int argc, char **argv){
     cout << endl << "Camino obtenido con golosa" << endl;
     camino.imprimir_camino(cout);
 
+    g.establecer_se_encontro_solucion(true);
+
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
     cout << endl;
