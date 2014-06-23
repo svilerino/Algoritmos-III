@@ -190,3 +190,59 @@ De esta forma, la desici\'on golosa queda:
 
 La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de $O(n^2)$, y luego un Bfs, $O(n+m)$. El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y va a iterar tantas veces como la distancia en saltos desde el nodo salida hasta el nodo llegada. Est n\'umero est\'a acotado por la cantidad de nodos, por lo que $\in O(n)$. Sabemos que el algoritmo no va a repetir v\'ertices ya que  en cada iteraci\'on se mueve a un nodo con distancia en saltos estrictamente menor al anterior. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(n^2)+ O(n+m)+ O(n)*(O(m)+O(m)) = O(nm)$. 
 
+\subsection{Experimentaci\'on de correctitud}
+
+A continuaci\'on aplicamos la heur\'istica a algunos ejemplos de grafos.
+
+\vspace{10mm}
+
+Buscamos el CACM de este grafo del nodo $1$ al nodo $10$, con el l\'mite $K = 5$. Hay 3 caminos posibles. El camino 1 posee un peso $w_1$ total de $4$, y un peso $w_2$ de $10$. El camino 2 posee un peso $w_1$ total de $8$ con lo cual no es un camino v\'alido. El camino 3 tiene un peso $w_1$ total de $5$ y $w_2$ de $10$.
+
+
+\begin{center}
+\includegraphics[scale=0.5]{img/grafoGoloso1.png}
+\end{center}
+
+
+Tanto el camino 1 como el camino 3 son soluciones posibles para el algoritmo. El camino 2 deber\'ia ser ignorado. Y dado el c\'odigo que respecta al bfs del algoritmo, deber\'ia descartar el camino 3 ya que moverse al nodo $6$ es alejarse del nodo llegada, ya que el nodo salida se encuentra a distancia $3$ del de llegada y el nodo $6$ se encuentra a distancia $4$.
+
+\vspace{10mm}
+
+Luego de aplicar la heur\'istica a este grafo vemos que efectivamente el algoritmo elige el camino 1.
+
+\vspace{5mm}
+Salida del algoritmo:
+
+\begin{lstlisting}[frame=single]
+4 10 4 1 2 3 10
+\end{lstlisting}
+
+Analicemos los anteriores grafos problem\'aticos.
+
+\begin{center}
+\includegraphics[scale=0.4]{img/cicloNumerado.png}
+\end{center}
+
+En este grafo, la heur\'istica sin BFS, al ser los pesos $w_1$ nulos el algoritmo decid\'a tomar la arista m\'as liviana hacia el nodo $2$ y quedaba ciclando. Ahora vemos que la heur\'istica mejorada reconoce que moverse hacia el nodo $2$ es efectivamente alejarse de la llegada y decide tomar la arista hacia la llegada directamente.
+
+
+\vspace{5mm}
+Salida del algoritmo:
+
+\begin{lstlisting}[frame=single]
+0 4 2 1 5
+\end{lstlisting}
+
+Vemos que de la misma forma la heur\'istica mejorada soluciona el inconveniente de esta familia de grafos, acerc\'andose siempre en 1 en cada paso a la llegada.
+
+\begin{center}
+\includegraphics[scale=0.3]{img/grafoChotoNumerado.png}
+\end{center}
+
+\vspace{10mm}
+
+Salida del algoritmo:
+
+\begin{lstlisting}[frame=single]
+0 3 3 1 2 8
+\end{lstlisting}
