@@ -6,7 +6,7 @@
 	\item $G$ $=$ Grafo al que se le quiere encontrar el \emph{CACM}
 	\item $P$ $=$ El camino a encontrar
 	\item $v, w$ $=$ Los nodos de origen y destino del camino $P$ a encontrar
-	\item $K$ $=$ Cota superior del peso $\omega_2$ del camino $P$ a encontrar
+	\item $K$ $=$ Cota superior del peso $\omega_1$ del camino $P$ a encontrar
 \end{itemize}
 
 \subsection{Explicaci\'on detallada del algoritmo propuesto} \label{exacto:explicacion}
@@ -14,10 +14,18 @@
 \subsubsection{Descripci\'on}
 
 El algoritmo que se propone para encontrar la soluci\'on exacta al poblema del \emph{CACM}, consiste en encontrar todos los caminos simples de $v$ a $w$
-y encontrar el camino $P$ que tenga el menor peso $\omega_1$ pero que $\omega_2$ sea menor que $K$.
+y encontrar el camino $P$ que tenga el menor peso $\omega_2$ pero que $\omega_1$ no supere a $K$.
 
-Se propone realizar un backtracking que s\'olo chequee los caminos que no superen a $K$ el peso de $\omega_2$, y que descarte los caminos en cuanto
-detecta que no puede mejorar una soluci\'on que ya tenga almacenada como candidato a ser la de menor peso $\omega_1$.
+Se propone comenzar ejecutando el algoritmo de \emph{Dijkstra} desde el nodo de llegada $w$ hacia el resto del grafo minimizando $\omega_1$, esto nos da 2 informaciones:
+\begin{enumerate}
+	\item Si el camino m\'inimo encontrado entre $w$ y $v$ tiene como peso $\omega_1$ mayor a $K$,
+entonces no existe soluci\'on porque todos los dem\'as camino entre $w$ y $v$ van a tener un peso $\omega_1$ mayor al m\'inimo encontrado por \emph{Dijkstra},
+y como el m\'inimo que se encontr\'o era mayor a $K$, los otros caminos van a ser tambi\'en major a $K$.
+	\item En cada nodo, tendremos informaci\'on de si existe un camino desde ese nodo hacia el destino $w$, as\'i se evita recorrer esos nodos que si se utilizan, el camino no va a llegar a $w$.
+\end{enumerate}
+
+Luego realizar backtracking que s\'olo chequee los caminos que no superen a $K$ el peso de $\omega_1$, y que descarte los caminos en cuanto
+detecta que no puede mejorar una soluci\'on que ya tenga almacenada como candidato a ser la de menor peso $\omega_2$.
 
 El algoritmo ser\'a una funci\'on recursiva, pas\'andole como argumentos el grafo, los nodos de origen ($u$ el cual en la primer llamada va a ser $v$,
 el nodo origen del problema) y destino ($w$), el limite K, y un camino encontrado hasta el momento, que va desde el nodo de origen del problema ($v$), al nodo de orgen pasado a la funci\'on ($u$).
@@ -34,7 +42,7 @@ En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y po
 	\Require \emph{grafo}: el grafo al cual se tiene que encontrar el \emph{CACM}
 	\Require \emph{u}: el nodo de origen
 	\Require \emph{w}: el nodo de destino
-	\Require \emph{K}: cota del peso $\omega_2$
+	\Require \emph{K}: cota del peso $\omega_1$
 	\Require \emph{solucion}: posible soluci\'on que se tiene hasta el momento. Por aca se recibe un camino posible y se actualiza en cada llamada recursiva con el mejor camino encontrado. Cuando terminen todas las llamadas recursivas, se retorna por aca el \emph{CACM} encontrado. En la primera llamada se debe llamar con una soluci\'on que s\'olo contenga al nodo de partida $v$.
 	\Statex
 	\Ensure Retorna $verdarero$ si encontr\'o un camino de $u$ a $w$, $falso$ si no encontr\'o camino.
@@ -48,11 +56,11 @@ En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y po
 		\State solucion\_mejor $\gets$ $[]$
 
 		\For{z $\gets$ \Call{adyacentes}{grafo, u}}
-			\If{$\omega_2(z) < K$ $\land$ (mejor\_solcion $=$ $[]$ $\lor$ $\omega_1(solucion) + \omega_1(z) < \omega_1(solucion\_mejor))$}
+			\If{$\omega_1(z) < K$ $\land$ (mejor\_solcion $=$ $[]$ $\lor$ $\omega_2(solucion) + \omega_2(z) < \omega_2(solucion\_mejor))$}
 				\State \Call{quitar\_arista}{grafo, u, z}
 				\State \Call{agregar\_al\_final}{solucion, z}
-				\State encontre $\gets$ \Call{cacm\_exacto}{grafo, z, w, K $-$ $\omega_2(z)$, solucion}
-				\If{encontre $\land$ (mejor\_solucion $=$ $[]$ $\lor$ $\omega_1(solucion) < \omega_1(solucion\_mejor)$)}
+				\State encontre $\gets$ \Call{cacm\_exacto}{grafo, z, w, K $-$ $\omega_1(z)$, solucion}
+				\If{encontre $\land$ (mejor\_solucion $=$ $[]$ $\lor$ $\omega_2(solucion) < \omega_2(solucion\_mejor)$)}
 					\State mejor\_solucion $\gets$ solucion
 				\EndIf
 				\State \Call{agregar\_arista}{grafo, u, z}
