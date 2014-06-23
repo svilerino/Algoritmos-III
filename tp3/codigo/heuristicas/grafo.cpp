@@ -500,7 +500,7 @@ void Grafo::unserialize(istream& in){
 Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar){
 	vector<costo_t> costo_minimo;
 	vector<nodo_t> predecesor;
-	this->dijkstra(origen, target_a_minimizar, costo_minimo, predecesor);
+	this->dijkstra(origen, -1, target_a_minimizar, costo_minimo, predecesor);
 	
 	//armar camino entre origen y destino
 	Camino c(this->mat_adyacencia);
@@ -514,7 +514,7 @@ Camino Grafo::dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_mini
 }
 
 //Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro
-void Grafo::dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor){
+void Grafo::dijkstra(nodo_t origen, nodo_t nodo_origen_a_ignorar, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor){
 	//inicializacion
 	int n = this->cantidad_nodos;
 	costo_minimo.clear();
@@ -541,6 +541,14 @@ void Grafo::dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<cost
 		lista_adyacentes::iterator final_it = this->lista_adyacencia[nodo_u].end();
 		while(adyacentes_i_it != final_it){
 			nodo_t nodo_v = adyacentes_i_it->first;
+
+
+			if(nodo_v == nodo_origen_a_ignorar){
+				adyacentes_i_it++;
+				continue;
+			};
+
+
 			costo_t cost_v = (target_a_minimizar == COSTO_W1) ? (adyacentes_i_it->second).obtener_costo_w1() : (adyacentes_i_it->second).obtener_costo_w2();
 			int costo_a_v_pasando_por_u = cost_to_u + cost_v;
 			//si mejora, sobreescribo el camino y su costo
@@ -1108,7 +1116,7 @@ bool compare_w2(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
 //parametro beta en RCL_POR_VALOR indica el porcentaje a alejarse del mejor candidato
 //parametro beta en RCL_POR_CANTIDAD indica la candidad de "mejores" candidatos a elegir
 vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta,
-	vector<costo_t>& costos, vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion){
+	vector<costo_t>& costos, vector<distancia_t>& distancias, costo_t costo_camino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion){
 	
 	vector<pair<nodo_t, Arista> > candidatos;
 	
@@ -1123,9 +1131,13 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 		lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
         lista_adyacentes::iterator final_it = vecinos.end();
 
+        cout << "Costo del camino parcial actual: " << costo_camino << endl;
 		//recolecto los factibles locales        
         while(incidentes_i_it != final_it){
-        	bool no_me_paso_w1 = (costos[incidentes_i_it->first] + costoCamino <= this->cota_w1);
+        	nodo_t vecino_actual = incidentes_i_it->first;
+        	cout << "Costo del vecino a destino (" << vecino_actual << "): " << costos[vecino_actual] << endl;
+        	cout << "Costo tentativo del camino parcial desde origen yendo por la direccion del vecino(" << vecino_actual << "): " << costos[vecino_actual] + costo_camino << endl;
+        	bool no_me_paso_w1 = (costos[vecino_actual] + costo_camino <= this->cota_w1);
         	bool me_acerco_a_destino = (distancias[incidentes_i_it->first] < distanciaLlegada);
         	if(no_me_paso_w1 && me_acerco_a_destino){
                 pair<nodo_t, Arista> target = *incidentes_i_it;
@@ -1134,9 +1146,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
             incidentes_i_it++;
         }
 
-        if(candidatos.size()<1){
-        	//ehh no hay factibles, ALTO YAO. esto no podia ocurrir segun el informe...
-        	//esta demostrado que no ocurre, pero lo valido por si las moscas
+        if(candidatos.size()==0){
         	cerr << "Lista de cantidatos factibles vacia (condicion requerida: no se pasa de w1 y se acerca a destino) en el nodo (" << actual << ")" << endl;
         	cerr << "Lista de nodos vecinos:" << endl;
         	lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
@@ -1146,7 +1156,8 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 	        	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
 	            incidentes_i_it++;
         	}
-        }//else{
+        	return candidatos;
+        }else{
 //        	cerr << "Lista de nodos factibles:" << endl;
 //	    	vector<pair<nodo_t, Arista> >::iterator incidentes_i_it = candidatos.begin();
 //	    	vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
@@ -1155,7 +1166,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 //	        	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
 //	            incidentes_i_it++;
 //	    	}
-//        }
+        }
 
         //ordeno los candidatos factibles, sobre la funcion w2 de menor a mayor
         sort(candidatos.begin(), candidatos.end(), compare_w2);
@@ -1215,14 +1226,14 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     
     vector<costo_t> costos;
     vector<nodo_t> predecesores;
-    this->dijkstra(nodo_dst, COSTO_W1, costos, predecesores);
+    this->dijkstra(nodo_dst, nodo_src, COSTO_W1, costos, predecesores);
 
     vector<distancia_t> distancias;
     this->breadth_first_search(nodo_dst, distancias);
 
     Camino camino(this->mat_adyacencia);
     camino.agregar_nodo(nodo_src);
-    costo_t costoCamino = 0;
+    costo_t costo_camino = 0;
     distancia_t distanciaLlegada = distancias[nodo_src];
 
     //--------------------------Comienza la busqueda golosa ----------------
@@ -1232,11 +1243,11 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 
     while(actual != nodo_dst){
        
-        vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, parametro_beta, costos, distancias, costoCamino, distanciaLlegada, tipo_ejecucion);
+        vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, parametro_beta, costos, distancias, costo_camino, distanciaLlegada, tipo_ejecucion);
 
         cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
         if(candidatos.empty()){
-        	cerr << "[Golosa] Candidatos vacio" << endl;
+        	cerr << "[Golosa] Candidatos vacio. Cortando algoritmo, devolviendo camino parcial obtenido." << endl;
         	break;
         }
 
@@ -1261,7 +1272,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
         cout << endl;
 
         camino.agregar_nodo(minimo.first);
-        costoCamino += (minimo.second).obtener_costo_w2();
+        costo_camino += (minimo.second).obtener_costo_w1();
         actual = minimo.first;
         distanciaLlegada--;
     }
