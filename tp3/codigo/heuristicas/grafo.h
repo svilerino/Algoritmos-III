@@ -193,6 +193,7 @@ public:
 	//Metodos utilitarios
 	static list<Grafo> parsear_varias_instancias(formato_entrada_t formato);
 	void establecer_se_encontro_solucion(bool se_encontro);
+	bool hay_solucion();
 };
 
 #endif
