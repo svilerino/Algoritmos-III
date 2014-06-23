@@ -16,10 +16,11 @@ int main(int argc, char **argv){
     Camino camino = g.obtener_solucion_golosa(RCL_DETERMINISTICO, parametro_beta);
     g.establecer_camino_solucion(camino);
 
-    cout << endl << "Camino obtenido con golosa" << endl;
-    camino.imprimir_camino(cout);
-
-    g.establecer_se_encontro_solucion(true);
+    
+    if(g.hay_solucion()){
+        cout << endl << "Camino obtenido con golosa" << endl;
+        camino.imprimir_camino(cout);        
+    }
 
     cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
