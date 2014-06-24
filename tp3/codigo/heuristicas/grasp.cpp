@@ -37,7 +37,7 @@ int main(int argc, char **argv){
     //-------------------------------------------------------
 
     bool condicion_terminacion = false;
-    Camino mejor_solucion;
+    Camino mejor_solucion = g.obtener_camino_vacio();
     costo_t costo_mejor_solucion = costo_infinito;
     uint64_t cant_iters = 0;
     uint64_t cant_iters_sin_mejora = 0;

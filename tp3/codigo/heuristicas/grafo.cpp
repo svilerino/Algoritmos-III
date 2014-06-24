@@ -47,12 +47,17 @@ Camino::Camino(matriz_adyacencia_t& mat_adyacencia){
 	this->mat_adyacencia = mat_adyacencia;
 	this->costo_camino_w1 = 0;
 	this->costo_camino_w2 = 0;
+	int cant_nodos = mat_adyacencia.size();
+	this->esta_en_camino.resize(cant_nodos, false);
 }
 
-Camino::Camino(){
-	this->costo_camino_w1 = 0;
-	this->costo_camino_w2 = 0;
-}
+//Camino::Camino(){
+//	this->costo_camino_w1 = 0;
+//	this->costo_camino_w2 = 0;
+//	int cant_nodos = ?;
+//	this->esta_en_camino.resize(cant_nodos, false);
+//	cerr << "Usar con ojo!. Construyendo camino sin lista de adyacencia!!!!!" << endl;
+//}
 
 Camino::~Camino(){
 
@@ -69,6 +74,7 @@ void Camino::agregar_nodo(nodo_t target){
 		this->costo_camino_w2 += costo_agregado_w2;	
 	}
 	this->camino.push_back(target);
+	this->esta_en_camino[target] = true;
 }
 
 void Camino::agregar_nodo_adelante(nodo_t target){
@@ -82,6 +88,7 @@ void Camino::agregar_nodo_adelante(nodo_t target){
 		this->costo_camino_w2 += costo_agregado_w2;	
 	}
 	this->camino.push_front(target);
+	this->esta_en_camino[target] = true;
 }
 
 costo_t Camino::obtener_costo_total_w1_camino(){
@@ -186,12 +193,17 @@ bool Camino::realizar_salto_entre_3_nodos(nodo_t nodo_target){
 
 	//elimino el nodo intermedio entre i y j
 	this->camino.erase(deletion_target);
+	this->esta_en_camino[nodo_intermedio_viejo] = false;
 
 	//actualizo los costos del camino
 	this->costo_camino_w1 = (this->costo_camino_w1 - (costo_i_intermedio_w1 + costo_intermedio_j_w1) + costo_i_j_w1);
 	this->costo_camino_w2 = (this->costo_camino_w2 - (costo_i_intermedio_w2 + costo_intermedio_j_w2) + costo_i_j_w2);
 
 	return true;
+}
+
+bool Camino::pertenece_a_camino(nodo_t target){
+	return this->esta_en_camino[target];
 }
 
 //pre: at.obtener_nodo_i() y at.obtener_nodo_i() deben pertenecer al camino
@@ -226,10 +238,13 @@ bool Camino::mejorar_tripla(Vecino& at){
 	//aca vale que el iterator it apunta a target + 1
 
 	//elimino el intermedio viejo
+	nodo_t nodo_intermedio_viejo = *insertion_target;
 	insertion_target = this->camino.erase(insertion_target);
+	this->esta_en_camino[nodo_intermedio_viejo] = false;
 
 	//inserto el nodo en el medio
 	this->camino.insert(insertion_target, nodo_intermedio);
+	this->esta_en_camino[nodo_intermedio] = true;
 
 	//actualizo los costos
 	//resto el costo entre i y j y sumo las 2 aristas nuevas
@@ -280,6 +295,7 @@ bool Camino::insertar_nodo(Vecino& at){
 
 	//inserto el nodo en el medio
 	this->camino.insert(insertion_target, nodo_intermedio);
+	this->esta_en_camino[nodo_intermedio] = true;
 	
 	//actualizo los costos
 	//resto la arista entre i y j y sumo las 2 aristas nuevas
@@ -336,16 +352,19 @@ Arista Vecino::obtener_arista_j_comun(){
 
 // -------------- Grafo ---------------------------------
 
-Grafo::Grafo(int cant_inicial_nodos){
+Camino Grafo::obtener_camino_vacio(){
+	Camino c(this->mat_adyacencia);
+	return c;
+}
+
+Grafo::Grafo(int cant_inicial_nodos) : camino_obtenido(mat_adyacencia) {
 	this->cantidad_nodos=cant_inicial_nodos;
 	this->cantidad_aristas = 0;
 	nodo_src = 0;
 	nodo_dst = 0;
 	cota_w1 = 0;
 	sol_valida = false;
-	
-	//camino_obtenido se inicializa por defecto;
-	
+		
 	//inicializo matriz de adyacencia
 	vector<Arista> vec_fila(cantidad_nodos, Arista(false, 0, 0));
 	this->mat_adyacencia.resize(cantidad_nodos, vec_fila);
@@ -746,13 +765,17 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 			//es factible, veamos si mejora al ultimo mejor revisado
 
 			//VEAMOS ADEMAS, QUE NO ESTE EN NUESTRA TABOO LIST(QUE NO PERTENEZCA AL CAMINO DE LA SOL. ACTUAL)
-			list<nodo_t>::iterator it_end = this->camino_obtenido.obtener_iterador_end();
-			list<nodo_t>::iterator found_it = this->camino_obtenido.obtener_iterador_begin();
+			//list<nodo_t>::iterator it_end = this->camino_obtenido.obtener_iterador_end();
+			//list<nodo_t>::iterator found_it = this->camino_obtenido.obtener_iterador_begin();
+			//nodo_t nodo_comun = vecinos_it->obtener_nodo_comun();
+			//while((found_it != it_end) && (*found_it != nodo_comun)){
+			//	found_it++;
+			//}
+			//if(found_it == it_end){
+
+			//mejora: puedo verlo en O(1)
 			nodo_t nodo_comun = vecinos_it->obtener_nodo_comun();
-			while((found_it != it_end) && (*found_it != nodo_comun)){
-				found_it++;
-			}
-			if(found_it == it_end){
+			if(!this->camino_obtenido.pertenece_a_camino(nodo_comun)){
 				//el nodo no esta en la taboo list
 				if(costo_i_comun_j_w2 < mejor_camino_ij_w2){
 					//encontre mejora, actualizo variables

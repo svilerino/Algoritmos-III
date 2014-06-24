@@ -78,11 +78,12 @@ public:
 class Camino{
 private:
 	list<nodo_t> camino;
+	vector<bool> esta_en_camino;
 	costo_t costo_camino_w1;
 	costo_t costo_camino_w2;
 	matriz_adyacencia_t mat_adyacencia;
 public:
-	Camino();
+	//Camino();
 	Camino(matriz_adyacencia_t& mat_adyacencia);	
 	~Camino();
 
@@ -114,6 +115,7 @@ public:
 	bool mejorar_tripla(Vecino& at);
 
 	bool realizar_salto_entre_3_nodos(nodo_t punto_de_salto);
+	bool pertenece_a_camino(nodo_t target);//O(1)
 };
 
 class Grafo{
@@ -194,6 +196,7 @@ public:
 	static list<Grafo> parsear_varias_instancias(formato_entrada_t formato);
 	void establecer_se_encontro_solucion(bool se_encontro);
 	bool hay_solucion();
+	Camino obtener_camino_vacio();
 };
 
 #endif
