@@ -33,6 +33,15 @@ template <class W> class Grafo {
 
 		virtual int CantidadNodos(void) = 0;
 		virtual int CantidadAristas(void) = 0;
+
+		/**
+		 * permite poner una marca de true o false en un nodo
+		 */
+		virtual void MarcarNodo(int i, bool marca) = 0;
+		/**
+		 * permite ver como fue marcado el nodo, al crearse el grafo todos arranca en false
+		 */
+		virtual bool VerMarcaDeNodo(int i) = 0;
 };
 
 template <class W> class GrafoAdyacencia : public Grafo<W> {
@@ -43,6 +52,7 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 		}Adyacente;
 
 		Adyacente **adyacencia;
+		bool *marcas;
 		int nodos;
 		int aristas;
 
@@ -63,6 +73,10 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 					adyacencia[i][j].peso = NULL;
 				}
 			}
+			marcas = (bool *)calloc(n, sizeof(bool));
+			for(i = 0; i < n; i++){
+				marcas[i] = false;
+			}
 			aristas = 0;
 		}
 
@@ -75,6 +89,7 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 			for(i = 0; i < nodos; i++){
 				free(adyacencia[i]);
 			}
+			free(marcas);
 			free(adyacencia);
 		}
 
@@ -103,6 +118,11 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 					adyacencia[i][j].adyacente = false;
 					adyacencia[i][j].peso = NULL;
 				}
+			}
+
+			marcas = (bool *)realloc(marcas, (n + nodos) * sizeof(bool));
+			for(i = nodos; i < nodos + n; i++){
+				marcas[i] = false;
 			}
 
 			nodos += n;
@@ -201,6 +221,20 @@ template <class W> class GrafoAdyacencia : public Grafo<W> {
 		{
 			return aristas;
 		}
+
+		void MarcarNodo(int i, bool marca)
+		{
+			if(i <= 0 || i > nodos)
+				return;
+			this->marcas[i - 1] = marca;
+		}
+
+		bool VerMarcaDeNodo(int i)
+		{
+			if(i <= 0 || i > nodos)
+				return false;
+			return marcas[i - 1];
+		}
 };
 
 template <class W> class GrafoLista : public Grafo<W> {
@@ -211,18 +245,24 @@ template <class W> class GrafoLista : public Grafo<W> {
 			int nodo;
 		} Lista;
 		Lista **lista_nodos;
+		bool *marcas;
 		int nodos;
 		int aristas;
 
 	public:
 		/**
-		 * O(1)
+		 * O(n)
 		 */
 		GrafoLista(int n)
 		{
+			int i;
 			nodos = n;
 			lista_nodos = (Lista **)calloc(n, sizeof(Lista *));
 			aristas = 0;
+			marcas = (bool *)calloc(n, sizeof(bool));
+			for(i = 0; i < n; i++){
+				marcas[i] = false;
+			}
 		}
 
 		/**
@@ -241,6 +281,7 @@ template <class W> class GrafoLista : public Grafo<W> {
 				}
 			}
 			free(lista_nodos);
+			free(marcas);
 		}
 
 		/**
@@ -255,9 +296,12 @@ template <class W> class GrafoLista : public Grafo<W> {
 				return false;
 
 			lista_nodos = (Lista **)realloc(lista_nodos, (n + nodos) * sizeof(Lista *));
+			marcas = (bool *)realloc(marcas, (n + nodos) * sizeof(bool));
 			for(i = nodos; i < nodos + n; i++){
 				lista_nodos[i] = NULL;
+				marcas[i] = false;
 			}
+			nodos += n;
 			return true;
 		}
 
@@ -395,6 +439,20 @@ template <class W> class GrafoLista : public Grafo<W> {
 		int CantidadAristas(void)
 		{
 			return aristas;
+		}
+
+		void MarcarNodo(int i, bool marca)
+		{
+			if(i <= 0 || i > nodos)
+				return;
+			this->marcas[i - 1] = marca;
+		}
+
+		bool VerMarcaDeNodo(int i)
+		{
+			if(i <= 0 || i > nodos)
+				return false;
+			return marcas[i - 1];
 		}
 };
 

@@ -49,29 +49,33 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 		free(solucion_mejor.v);
 		return true;
 	}
+	g.MarcarNodo(u, true);
 	adyacentes = g.Adyacentes(u, &cantidad_aristas);
 	for(i = 0; i < cantidad_aristas; i++){
-		p = g.Peso(u, adyacentes[i]);
-		w1 = p->w1;
-		w2 = p->w2;
-		if(w1 <= K && (solucion_mejor.k == 0 || w2 < solucion_mejor.W2)){
-			g.QuitarArista(u, adyacentes[i]);
-			solucion_nueva.W1 = w1;
-			solucion_nueva.W2 = w2;
-			solucion_nueva.v[0] = adyacentes[i];
-			solucion_nueva.k = 1;
-			if(resolver(g, adyacentes[i], w, K - w2, &solucion_nueva)){
-				if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion->W2){
-					solucionado = true;
-					solucion_mejor.W1 = solucion_nueva.W1;
-					solucion_mejor.W2 = solucion_nueva.W2;
-					solucion_mejor.k = solucion_nueva.k;
-					memcpy(solucion_mejor.v, solucion_nueva.v, 2 * g.CantidadAristas() * sizeof(int));
+		if(g.VerMarcaDeNodo(adyacentes[i]) == false){
+			p = g.Peso(u, adyacentes[i]);
+			w1 = p->w1;
+			w2 = p->w2;
+			if(w1 <= K && (solucion_mejor.k == 0 || w2 < solucion_mejor.W2)){
+				g.QuitarArista(u, adyacentes[i]);
+				solucion_nueva.W1 = w1;
+				solucion_nueva.W2 = w2;
+				solucion_nueva.v[0] = adyacentes[i];
+				solucion_nueva.k = 1;
+				if(resolver(g, adyacentes[i], w, K - w2, &solucion_nueva)){
+					if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion->W2){
+						solucionado = true;
+						solucion_mejor.W1 = solucion_nueva.W1;
+						solucion_mejor.W2 = solucion_nueva.W2;
+						solucion_mejor.k = solucion_nueva.k;
+						memcpy(solucion_mejor.v, solucion_nueva.v, 2 * g.CantidadAristas() * sizeof(int));
+					}
 				}
+				g.AgregarArista(u, adyacentes[i], p);
 			}
-			g.AgregarArista(u, adyacentes[i], p);
 		}
 	}
+	g.MarcarNodo(u, false);
 	if(solucionado){
 		solucion->W1 += solucion_mejor.W1;
 		solucion->W2 += solucion_mejor.W2;
