@@ -25,6 +25,7 @@ graphics:
 
 clean:
 	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.*
+	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.*
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) -o "$@" "$<"

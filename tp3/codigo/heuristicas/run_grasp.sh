@@ -1,1 +1,1 @@
-reset && make clean all && valgrind --leak-check=full ./grasp < $1
+reset && make clean all && valgrind --leak-check=full ./grasp < "$1"
