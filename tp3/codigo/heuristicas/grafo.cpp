@@ -1248,7 +1248,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
     		//cout <<"RCL_POR_CANTIDAD" << endl;
 			uint cantidad_trim = (int) parametro_beta;
 			if (cantidad_trim < 1){
-				cerr << "EH, EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO PAPAAA, LE PONGO 1!!" << endl;
+				cerr << "EH, EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO, LE PONGO 1!!" << endl;
 				cantidad_trim = 1;
 			}
 			if(cantidad_trim > candidatos.size()){
