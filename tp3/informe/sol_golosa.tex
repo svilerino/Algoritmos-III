@@ -24,11 +24,11 @@ Una vez obtenidos los caminos m\'inimos de cada nodo a la llegada en cuanto a co
 
 Este dibujo representa la ejecuci\'on de la inicializaci\'on de la heur\'stica, donde el algoritmo de Dijkstra calcula los costos $w_1$ de los caminos m\'inimos de todos los nodos al nodo llegada (en violeta), y puede verse que aquellos nodos con caminos de costo mayor a $K$ ser\'an descartados.
 
-\vspace{10mm}
+\vspace{2mm}
 
 Cabe aclarar, que en la implementaci\'on, se ejecuta el algoritmo de Dijkstra ignorando el nodo salida, ya que queremos los caminos m\'inimos desde la llegada hasta todos los nodos sin pasar por el nodo salida, de otra forma no tendr\'a sentido el resultado.
 
-\vspace{10mm}
+\vspace{2mm}
 
 Esto nos brinda una propiedad invariante: sabemos que en cada iteraci\'on, el costo acumulado del recorrido hecho es menor a $K$, y si al menos existe alg\'un un camino de costo menor a $K$ de salida a destino, el algoritmo muy probablemente va a poder llegar al nodo de llegada (excepto en casos enunciados en la siguiente secci\'on). Deducimos esto al considerar que, o bien no existe ning\'un camino y  el algoritmo termina en la primera iteraci\'on o el algoritmo elige una primera arista (por lo tanto existe un camino). 
 
