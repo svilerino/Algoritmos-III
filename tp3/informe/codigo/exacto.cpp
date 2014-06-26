@@ -47,6 +47,7 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 
 	if(u == w){
 		free(solucion_mejor.v);
+		free(solucion_nueva.v);
 		return true;
 	}
 	g.MarcarNodo(u, true);
