@@ -31,11 +31,9 @@ void ejecutar_busqueda_local(Grafo &g){
     //--------------------------------- Valido la factibilidad de la solucion----------------
     //cout << "Se requiere un camino entre (" << nodo_src << ") y (" << nodo_dst<< ") que no exceda el costo " << limit_w1;
     if(c.obtener_costo_total_w1_camino() == costo_infinito){
-        cerr << "...Fail!!" << endl;
         cerr << "No existe solucion factible. No existe camino entre origen(" << nodo_src << ") y destino(" << nodo_dst << ") " << endl;
         g.establecer_se_encontro_solucion(false);
     }else if(c.obtener_costo_total_w1_camino() > limit_w1){
-        cerr << "...Fail!!" << endl;
         cerr << "No existe solucion factible. El camino minimo respecto a w1 de origen(" << nodo_src << ") a destino(" << nodo_dst << ") es de costo " << c.obtener_costo_total_w1_camino() << endl;
         g.establecer_se_encontro_solucion(false);
     }else{
