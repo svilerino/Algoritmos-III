@@ -92,15 +92,39 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 
 int main(int argc, char **argv)
 {
+	int medir_tiempo = 0;
 	GrafoAdyacencia<peso> *grafo;
 	peso **pesos;
 	int u, v, K, nodos, aristas, i;
 	Solucion solucion;
 
+	if(argc != 1)
+		medir_tiempo = 1;
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
-		double promedio = 0.0;
-		MEDIR_TIEMPO_PROMEDIO(
+		if(medir_tiempo){
+			double promedio = 0.0;
+			MEDIR_TIEMPO_PROMEDIO(
+				solucion.W1 = 0;
+				solucion.W2 = 0;
+				solucion.k = 1;
+				solucion.v = (int *)calloc(2 * aristas, sizeof(int));
+				solucion.v[0] = u;
+				if(resolver(*grafo, u, v, K, &solucion)){
+					printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+					for(i = 0; i < solucion.k; i++){
+						printf(" %d", solucion.v[i]);
+					}
+					printf("\n");
+				}
+				else{
+					printf("no\n");
+				}
+				free(solucion.v);
+			, 10, &promedio);
+			cerr << promedio << " " << nodos << " " << aristas << endl;
+		}
+		else{
 			solucion.W1 = 0;
 			solucion.W2 = 0;
 			solucion.k = 1;
@@ -117,8 +141,7 @@ int main(int argc, char **argv)
 				printf("no\n");
 			}
 			free(solucion.v);
-		, 10, &promedio);
-		cerr << promedio << " " << nodos << " " << aristas << endl;
+		}
 		int i;
 		for(i = 0; i < aristas; i++){
 			delete pesos[i];
