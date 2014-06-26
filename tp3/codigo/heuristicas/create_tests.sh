@@ -11,8 +11,8 @@ red='\e[0;31m'
 green='\e[0;32m'
 NC='\e[0m' # No Color
 
-cant_nodos_min=4
-cant_nodos_max=7
+cant_nodos_min=10
+cant_nodos_max=15
 peso_maximo_w1=50
 peso_maximo_w2=50
 

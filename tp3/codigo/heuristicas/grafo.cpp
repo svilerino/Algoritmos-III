@@ -1351,7 +1351,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     //cout << "Distancia en aristas entre src y dst: " << distanciaLlegada << endl;
     nodo_t actual = nodo_src;
     //cout << "Nodo inicial: " << actual << endl;
-
+    bool hubo_error = false;
     while(actual != nodo_dst){
        
         vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, parametro_beta, costos, distancias, costo_camino, distanciaLlegada, tipo_ejecucion);
@@ -1359,6 +1359,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
         //cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
         if(candidatos.empty()){
         	cerr << "[Golosa] Candidatos vacio. Cortando algoritmo, devolviendo camino parcial obtenido." << endl;
+        	hubo_error = true;
         	break;
         }
 
@@ -1387,7 +1388,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
         actual = minimo.first;
         distanciaLlegada--;
     }
-    this->establecer_se_encontro_solucion(true);
+    this->establecer_se_encontro_solucion(!hubo_error);
     return camino;
 }
 
