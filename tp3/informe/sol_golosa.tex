@@ -26,6 +26,10 @@ Este dibujo representa la ejecuci\'on de la inicializaci\'on de la heur\'stica, 
 
 \vspace{10mm}
 
+Cabe aclarar, que en la implementaci\'on, se ejecuta el algoritmo de Dijkstra ignorando el nodo salida, ya que queremos los caminos m\'inimos desde la llegada hasta todos los nodos sin pasar por el nodo salida, de otra forma no tendr\'a sentido el resultado.
+
+\vspace{10mm}
+
 Esto nos brinda una propiedad invariante: sabemos que en cada iteraci\'on, el costo acumulado del recorrido hecho es menor a $K$, y si al menos existe alg\'un un camino de costo menor a $K$ de salida a destino, el algoritmo muy probablemente va a poder llegar al nodo de llegada (excepto en casos enunciados en la siguiente secci\'on). Deducimos esto al considerar que, o bien no existe ning\'un camino y  el algoritmo termina en la primera iteraci\'on o el algoritmo elige una primera arista (por lo tanto existe un camino). 
 
 \vspace{2mm}
@@ -188,7 +192,7 @@ De esta forma, la desici\'on golosa queda:
 
 \subsection{Complejidad temporal para el peor caso}
 
-La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de $O(n^2)$, y luego un Bfs, $O(n+m)$. El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y va a iterar tantas veces como la distancia en saltos desde el nodo salida hasta el nodo llegada. Est n\'umero est\'a acotado por la cantidad de nodos, por lo que $\in O(n)$. Sabemos que el algoritmo no va a repetir v\'ertices ya que  en cada iteraci\'on se mueve a un nodo con distancia en saltos estrictamente menor al anterior. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(n^2)+ O(n+m)+ O(n)*(O(m)+O(m)) = O(nm)$. 
+La inicializaci\'on ejecuta el algoritmo de Dijkstra, que tiene una complejidad de $O(n^2)$, y luego un Bfs, $O(n+m)$. El ciclo goloso del algoritmo itera hasta que el v\'ertice actual es igual al v\'ertice de llegada, y va a iterar tantas veces como la distancia en saltos desde el nodo salida hasta el nodo llegada. Est n\'umero est\'a acotado por la cantidad de nodos, por lo que $\in O(n)$. Sabemos que el algoritmo no va a repetir v\'ertices ya que  en cada iteraci\'on se mueve a un nodo con distancia en saltos estrictamente menor al anterior. Al iniciar el ciclo se ejecuta la funci\'on $incidentes$ que recorre las aristas incidentes en el v\'ertice $actual$, como m\'aximo puede haber $m$ aristas por lo tanto tiene complejidad $O(m)$, y se ejecuta un ciclo $for$ que recorre estas aristas incidentes, por lo tanto tambi\'en $\in$ $O(n)$. Esto nos da una complejidad final de = $ O(n^2)+ O(n+m)+ O(n)*(O(m)+O(m)) = O(n^2)$. 
 
 \subsection{Experimentaci\'on de correctitud}
 
