@@ -1298,39 +1298,57 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     	//no hay camino entre src y dst => no hay solucion
     	this->establecer_se_encontro_solucion(false);
     	return camino;
-    }//else{
-    	//cout << "Distancia en aristas entre src y dst: " << distanciaLlegada << endl;
-    //}
+    }else if(distanciaLlegada == 1){
+    //Si distanciaLlegada == 1 entonces lo busco entre los vecinos y reviso esa arista para ver si w1(arista) > limit_w1
+    	lista_adyacentes vecinos_src = obtener_lista_vecinos(nodo_src);
+    	lista_adyacentes::iterator it = vecinos_src.begin();
+    	lista_adyacentes::iterator final_it = vecinos_src.end();
+    	while((it != final_it) && (it->first == nodo_dst)){
+    		it++;
+    	}
+    	if(it == final_it){
+    		cerr << "Distancia en aristas 1 y no son adyacentes src y dst...turbio" << endl;
+    	}else{
+    		costo_t limit_w1 = this->obtener_limite_w1();
+    		if((it->second).obtener_costo_w1() > limit_w1){
+    			cerr << "[Golosa] la distancia en costo entre src y dst es " << (it->second).obtener_costo_w1() << " > " << limit_w1 << " => no hay solucion." << endl;
+		    	//el camino minimo se pasa de la cota => no hay solucion
+		    	this->establecer_se_encontro_solucion(false);
+		    	return camino;
+    		}
+    	}
+    }else{//distanciaLlegada > 1
+	    //como IGNORE nodo_src en dijkstra, la distancia va a ser distancia_infinita.
+	    //pero quiero saber si el camino minimo sobre w1 es factible cuando distanciaLlegada>1
+	    //entonces obtengo el minimo vecino sobre el peso w1 en la arista que los une
+	    //y me fijo si dist(src, min_ady) +  dist(min_ady, dst) > K. Si esto vale
+	    //el camino minimo sobre w1 entre src y dst se pasa de la cota, indicando que no hay sol.
+	    //factible
 
-    //como IGNORE nodo_src en dijkstra, la distancia va a ser distancia_infinita.
-    //pero quiero saber si el camino minimo sobre w1 es factible
-    //entonces obtengo el minimo vecino sobre el peso w1 en la arista que los une
-    //y me fijo si dist(src, min_ady) +  dist(min_ady, dst) > K. Si esto vale
-    //el camino minimo sobre w1 entre src y dst se pasa de la cota, indicando que no hay sol.
-    //factible
+		lista_adyacentes vecinos_src = obtener_lista_vecinos(nodo_src);
 
-	lista_adyacentes vecinos_src = obtener_lista_vecinos(nodo_src);
+		pair<nodo_t, Arista > min_ady_pair = *min_element(vecinos_src.begin(), vecinos_src.end(), compare_w1);
 
-	pair<nodo_t, Arista > min_ady_pair = *min_element(vecinos_src.begin(), vecinos_src.end(), compare_w1);
+	    nodo_t min_ady = min_ady_pair.first;
+	    costo_t min_ady_src_w1 = (min_ady_pair.second).obtener_costo_w1();
 
-    nodo_t min_ady = min_ady_pair.first;
-    costo_t min_ady_src_w1 = (min_ady_pair.second).obtener_costo_w1();
+	    distancia_t dist_cost_src_dst = costos[min_ady] + min_ady_src_w1;
 
-    distancia_t dist_cost_src_dst = costos[min_ady] + min_ady_src_w1;
+	    costo_t limit_w1 = this->obtener_limite_w1();
 
-    costo_t limit_w1 = this->obtener_limite_w1();
-
-    if(dist_cost_src_dst > limit_w1){
-    	cerr << "[Golosa] la distancia en costo entre src y dst es " << dist_cost_src_dst << " > " << limit_w1 << " => no hay solucion." << endl;
-    	//el camino minimo se pasa de la cota => no hay solucion
-    	this->establecer_se_encontro_solucion(false);
-    	return camino;
-    }//else{
-    	//cout << "Distancia en costo entre src y dst: " << dist_cost_src_dst << endl;
-    //}
-
+	    if(dist_cost_src_dst > limit_w1){
+	    	cerr << "[Golosa] la distancia en costo entre src y dst es " << dist_cost_src_dst << " > " << limit_w1 << " => no hay solucion." << endl;
+	    	//el camino minimo se pasa de la cota => no hay solucion
+	    	this->establecer_se_encontro_solucion(false);
+	    	return camino;
+	    }    	
+	    //else{
+	    	//cout << "Distancia en costo entre src y dst: " << dist_cost_src_dst << endl;
+	    //}
+	}
     //--------------------------Comienza la busqueda golosa ----------------
 
+    //cout << "Distancia en aristas entre src y dst: " << distanciaLlegada << endl;
     nodo_t actual = nodo_src;
     //cout << "Nodo inicial: " << actual << endl;
 

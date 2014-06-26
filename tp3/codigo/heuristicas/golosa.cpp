@@ -1,6 +1,6 @@
 #include "grafo.h"
 #include "timing.h"
-#define CANT_ITERS_MEDICION 10
+#define CANT_ITERS_MEDICION 1
 
 void ejecutar_greedy(Grafo &g);
 
