@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	int v;
 	int w;
 	int **aristas;
-	int i, j;
+	int i, j, a, b;
 	
 	struct timeval tv;
 
@@ -29,6 +29,8 @@ int main(int argc, char **argv)
 	v++;
 	w = random() % cantidad_nodos;
 	w++;
+	if(cantidad_aristas > (cantidad_nodos * (cantidad_nodos - 1)) / 2)
+		cantidad_aristas = (cantidad_nodos * (cantidad_nodos - 1)) / 2;
 
 	gettimeofday(&tv, NULL);
 
@@ -45,11 +47,30 @@ int main(int argc, char **argv)
 		i++;
 		j = random() % cantidad_nodos;
 		j++;
-		if(i == j || aristas[i][j] || aristas[j][i])
-			continue;
+		if(i == j || aristas[i][j] || aristas[j][i]){
+			a = (i + j + 1) % (cantidad_nodos * cantidad_nodos);
+			b = 0;
+			for(b = 0; a > 0; b = (b + 1) % (cantidad_nodos * cantidad_nodos)){
+				i = b + 1;
+				j = 1;
+				if(i > cantidad_nodos){
+					j = i - cantidad_nodos;
+					i = cantidad_nodos;
+				}
+				while(i > 0 && j <= cantidad_nodos){
+					if(i != j && !aristas[i][j] && !aristas[j][i]){
+						a--;
+						if(a <= 0)
+							break;
+					}
+					i--;
+					j++;
+				}
+			}
+		}
 		aristas[i][j] = 1;
 		aristas[j][i] = 1;
-		printf("%d %d %ld.0 %ld.0\n", i, j, random() % maximo_random_w1, random() % maximo_random_w2);
+		printf("faltan %d %d %d %ld.0 %ld.0\n", cantidad_aristas, i, j, random() % maximo_random_w1, random() % maximo_random_w2);
 		cantidad_aristas--;
 	}
 	printf("0\n");
