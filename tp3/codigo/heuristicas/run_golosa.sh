@@ -1,1 +1,1 @@
-reset && make clean all && valgrind --leak-check=full ./golosa < grafo_example.txt 
+reset && make clean all && valgrind --leak-check=full ./golosa < $1 

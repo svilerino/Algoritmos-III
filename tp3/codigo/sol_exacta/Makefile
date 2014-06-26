@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CFLAGS=-Wall -g
+CFLAGS=-Wall -O2 -std=c++0x
 LDFLAGS=
 RM=rm
 OBJECTS=exacta.o

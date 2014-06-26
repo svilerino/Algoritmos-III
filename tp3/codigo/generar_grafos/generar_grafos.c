@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 		printf("%d %d %ld.0 %ld.0\n", i, j, random() % maximo_random_w1, random() % maximo_random_w2);
 		cantidad_aristas--;
 	}
-	printf("0\n");
+	printf("0");
 	return 0;
 }
 
