@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 		}
 		aristas[i][j] = 1;
 		aristas[j][i] = 1;
-		printf("faltan %d %d %d %ld.0 %ld.0\n", cantidad_aristas, i, j, random() % maximo_random_w1, random() % maximo_random_w2);
+		printf("%d %d %ld.0 %ld.0\n", i, j, random() % maximo_random_w1, random() % maximo_random_w2);
 		cantidad_aristas--;
 	}
 	printf("0\n");
