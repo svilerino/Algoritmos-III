@@ -3,6 +3,7 @@
 #include <string.h>
 #include "grafo.h"
 #include "parser.h"
+#include "timing.h"
 
 using namespace std;
 
@@ -98,22 +99,26 @@ int main(int argc, char **argv)
 
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
-		solucion.W1 = 0;
-		solucion.W2 = 0;
-		solucion.k = 1;
-		solucion.v = (int *)calloc(2 * aristas, sizeof(int));
-		solucion.v[0] = u;
-		if(resolver(*grafo, u, v, K, &solucion)){
-			printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
-			for(i = 0; i < solucion.k; i++){
-				printf(" %d", solucion.v[i]);
+		double promedio = 0.0;
+		MEDIR_TIEMPO_PROMEDIO(
+			solucion.W1 = 0;
+			solucion.W2 = 0;
+			solucion.k = 1;
+			solucion.v = (int *)calloc(2 * aristas, sizeof(int));
+			solucion.v[0] = u;
+			if(resolver(*grafo, u, v, K, &solucion)){
+				printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+				for(i = 0; i < solucion.k; i++){
+					printf(" %d", solucion.v[i]);
+				}
+				printf("\n");
 			}
-			printf("\n");
-		}
-		else{
-			printf("no\n");
-		}
-		free(solucion.v);
+			else{
+				printf("no\n");
+			}
+			free(solucion.v);
+		, 10, &promedio);
+		cerr << promedio << " " << nodos << " " << aristas << endl;
 		int i;
 		for(i = 0; i < aristas; i++){
 			delete pesos[i];
