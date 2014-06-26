@@ -69,6 +69,9 @@ void ejecutar_grasp(Grafo &g){
             if(g.hay_solucion()){//puede que la greedy randomized no encuentre solucion!
                 //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)   
                 while(g.busqueda_local(modo_busqueda_local));                
+            }else{
+                //si la golosa randomized no me dio algo valido , ignoro esta iteracion de grasp y sigo con la siguiente.
+                continue;
             }
         , CANT_ITERS_MEDICION, &promedio_parcial);
         promedio += promedio_parcial;
