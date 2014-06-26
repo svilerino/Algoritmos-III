@@ -1,1 +1,0 @@
-reset && make clean all && valgrind --leak-check=full ./golosa < "$1"

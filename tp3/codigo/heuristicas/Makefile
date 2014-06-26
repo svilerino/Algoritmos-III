@@ -6,7 +6,9 @@ RM=rm
 
 .PHONY: all clean
 
-all: bqlocal golosa grasp tests graphics
+all: codigo
+
+codigo: bqlocal golosa grasp 
 
 bqlocal: bqlocal.o grafo.o
 	$(LD) $(LDFLAGS) -o bqlocal bqlocal.o grafo.o
@@ -17,10 +19,10 @@ grasp: grasp.o grafo.o
 golosa: golosa.o grafo.o
 	$(LD) $(LDFLAGS) -o golosa golosa.o grafo.o
 
-tests:
+tests: codigo
 	./create_tests.sh
 
-graphics:
+graphics: tests
 	./run_tests.sh
 
 clean:
