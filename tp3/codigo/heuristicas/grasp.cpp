@@ -20,7 +20,14 @@ void ejecutar_grasp(Grafo &g){
     //g.imprimir_lista_adyacencia(cout);
     //g.imprimir_matriz_adyacencia(cout);
 
-    //----- Configuracion del criterio de terminacion de GRASP -----
+//----- Configuracion del criterio de terminacion de GRASP -----
+
+    //NOTA: CRT_SOLUTION_GOOD_ENOUGH SOLO TIENE SENTIDO SI PARA LA INSTANCIA SE CONOCE UNA COTA CONOCIDA de W2 que sea aceptable.    
+    //USAR CON CUIDADO, O IGNORAR. PUEDE NO TERMINAR NUNCA, LO DEJO IMPLEMENTADO POR CUESTIONES DE EXPERIMENTACION NOMAS. ACLARAR EN EL INFORME!
+
+    //NOTA: ESTO SOLO TIENE SENTIDO SI PARA LA INSTANCIA SE CONOCE UNA COTA CONOCIDA!
+    //USAR CON CUIDADO, O IGNORAR. PUEDE NO TERMINAR NUNCA, LO DEJO IMPLEMENTADO POR CUESTIONES DE EXPERIMENTACION NOMAS. ACLARAR EN EL INFORME!
+    costo_t W2_VALUE_TARGET = 5;
 
     //typedef enum criterio_terminacion_grasp_t {CRT_K_ITERS_SIN_MEJORA, CRT_K_ITERS_LIMIT_REACHED, CRT_SOLUTION_GOOD_ENOUGH} criterio_terminacion_grasp_t;
     criterio_terminacion_grasp_t criterio_terminacion = CRT_K_ITERS_SIN_MEJORA;
@@ -28,11 +35,8 @@ void ejecutar_grasp(Grafo &g){
     //consecutivas sin mejora
     uint64_t ITERS_LIMIT = 100;
     //este parametro denota el valor aceptable de la funcion objetivo w2 a partir del cual, dejamos de mejorar la solucion y consideramos que es lo suficientemente buena
-    //NOTA: ESTO SOLO TIENE SENTIDO SI PARA LA INSTANCIA SE CONOCE UNA COTA CONOCIDA!
-    //USAR CON CUIDADO, O IGNORAR. PUEDE NO TERMINAR NUNCA, LO DEJO IMPLEMENTADO POR CUESTIONES DE EXPERIMENTACION NOMAS. ACLARAR EN EL INFORME!
-    costo_t W2_VALUE_TARGET = 5;
 
-    //----- Configuracion de los modos de la busqueda local y golosa -----
+//----- Configuracion de los modos de la busqueda local y golosa -----
 
     //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
     //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;    
@@ -62,9 +66,10 @@ void ejecutar_grasp(Grafo &g){
             //cout << "Solucion inicial de la greedy:" << endl;
             //camino.imprimir_camino(cout);
             g.establecer_camino_solucion(camino);
-
-            //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)   
-            while(g.busqueda_local(modo_busqueda_local));
+            if(g.hay_solucion()){//puede que la greedy randomized no encuentre solucion!
+                //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)   
+                while(g.busqueda_local(modo_busqueda_local));                
+            }
         , CANT_ITERS_MEDICION, &promedio_parcial);
         promedio += promedio_parcial;
         //en este punto la bqlocal mejoro todo lo que pudo la sol. inicial obtenida con la randomized greedy
