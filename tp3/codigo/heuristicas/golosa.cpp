@@ -9,7 +9,7 @@ int main(int argc, char **argv){
     list<Grafo> instancias = Grafo::parsear_varias_instancias(FORMATO_1_N_CLOSED);
     uint64_t instance_number = 1;
     for(Grafo &g : instancias){
-        cout << endl << endl << "Aplicando heuristica greedy a la " << instance_number << "-esima instancia de input..." << endl;
+        //cout << endl << endl << "Aplicando heuristica greedy a la " << instance_number << "-esima instancia de input..." << endl;
         ejecutar_greedy(g);
         instance_number++;
     }
@@ -31,12 +31,12 @@ void ejecutar_greedy(Grafo &g){
     //El mismo metodo obtener_solucion_golosa establece si se encontro solucion!
     //g.establecer_se_encontro_solucion(true);
     if(g.hay_solucion()){
-        cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << CANT_ITERS_MEDICION << " " << promedio_medicion << endl;
-        cout << endl << "Solucion obtenida con golosa" << endl;
-        camino.imprimir_camino(cout);
+        cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << CANT_ITERS_MEDICION << " " << promedio_medicion;
+        //cout << endl << "Solucion obtenida con golosa" << endl;
+        //camino.imprimir_camino(cout);
     }
 
-    cout << "Salida del algoritmo: " << endl;
+    //cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
-    cout << endl;
+    //cout << endl;
 }

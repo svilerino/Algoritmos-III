@@ -9,7 +9,7 @@ int main(int argc, char **argv){
     list<Grafo> instancias = Grafo::parsear_varias_instancias(FORMATO_1_N_CLOSED);
     uint64_t instance_number = 1;
     for(Grafo &g : instancias){
-        cout << endl << endl << "Aplicando metaheuristica GRASP a la " << instance_number << "-esima instancia de input..." << endl;
+        //cout << endl << endl << "Aplicando metaheuristica GRASP a la " << instance_number << "-esima instancia de input..." << endl;
         ejecutar_grasp(g);
         instance_number++;
     }
@@ -99,21 +99,21 @@ void ejecutar_grasp(Grafo &g){
     promedio = promedio / (double) cant_iters;
 
     //imprimo mediciones en stderr
-    cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio << endl;
+    cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio;
 
-    cout << endl << "Se cumplio el criterio de terminacion elegido: ";
+    //cout << endl << "Se cumplio el criterio de terminacion elegido: ";
     if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
-        cout << "CRT_K_ITERS_LIMIT_REACHED";
+        //cout << "CRT_K_ITERS_LIMIT_REACHED";
     }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
-        cout << "CRT_K_ITERS_SIN_MEJORA";
+        //cout << "CRT_K_ITERS_SIN_MEJORA";
     }else if(criterio_terminacion == CRT_SOLUTION_GOOD_ENOUGH){
-        cout << "CRT_SOLUTION_GOOD_ENOUGH";
+        //cout << "CRT_SOLUTION_GOOD_ENOUGH";
     }
-    cout << endl;
+    //cout << endl;
 
     g.establecer_se_encontro_solucion(true);
 
-    cout << "Salida del algoritmo: " << endl;
+    //cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
-    cout << endl;
+    //cout << endl;
 }
