@@ -65,7 +65,7 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 				solucion_nueva.v[0] = adyacentes[i];
 				solucion_nueva.k = 1;
 				if(resolver(g, adyacentes[i], w, K - w1, &solucion_nueva)){
-					if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion->W2){
+					if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion_nueva.W2){
 						solucionado = true;
 						solucion_mejor.W1 = solucion_nueva.W1;
 						solucion_mejor.W2 = solucion_nueva.W2;
