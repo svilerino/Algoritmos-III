@@ -1182,12 +1182,12 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 		lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
         lista_adyacentes::iterator final_it = vecinos.end();
 
-        cout << "Costo del camino parcial actual: " << costo_camino << endl;
+        //cout << "Costo del camino parcial actual: " << costo_camino << endl;
 		//recolecto los factibles locales        
         while(incidentes_i_it != final_it){
         	nodo_t vecino_actual = incidentes_i_it->first;
-        	cout << "Costo del vecino a destino (" << vecino_actual << "): " << costos[vecino_actual] << endl;
-        	cout << "Costo tentativo del camino parcial desde origen yendo por la direccion del vecino(" << vecino_actual << "): " << costos[vecino_actual] + costo_camino << endl;
+        	//cout << "Costo del vecino a destino (" << vecino_actual << "): " << costos[vecino_actual] << endl;
+        	//cout << "Costo tentativo del camino parcial desde origen yendo por la direccion del vecino(" << vecino_actual << "): " << costos[vecino_actual] + costo_camino << endl;
         	bool no_me_paso_w1 = (costos[vecino_actual] + costo_camino <= this->cota_w1);
         	bool me_acerco_a_destino = (distancias[incidentes_i_it->first] < distanciaLlegada);
         	if(no_me_paso_w1 && me_acerco_a_destino){
@@ -1298,9 +1298,9 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     	//no hay camino entre src y dst => no hay solucion
     	this->establecer_se_encontro_solucion(false);
     	return camino;
-    }else{
-    	cout << "Distancia en aristas entre src y dst: " << distanciaLlegada << endl;
-    }
+    }//else{
+    	//cout << "Distancia en aristas entre src y dst: " << distanciaLlegada << endl;
+    //}
 
     //como IGNORE nodo_src en dijkstra, la distancia va a ser distancia_infinita.
     //pero quiero saber si el camino minimo sobre w1 es factible
@@ -1325,20 +1325,20 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     	//el camino minimo se pasa de la cota => no hay solucion
     	this->establecer_se_encontro_solucion(false);
     	return camino;
-    }else{
-    	cout << "Distancia en costo entre src y dst: " << dist_cost_src_dst << endl;
-    }
+    }//else{
+    	//cout << "Distancia en costo entre src y dst: " << dist_cost_src_dst << endl;
+    //}
 
     //--------------------------Comienza la busqueda golosa ----------------
 
     nodo_t actual = nodo_src;
-    cout << "Nodo inicial: " << actual << endl;
+    //cout << "Nodo inicial: " << actual << endl;
 
     while(actual != nodo_dst){
        
         vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, parametro_beta, costos, distancias, costo_camino, distanciaLlegada, tipo_ejecucion);
 
-        cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
+        //cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
         if(candidatos.empty()){
         	cerr << "[Golosa] Candidatos vacio. Cortando algoritmo, devolviendo camino parcial obtenido." << endl;
         	break;
@@ -1360,9 +1360,9 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 			minimo = candidatos[candidato_random];   		
     	}
 
-        cout << "\tEl mejor vecino segun decision greedy para el nodo (" << actual << ") es (";
-        cout << minimo.first << ") con un costo (w1: " << (minimo.second).obtener_costo_w1() << ", w2: " << (minimo.second).obtener_costo_w2() << ")" << endl;
-        cout << endl;
+        //cout << "\tEl mejor vecino segun decision greedy para el nodo (" << actual << ") es (";
+        //cout << minimo.first << ") con un costo (w1: " << (minimo.second).obtener_costo_w1() << ", w2: " << (minimo.second).obtener_costo_w2() << ")" << endl;
+        //cout << endl;
 
         camino.agregar_nodo(minimo.first);
         costo_camino += (minimo.second).obtener_costo_w1();
