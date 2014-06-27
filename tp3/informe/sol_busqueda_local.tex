@@ -1,9 +1,49 @@
-\section{Heuristicas de busqueda local}
+\section{Heuristica de busqueda local}
+
+Para encontrar soluciones aproximadas al problema de optimizar una funci\'on $f:S \rightarrow \mathbb{R}$ definida sobre un conjunto $S$ de instancias, la heur\'istica de b\'usqueda local consiste en tomar un elemento $e \in S$ y buscar entre los elementos ``cercanos'' a $e$ uno $e'$ en el cual el valor que toma la funci\'on sea mejor ($f(e') < f(e)$ \'o $f(e') > f(e)$ dependiendo de si se busca m\'inimo a o m\'aximo).
+El concepto de cercan\'ia o vecidad se puede definir seg\'un cualquier criterio que se crea conveniente. Formalmente se puede ver como una relaci\'on $R \subseteq S \times S$, que es sim\'etrica y reflexiva. Se busca en lo posible que las vecindades de cada punto sean peque\~nas para que se pueda encontrar r\'apidamente un vecino mejor en caso de que exista.
+La heur\'istica itera el procedimiento de optimizaci\'on local creando una sucesi\'on de soluciones aproximadas $(X_0, X_1, ... , X_m)$ en $S$ donde el elemento $X_m$ tiene la propiedad de ser un extremo local de la funci\'on $f$ seg\'un el criterio definido de vecindad.
+
+
+\subsection{Criterio de vecindad}
+Para el problema enunciado del TP, el conjunto $S$ es el conjunto de caminos entre el nodo de partida y el de llegada. Debido a que las $w_1$ y $w_2$ son funciones positivas, el camino acotado de costo m\'inimo estar\'a en $S' \subseteq S$, el subconjunto de todos los caminos simples. Por lo tanto solo se considerar\'a $S'$ como conjunto de instancias.
+Se definir\'a primero la relaci\'on de vecindad. Ante todo, la notaci\'on ser\'a la siguiente. $C = (v_1, ..., v_m)$ ser\'a un camino y $A_c$ el conjunto de aristas que lo conforman. Dos caminos $C = (v_1, ... , v_n)$ y $C' = (v'_1, ... , v'_m)$ en $S'$ son vecinos $C \sim C'$ si se cumple alguna de las siguientes condiciones:
+
+\begin{enumerate}
+    \item $C = C'$
+    \item $ \exists v \notin C \mid A_{c'} = A_c - \{(v_i,v_{i+1}),(v_{i+1},v_{i+2})\} + \{(v_i,v),(v,v_{i+2})\}$
+    \item $ \exists v \notin C \mid A_{c'} = A_c - \{(v_i,v_{i+1})\} + \{(v_i,v),(v,v_{i+1})\}$
+    \item $A_{c'} = A_c - \{(v_i,v_{i+1}), (v_{i+1},v_{i+2})\} + \{(v_i,v_{i+2})\}$
+
+\end{enumerate}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+
+\draw[black, solid, very thick] (-1,2) -- (2,1) -- (5,3) -- (6,0) -- (9,1);
+\draw[black, dashed, very thick] (2,1) -- (6,0);
+\draw[black, dashed, very thick] (2,1) -- (2,-1)  -- (6,0);
+\filldraw[fill=green!50!black, draw=black] (2,-1) circle [radius=1mm];
+\filldraw[fill=green!50!black, draw=black] (-1,2) circle [radius=1mm];
+\filldraw[fill=green!50!black, draw=black] (2,1) circle [radius=1mm];
+\filldraw[fill=green!50!black, draw=black] (5,3) circle [radius=1mm];
+\filldraw[fill=green!50!black, draw=black] (6,0) circle [radius=1mm];
+\filldraw[fill=green!50!black, draw=black] (9,1) circle [radius=1mm];
+\node(c) at (3,2) {C};
+\node(c') at (3,1) {C'};
+\node(c'') at (3,-0.5) {C''};
+
+\end{tikzpicture}
+\caption{Tres caminos vecinos entre si.}
+\end{figure}
+
 \subsection{Explicacion detallada del algoritmo propuesto}
 Sea $s$ una solucion factible, es decir, un camino entre $u,v$ tal que el costo del camino $w_1 \leq K$,
 para plantear esta heur\'istica definimos $N(s) = \{ $ conjunto de soluciones vecinas de s$\}$ = $\{$ caminos entre u,v tal que $w_1 \leq K$ y difieren en solo un nodo de $s\}$.\\
 
 Se plantearon 3 posibles enfoques para aplicar busqueda local sobre esta vecindad, a continuacion se explicar\'an cada uno.
+
 \subsubsection{Obtencion de la solucion inicial factible}
 
 Para obtener la solucion inicial factible de nuestra heur\'istica ejecutamos el algoritmo de camino m\'inimo de Dijkstra, entre los nodos u y v, sobre la funcion $w_1$, acto seguido validamos si $dist(w_1, src, dst) > K$ entonces no existe soluci\'on factible, caso contrario tenemos una soluci\'on factible inicial para comenzar las 
@@ -11,7 +51,7 @@ iteraciones de busqueda local.
 
 \subsubsection{Criterio de terminaci\'on}
 El criterio de terminacion fue repetir las iteraciones sobre las nuevas soluciones que se iban obteniendo, hasta que no se obtiene mejora.
-Nota: siempre se aplica uno solo de los 3 metodos a las iteraciones, es decir, no se combinan.
+Siempre se aplica uno solo de los 3 metodos a las iteraciones, es decir, no se combinan.
 
 \subsubsection{Reemplazar un nodo intermedio en una 3-upla consecutiva de nodos del camino}
 Si el camino tiene longuitud 2, es decir hay una arista directa entre $u,v$ , no hay nada que hacer en este caso, caso contrario, sea $S = \{u,...,v_l, v_{l+1}, v_{l+2}, v_{l+3} ..., v\}$ la solucion actual. Lo que hace en este caso es iterar sobre todas las 3-uplas consecutivas del camino, en este ejemplo sea $(vl, v_{l+1}, v_{l+2})$ una 3-upla, $(v_{l+1}, v_{l+2}, v_{l+3})$ la siguiente a iterar, etc...\\ \\
@@ -23,24 +63,87 @@ como se indica en el grafico debajo, es decir, se busca una nueva conexion entre
 \end{itemize}
 
 
-	INSERTAR GRAFICO ACA!
-
-
 Una iteracion consiste en recorrer todas las 3-uplas del camino obteniendo de los vecinos en com\'un de los extremos de cada 3-upla, si es posible, la mejor forma de mejorar esta conexion, ademas recordando la mejor 3-upla para aplicar la mejora a lo largo de la iteraci\'on, tal que el camino resultante de aplicar esta mejora sea el minimo sobre $w_2$ en la vecindad $N(s)$. Mas formalmente, se busca una solucion vecina del camino S, tal que siendo $w_1(P), w_2(P)$ los costos sobre $w_1$ y $w_2$ respectivamente de una solucion, y $S' = S \setminus \{(v_k, v_{k+1}); (v_{k+1}, v_{k+2})\} \cup \{(v_k, v_t);(v_t, v_{k+2})\}$ la nueva solucion obtenida, entonces valga que:
 \begin{itemize}
 	\item Sea factible, pertenezca a $N(S)$, $ w_1(S') \leq K$
 	\item Sea minima respecto de $w_2$ en la vecindad $N(S)$, $w_2(S') \leq w_2(T)$ $ \forall$ $ T \in N(S) $
 \end{itemize}
 
-
 \subsubsection{Insertar un nodo intermedio en un par consecutivo de nodos del camino}
 Este enfoque es basicamente igual al anterior, solo que en lugar de iterar sobre 3-uplas reemplazando el nodo intermedio, se itera sobre pares consecutivos de nodos de la solucion S $(v_k, v_{k+1})$ buscando si existe, un vecino en comun entre los extremos tal que el sendero $(v_k, v_t, v_{k+1})$ tenga costo menor(de forma minima entre los vecinos) sobre $w_2$ que la arista directa y que reflejado en la solucion candidata S' que surge de aplicar este cambio, siga siengo factible($w_2(S') \leq K$). La iteracion de sigue siendo sobre toda la vecindad $N(S)$ y quedandose con el mejor $S' \in N(S)$ posible.
 
-\subsection{Complejidad temporal para el peor caso}
-\subsection{Nivel de optimalidad de las soluciones}% En grasp no hace falta este inciso por enunciado.
-%Describir si es posible instancias de CACM para las cuales el metodo no proporciona una solucion optima.
-%Indicar si es posible que tan mala puede ser la solucion obtenida respecto a la solucion optima
-%\subsection{Realizar una expermientacion blablabla...todo lo que respecta a testing y benchmarking tiene una subsection para cada punto del tp en la seccion de benchmarking y por ende no hace falta hablar de eso aca}
-\subsection{Casos bien y casos mal}
+
+\subsubsection{CONTRAER TRIPLAS}
+
+
+
+
+
+\subsection{Nivel de optimalidad de las soluciones}
+
+casos en los que las mejoras se dan entre nodos de mas distancia
+
+\subsection{Pseudocodigo}
+
+A continuaci\'on el pseudoc\'odigo de la b\'usqueda local.
+\begin{algorithmic}
+
+ \Procedure{$Bq\_Local$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k, tipo\_busqueda$}{$\rightarrow lista<eje>\: camino$}
+
+ \State $lista<eje> \: camino\: =\: dijkstra(g, \:v_1,\: v_2, \:costoW1)$
+ \State  $bool\: hay\_mejora\: = \:true$
+
+ \While{$hayMejora$}
+
+  \State $switch(tipo\_busqueda)$
+	\State$\: \: \: 	case\: subdividirPares$
+		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqLocalEntrePares(g,camino)$
+	\State$	\: \: \: case\: contraerTriplasAPares$		
+		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqLocalEntreTriplasAPares(g,camino)$
+	\State$	\: \: \: case \:mejorarTriplas:		$
+		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqlocalEntreTriplasReemplazando(g,camino)$
+
+\EndWhile
+
+ \State $return camino$
+
+ \EndProcedure
+
+\end{algorithmic}
+
+\subsubsection{Pseudocodigo de b\'usqueda local entre pares}
+
+\begin{algorithmic}
+
+
+
+
+
+\end{algorithmic}
+
+\subsubsection{Pseudocodigo de b\'usqueda local entre triplas a pares}
+
+\subsubsection{Pseudocodigo de b\'usqueda local mejorando triplas}
+
+\subsubsection{Complejidad}
+
+CORREGIR:
+
+Sea $n$ el n\'umero de nodos del grafo. En cada paso de la heur\'istica esta recorre el mejor camino provisorio (en adelante ``el camino'') en el grafo y para cada v\'ertice $v$ del camino realiza una iteraci\'on sobre todos los v\'ertices del grafo.
+Para cada v\'ertice del grafo que est\'a en $VNU$ calcula el $K$ y $W$ del camino modificado, esto se resuelve en $O(n)$. En caso que se modifique el camino, la actualizaci\'on de $K$, $W$, $VU$ y $VNU$ se realiza en $O(1)$. Cada v\'ertice sobre el camino recorrido se resuelve entonces en $O(n)$.
+Como el camino va variando mientras se lo recorre, vale preguntarse si la iteraci\'on termina. Termina de hecho en a lo sumo $n$ pasos y la justificaci\'on es la siguiente:
+
+\begin{enumerate}
+	\item El camino se mantiene siempre simple.
+	\item El camino solo se altera por delante del v\'ertice visitado.
+	\item Por (2), cuando la iteraci\'on se encuentra en el v\'ertice $v$, la parte del camino entre el v\'ertice inicial y $v$ coincide con la secuencia ordenada de v\'ertices que se visitaron hasta el momento en la iteraci\'on.
+	\item Por (3), al encontrarse en el v\'ertice $v$ n\'umero $k$ visitado por la iteraci\'on, la longitud del camino entre el v\'ertice inicial y $v$ es exactamente $k-1$.
+	\item Por (4), si se ha llegado al vertice $v$ numero $n$ visitado por la iteraci\'on, la longitud del camino entre el v\'ertice inicial y $v$ es exactamente $n-1$. Como el camino es simple, la parte del camino entre $v$ y el v\'ertice final no puede contener ninguna arista, por lo tanto $v$ es el v\'ertice final.
+\end{enumerate}
+
+Por esta justificaci\'on, se comprueba que cada paso de la heur\'istica tiene complejidad $O(n^2)$, ya que realiza el proceso descripto anteriormente una vez para cada criterio de vecindad: 1, 2 y 3.\\
+La complejidad total de la heur\'istica no se puede acotar en general, ya que depende del criterio de terminaci\'on.
+
+
 \subsection{Taboo list caminos del ciclo}
 \subsection{Porque elegir la mejor 3-upla de cada it y no la primera, pensar en siguientes iteraciones que podrian ser mejor}
