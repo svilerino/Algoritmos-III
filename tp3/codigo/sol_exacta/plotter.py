@@ -33,7 +33,7 @@ fx_sum = 0
 fx_fact_sum = 0
 for line in dataFile:
 	fx = float(line.split()[0])
-	x = float(line.split()[2])
+	x = float(line.split()[1])
 	if(x != last_x):
 		if(last_x != -1):
 			graphic_fx_med.append(fx_sum / i)
@@ -59,7 +59,7 @@ graphic_x_med.append(last_x)
 if(graphictype == 0):
 	#plt.plot(graphic_x, graphic_fx, 'b-', graphic_x_for_logx, graphic_fx_over_logx, 'r-', graphic_x, graphic_fx_over_x, 'g-')
 	plt.plot(graphic_x, graphic_fx, 'bo', graphic_x_med, graphic_fx_med, 'r-', label="hoal")
-	plt.xlabel('x = cantidad de aristas en un grafo completo', fontsize=14)
+	plt.xlabel('x = cantidad de nodos en un grafo completo', fontsize=14)
 	plt.ylabel('f(x) = Microsegundos transcurridos', fontsize=14)
 	plt.title("(x, f(x))")
 	plt.grid()
@@ -84,7 +84,7 @@ else:
 		else:
 			if(graphictype == 3):
 				plt.plot(graphic_x, graphic_fx_fact, 'bo', graphic_x_med, graphic_fx_fact_med, 'r-', label="hoal")
-				plt.xlabel('x = cantidad de aristas en un grafo completo', fontsize=14)
+				plt.xlabel('x = cantidad de nodos en un grafo completo', fontsize=14)
 				plt.ylabel('f(x)/x!, f(x) = Microsegundos transcurridos', fontsize=14)
 				plt.title("(x, f(x)/x!)")
 				plt.grid()
