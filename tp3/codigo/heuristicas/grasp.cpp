@@ -1,6 +1,6 @@
 #include "grafo.h"
 #include "timing.h"
-#define CANT_ITERS_MEDICION 1//ojo que como es randomized la greedy no tiene sentido repetirlo mas de una vez!
+#define GOLOSA_BAD_SOLUTION_CONSECUTIVAS_LIMIT 5
 
 void ejecutar_grasp(Grafo &g);
 
@@ -57,47 +57,57 @@ void ejecutar_grasp(Grafo &g){
     costo_t costo_mejor_solucion = costo_infinito;
     uint64_t cant_iters = 0;
     uint64_t cant_iters_sin_mejora = 0;
-    double promedio_parcial = 0;
+    double tiempo_golosa_randomized = 0;
+    double tiempo_bqlocal = 0;
     double promedio = 0;
     Camino camino = g.obtener_camino_vacio();
+    bool sol_valida_greedy = false;
+    uint64_t iters_golosa_bad_solution = 0;
+    //ciclo greedy
+
     do{
         MEDIR_TIEMPO_PROMEDIO(
             camino = g.obtener_solucion_golosa(modo_golosa, parametro_beta);
             //cout << "Solucion inicial de la greedy:" << endl;
             //camino.imprimir_camino(cout);
-            g.establecer_camino_solucion(camino);
-            if(g.hay_solucion()){//puede que la greedy randomized no encuentre solucion!
-                //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)   
-                while(g.busqueda_local(modo_busqueda_local));                
-            }else{
-                //si la golosa randomized no me dio algo valido , ignoro esta iteracion de grasp y sigo con la siguiente.
-                continue;
-            }
-        , CANT_ITERS_MEDICION, &promedio_parcial);
-        promedio += promedio_parcial;
-        //en este punto la bqlocal mejoro todo lo que pudo la sol. inicial obtenida con la randomized greedy
+        , 1, &tiempo_golosa_randomized);
 
-        //me fijo si esta solucion es mejor que la que tenia guardada, de ser asi actualizo el maximo y guardo la sol actual como la nueva mejor.
-        costo_t costo_solucion_actual = camino.obtener_costo_total_w2_camino();
-        if(costo_solucion_actual < costo_mejor_solucion){
-            costo_mejor_solucion = costo_solucion_actual;
-            mejor_solucion = g.obtener_camino_solucion();
-            //reseteo el contador
-            cant_iters_sin_mejora = 0;
+        sol_valida_greedy = g.hay_solucion();
+        if(sol_valida_greedy){//puede que la greedy randomized no encuentre solucion!
+            //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)   
+            MEDIR_TIEMPO_PROMEDIO(
+                g.establecer_camino_solucion(camino);
+                while(g.busqueda_local(modo_busqueda_local));
+            , 1, &tiempo_bqlocal);
+            promedio += tiempo_golosa_randomized;
+            promedio += tiempo_golosa_randomized;
+            
+            //en este punto la bqlocal mejoro todo lo que pudo la sol. inicial obtenida con la randomized greedy
+            //me fijo si esta solucion es mejor que la que tenia guardada, de ser asi actualizo el maximo y guardo la sol actual como la nueva mejor.
+            costo_t costo_solucion_actual = camino.obtener_costo_total_w2_camino();
+            if(costo_solucion_actual < costo_mejor_solucion){
+                costo_mejor_solucion = costo_solucion_actual;
+                mejor_solucion = g.obtener_camino_solucion();
+                //reseteo el contador
+                cant_iters_sin_mejora = 0;
+            }else{
+                //una iteracion consecutiva mas sin mejora
+                cant_iters_sin_mejora++;
+            }
+            cant_iters++;
+            iters_golosa_bad_solution = 0;
         }else{
-            //una iteracion consecutiva mas sin mejora
-            cant_iters_sin_mejora++;
+            iters_golosa_bad_solution++;
         }
 
-        cant_iters++;
-
         if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
-            condicion_terminacion = (cant_iters < ITERS_LIMIT);            
+            condicion_terminacion = (cant_iters < ITERS_LIMIT);
         }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
             condicion_terminacion = (cant_iters_sin_mejora < ITERS_LIMIT);
         }else if(criterio_terminacion == CRT_SOLUTION_GOOD_ENOUGH){
             condicion_terminacion = (costo_mejor_solucion < W2_VALUE_TARGET);
         }
+        condicion_terminacion = condicion_terminacion | (iters_golosa_bad_solution > GOLOSA_BAD_SOLUTION_CONSECUTIVAS_LIMIT);
     }while(!condicion_terminacion);
     promedio = promedio / (double) cant_iters;
 
@@ -105,14 +115,16 @@ void ejecutar_grasp(Grafo &g){
     cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio;
 
     //cout << endl << "Se cumplio el criterio de terminacion elegido: ";
-    if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
-        //cout << "CRT_K_ITERS_LIMIT_REACHED";
-    }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
-        //cout << "CRT_K_ITERS_SIN_MEJORA";
-    }else if(criterio_terminacion == CRT_SOLUTION_GOOD_ENOUGH){
-        //cout << "CRT_SOLUTION_GOOD_ENOUGH";
-    }
-    //cout << endl;
+//    if(iters_golosa_bad_solution > GOLOSA_BAD_SOLUTION_CONSECUTIVAS_LIMIT){
+//        cout << "GOLOSA_BAD_SOLUTION_CONSECUTIVAS_LIMIT";
+//    }else if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
+//        cout << "CRT_K_ITERS_LIMIT_REACHED";
+//    }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
+//        cout << "CRT_K_ITERS_SIN_MEJORA";
+//    }else if(criterio_terminacion == CRT_SOLUTION_GOOD_ENOUGH){
+//        cout << "CRT_SOLUTION_GOOD_ENOUGH";
+//    }
+//    cout << endl;
 
     g.establecer_se_encontro_solucion(true);
 
