@@ -73,15 +73,14 @@ Una iteracion consiste en recorrer todas las 3-uplas del camino obteniendo de lo
 Este enfoque es basicamente igual al anterior, solo que en lugar de iterar sobre 3-uplas reemplazando el nodo intermedio, se itera sobre pares consecutivos de nodos de la solucion S $(v_k, v_{k+1})$ buscando si existe, un vecino en comun entre los extremos tal que el sendero $(v_k, v_t, v_{k+1})$ tenga costo menor(de forma minima entre los vecinos) sobre $w_2$ que la arista directa y que reflejado en la solucion candidata S' que surge de aplicar este cambio, siga siengo factible($w_2(S') \leq K$). La iteracion de sigue siendo sobre toda la vecindad $N(S)$ y quedandose con el mejor $S' \in N(S)$ posible.
 
 
-\subsubsection{CONTRAER TRIPLAS}
+\subsubsection{Contracci\'on de 3-uplas}
 
+Similar a los casos anteriores, itera sobre las 3-uplas de nodos del camino, intentando eliminar el nodo intermedio y buscar una arista que conecte directamente los nodos de los extremos. Sean los 3 nodos $v_1$, $v_2$ y $v_3$, y el subcamino de aristas formado por ellos $[ (v_1, v_2), (v_2, v_3)]$, se encontrar la arista $(v_1, v_3)$, tal que:
 
-
-
-
-\subsection{Nivel de optimalidad de las soluciones}
-
-casos en los que las mejoras se dan entre nodos de mas distancia
+\begin{itemize}
+	\item $costoW2((v_1, v_3)) \leq costoW2((v_1, v_2)) + costoW2((v_2, v_3))$
+	\item Que el camino, eliminando el nodo $v_2$ y las aristas $(v_1, v_2), (v_2, v_3)$ y conectando los nodos $v_1$ y $v_3$ mediante la arista directa $(v_1, v_3)$ siga sin sobrepasar la cota K establecida sobre $w_1$, es decir, sea factible.
+\end{itemize}
 
 \subsection{Pseudocodigo}
 
@@ -113,54 +112,22 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda local.
 
 \subsubsection{Pseudocodigo de b\'usqueda local entre pares}
 
-\begin{algorithmic}
-
-    \State $lista<eje> \:iterador\: it\: = \:obtener\_iterador\_begin(camino)$
-	\State $lista<eje>\: iterator \:runner\_it \:= \: obtener\_iterador\_begin(camino)$
-	\State $runner\_it++$
-	\State $lista<eje> \:iterador\: final\_camino \:= \: obtener\_iterador\_end(camino)$
-	\State $int\: total\_w1 \:=\: costo\_w1(camino)$
-	\State $int\: total\_w2 \:=\: costo\_w2(camino)$
-
-	\State $int\: mejor\_costo\_w1 \:=\: \infty$
-	\Comment Variables para la mejor solucion de la vecindad
-	\State $int\: mejor\_costo\_w2 \:=\: \infty$
-	\State $Vecino\: nodo\_minimo\_w2$
-	\State $list<eje> iterador \:punto\_de\_insercion\_mejora\_it\: = \:final\_camino$
-	\State $bool\: hay\_mejoras\_para\_el\_camino\: =\: false$
-
-	\While{$runner\_it\: !=\: final\_camino)$}
-
-
-
-
-
-	\EndWhile
-
-\end{algorithmic}
-
 \subsubsection{Pseudocodigo de b\'usqueda local entre triplas a pares}
 
 \subsubsection{Pseudocodigo de b\'usqueda local mejorando triplas}
 
+\begin{algorithmic}
+
+
+\end{algorithmic}
+
+\subsection{Nivel de optimalidad de las soluciones}
+
+casos en los que las mejoras se dan entre nodos de mas distancia
+
 \subsubsection{Complejidad}
 
 CORREGIR:
-
-Sea $n$ el n\'umero de nodos del grafo. En cada paso de la heur\'istica esta recorre el mejor camino provisorio (en adelante ``el camino'') en el grafo y para cada v\'ertice $v$ del camino realiza una iteraci\'on sobre todos los v\'ertices del grafo.
-Para cada v\'ertice del grafo que est\'a en $VNU$ calcula el $K$ y $W$ del camino modificado, esto se resuelve en $O(n)$. En caso que se modifique el camino, la actualizaci\'on de $K$, $W$, $VU$ y $VNU$ se realiza en $O(1)$. Cada v\'ertice sobre el camino recorrido se resuelve entonces en $O(n)$.
-Como el camino va variando mientras se lo recorre, vale preguntarse si la iteraci\'on termina. Termina de hecho en a lo sumo $n$ pasos y la justificaci\'on es la siguiente:
-
-\begin{enumerate}
-	\item El camino se mantiene siempre simple.
-	\item El camino solo se altera por delante del v\'ertice visitado.
-	\item Por (2), cuando la iteraci\'on se encuentra en el v\'ertice $v$, la parte del camino entre el v\'ertice inicial y $v$ coincide con la secuencia ordenada de v\'ertices que se visitaron hasta el momento en la iteraci\'on.
-	\item Por (3), al encontrarse en el v\'ertice $v$ n\'umero $k$ visitado por la iteraci\'on, la longitud del camino entre el v\'ertice inicial y $v$ es exactamente $k-1$.
-	\item Por (4), si se ha llegado al vertice $v$ numero $n$ visitado por la iteraci\'on, la longitud del camino entre el v\'ertice inicial y $v$ es exactamente $n-1$. Como el camino es simple, la parte del camino entre $v$ y el v\'ertice final no puede contener ninguna arista, por lo tanto $v$ es el v\'ertice final.
-\end{enumerate}
-
-Por esta justificaci\'on, se comprueba que cada paso de la heur\'istica tiene complejidad $O(n^2)$, ya que realiza el proceso descripto anteriormente una vez para cada criterio de vecindad: 1, 2 y 3.\\
-La complejidad total de la heur\'istica no se puede acotar en general, ya que depende del criterio de terminaci\'on.
 
 
 \subsection{Taboo list}
@@ -175,4 +142,3 @@ La taboo list est\'a implementada como un vector de bool que forma parte de los 
 
 	Otra opcion considerada fue no restringir la b\'usqueda de nuevos nodos, pero luego deber\'ia realizarse una poda de ciclos del camino. En la muchos de los casos esto realizari\'ia una mejora importante del camino, pero esto aumenta la complejidad de la heur\'istica y deja de ser b\'usqueda local, dado que la soluci\'on que surja de la poda en muchos casos no va a estar en la vecindad del camino.
  
-\subsection{Porque elegir la mejor 3-upla de cada it y no la primera, pensar en siguientes iteraciones que podrian ser mejor}
