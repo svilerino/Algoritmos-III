@@ -105,7 +105,7 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda local.
 
 \EndWhile
 
- \State $return camino$
+ \State $return \:camino$
 
  \EndProcedure
 
@@ -115,9 +115,27 @@ A continuaci\'on el pseudoc\'odigo de la b\'usqueda local.
 
 \begin{algorithmic}
 
+    \State $lista<eje> \:iterador\: it\: = \:obtener\_iterador\_begin(camino)$
+	\State $lista<eje>\: iterator \:runner\_it \:= \: obtener\_iterador\_begin(camino)$
+	\State $runner\_it++$
+	\State $lista<eje> \:iterador\: final\_camino \:= \: obtener\_iterador\_end(camino)$
+	\State $int\: total\_w1 \:=\: costo\_w1(camino)$
+	\State $int\: total\_w2 \:=\: costo\_w2(camino)$
+
+	\State $int\: mejor\_costo\_w1 \:=\: \infty$
+	\Comment Variables para la mejor solucion de la vecindad
+	\State $int\: mejor\_costo\_w2 \:=\: \infty$
+	\State $Vecino\: nodo\_minimo\_w2$
+	\State $list<eje> iterador \:punto\_de\_insercion\_mejora\_it\: = \:final\_camino$
+	\State $bool\: hay\_mejoras\_para\_el\_camino\: =\: false$
+
+	\While{$runner\_it\: !=\: final\_camino)$}
 
 
 
+
+
+	\EndWhile
 
 \end{algorithmic}
 
@@ -145,5 +163,16 @@ Por esta justificaci\'on, se comprueba que cada paso de la heur\'istica tiene co
 La complejidad total de la heur\'istica no se puede acotar en general, ya que depende del criterio de terminaci\'on.
 
 
-\subsection{Taboo list caminos del ciclo}
+\subsection{Taboo list}
+  Definimos una taboo list como una lista en la cual se encuentran los nodos que pertenecen al camino soluci\'on actual, de forma de evitar que la b\'usqueda local intente mejorar las conexiones utilizano nodos que ya pertenecen al camino.Esto es indispesable para evitar la generacion de ciclos en el caso de agregar un nodo al subdividir una arista o reemplazar un nodo
+intermedio entre otros dos. Si se mantienen disjuntos disjuntos el conjunto de nodos del camino actual y los nodos restantes del grafo, cualquier eleccion que hagamos no generar\''a ciclos.
+
+\vspace{2mm}
+
+La taboo list est\'a implementada como un vector de bool que forma parte de los atributos de un camino del grafo, de forma de poder consultar la pertenencia de un nodo al camino en tiempo constante.
+
+\vspace{2mm}
+
+	Otra opcion considerada fue no restringir la b\'usqueda de nuevos nodos, pero luego deber\'ia realizarse una poda de ciclos del camino. En la muchos de los casos esto realizari\'ia una mejora importante del camino, pero esto aumenta la complejidad de la heur\'istica y deja de ser b\'usqueda local, dado que la soluci\'on que surja de la poda en muchos casos no va a estar en la vecindad del camino.
+ 
 \subsection{Porque elegir la mejor 3-upla de cada it y no la primera, pensar en siguientes iteraciones que podrian ser mejor}
