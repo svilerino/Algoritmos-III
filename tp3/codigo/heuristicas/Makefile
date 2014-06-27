@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CFLAGS=-Wall -O2 -g -std=c++11
+CFLAGS=-Wall -O2 -g -std=c++0x
 LDFLAGS=
 RM=rm
 
