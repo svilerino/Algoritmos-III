@@ -53,6 +53,34 @@ iteraciones de busqueda local.
 El criterio de terminacion fue repetir las iteraciones sobre las nuevas soluciones que se iban obteniendo, hasta que no se obtiene mejora.
 Siempre se aplica uno solo de los 3 metodos a las iteraciones, es decir, no se combinan.
 
+\subsubsection{Pseudocodigo}
+
+A continuaci\'on el pseudoc\'odigo de la b\'usqueda local.
+\begin{algorithmic}
+
+ \Procedure{$Bq\_Local$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k, tipo\_busqueda$}{$\rightarrow lista<eje>\: camino$}
+
+ \State $lista<eje> \: camino\: =\: dijkstra(g, \:v_1,\: v_2, \:costoW1)$
+ \State  $bool\: hay\_mejora\: = \:true$
+
+ \While{$hayMejora$}
+
+  \State $switch(tipo\_busqueda)$
+	\State$\: \: \: 	case\: subdividirPares$
+		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqLocalEntrePares(g,camino)$
+	\State$	\: \: \: case\: contraerTriplas$		
+		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqLocalContraerTriplas(g,camino)$
+	\State$	\: \: \: case \:mejorarTriplas:		$
+		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqlocalEntreTriplasReemplazando(g,camino)$
+
+\EndWhile
+
+ \State $return \:camino$
+
+ \EndProcedure
+
+\end{algorithmic}
+
 \subsubsection{Reemplazar un nodo intermedio en una 3-upla consecutiva de nodos del camino}
 Si el camino tiene longuitud 2, es decir hay una arista directa entre $u,v$ , no hay nada que hacer en este caso, caso contrario, sea $S = \{u,...,v_l, v_{l+1}, v_{l+2}, v_{l+3} ..., v\}$ la solucion actual. Lo que hace en este caso es iterar sobre todas las 3-uplas consecutivas del camino, en este ejemplo sea $(vl, v_{l+1}, v_{l+2})$ una 3-upla, $(v_{l+1}, v_{l+2}, v_{l+3})$ la siguiente a iterar, etc...\\ \\
 Para cada 3-upla iterada se revisan los vecinos en comun entre los extremos de la 3-upla buscando una mejor conexi\'on entre extremos reemplazando el nodo intermedio 
@@ -79,51 +107,16 @@ Similar a los casos anteriores, itera sobre las 3-uplas de nodos del camino, int
 
 \begin{itemize}
 	\item $costoW2((v_1, v_3)) \leq costoW2((v_1, v_2)) + costoW2((v_2, v_3))$
-	\item Que el camino, eliminando el nodo $v_2$ y las aristas $(v_1, v_2), (v_2, v_3)$ y conectando los nodos $v_1$ y $v_3$ mediante la arista directa $(v_1, v_3)$ siga sin sobrepasar la cota K establecida sobre $w_1$, es decir, sea factible.
+	\item Que el camino, eliminando el nodo $v_2$ y las aristass $(v_1, v_2), (v_2, v_3)$ y conectando los nodos $v_1$ y $v_3$ mediante la arista directa $(v_1, v_3)$ siga sin sobrepasar la cota K establecida sobre $w_1$, es decir, sea factible.
 \end{itemize}
-
-\subsection{Pseudocodigo}
-
-A continuaci\'on el pseudoc\'odigo de la b\'usqueda local.
-\begin{algorithmic}
-
- \Procedure{$Bq\_Local$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k, tipo\_busqueda$}{$\rightarrow lista<eje>\: camino$}
-
- \State $lista<eje> \: camino\: =\: dijkstra(g, \:v_1,\: v_2, \:costoW1)$
- \State  $bool\: hay\_mejora\: = \:true$
-
- \While{$hayMejora$}
-
-  \State $switch(tipo\_busqueda)$
-	\State$\: \: \: 	case\: subdividirPares$
-		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqLocalEntrePares(g,camino)$
-	\State$	\: \: \: case\: contraerTriplasAPares$		
-		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqLocalEntreTriplasAPares(g,camino)$
-	\State$	\: \: \: case \:mejorarTriplas:		$
-		\State$\: \: \: \: \: 	\:hayMejora\: = \: bqlocalEntreTriplasReemplazando(g,camino)$
-
-\EndWhile
-
- \State $return \:camino$
-
- \EndProcedure
-
-\end{algorithmic}
-
-\subsubsection{Pseudocodigo de b\'usqueda local entre pares}
-
-\subsubsection{Pseudocodigo de b\'usqueda local entre triplas a pares}
-
-\subsubsection{Pseudocodigo de b\'usqueda local mejorando triplas}
 
 \subsection{Nivel de optimalidad de las soluciones}
 
-casos en los que las mejoras se dan entre nodos de mas distancia
+La heur\'istica va a fallar en todos los casos en los cuales no se pueda mejorar un par o tripla de nodos agregando, quitando o reemplazando de a un nodo, por ejemplo, casos en los que la mejora sea un subcamino de longitud mayor a 2, o casos en los que el camino \'optimo no tiene ning\'in tipo de conexi\'on con el camino m\'inimo seg\'un $w_1$.
 
 \subsubsection{Complejidad}
 
-CORREGIR:
-
+Podemos acotar la iteraci\'on sobre el camino con la mayor cantidad de nodos posibles que puede tener, es decir, $O(n)$. Por cada iteraci\'on, en cualquiera de los tres m\'etodos, se llama a la funci\'on $vecinos$ de dos nodos, lo cual est\'a acotado tambi\'en por $2*O(n)$. Por lo tanto, una iteraci\'on de b\'usqueda local tiene una complejidad de $O(n^2)$. La complejidad total de la heur\'istica no puede acotarse, ya que depende del criterio de terminaci\'on.
 
 \subsection{Taboo list}
   Definimos una taboo list como una lista en la cual se encuentran los nodos que pertenecen al camino soluci\'on actual, de forma de evitar que la b\'usqueda local intente mejorar las conexiones utilizano nodos que ya pertenecen al camino.Esto es indispesable para evitar la generacion de ciclos en el caso de agregar un nodo al subdividir una arista o reemplazar un nodo
