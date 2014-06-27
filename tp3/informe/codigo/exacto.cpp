@@ -3,6 +3,7 @@
 #include <string.h>
 #include "grafo.h"
 #include "parser.h"
+#include "timing.h"
 
 using namespace std;
 
@@ -63,8 +64,8 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 				solucion_nueva.W2 = w2;
 				solucion_nueva.v[0] = adyacentes[i];
 				solucion_nueva.k = 1;
-				if(resolver(g, adyacentes[i], w, K - w2, &solucion_nueva)){
-					if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion->W2){
+				if(resolver(g, adyacentes[i], w, K - w1, &solucion_nueva)){
+					if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion_nueva.W2){
 						solucionado = true;
 						solucion_mejor.W1 = solucion_nueva.W1;
 						solucion_mejor.W2 = solucion_nueva.W2;
@@ -91,29 +92,56 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 
 int main(int argc, char **argv)
 {
+	int medir_tiempo = 0;
 	GrafoAdyacencia<peso> *grafo;
 	peso **pesos;
 	int u, v, K, nodos, aristas, i;
 	Solucion solucion;
 
+	if(argc != 1)
+		medir_tiempo = 1;
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
-		solucion.W1 = 0;
-		solucion.W2 = 0;
-		solucion.k = 1;
-		solucion.v = (int *)calloc(2 * aristas, sizeof(int));
-		solucion.v[0] = u;
-		if(resolver(*grafo, u, v, K, &solucion)){
-			printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
-			for(i = 0; i < solucion.k; i++){
-				printf(" %d", solucion.v[i]);
-			}
-			printf("\n");
+		if(medir_tiempo){
+			double promedio = 0.0;
+			MEDIR_TIEMPO_PROMEDIO(
+				solucion.W1 = 0;
+				solucion.W2 = 0;
+				solucion.k = 1;
+				solucion.v = (int *)calloc(2 * aristas, sizeof(int));
+				solucion.v[0] = u;
+				if(resolver(*grafo, u, v, K, &solucion)){
+					printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+					for(i = 0; i < solucion.k; i++){
+						printf(" %d", solucion.v[i]);
+					}
+					printf("\n");
+				}
+				else{
+					printf("no\n");
+				}
+				free(solucion.v);
+			, 5, &promedio);
+			cerr << promedio << " " << nodos << " " << aristas << endl;
 		}
 		else{
-			printf("no\n");
+			solucion.W1 = 0;
+			solucion.W2 = 0;
+			solucion.k = 1;
+			solucion.v = (int *)calloc(2 * aristas, sizeof(int));
+			solucion.v[0] = u;
+			if(resolver(*grafo, u, v, K, &solucion)){
+				printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+				for(i = 0; i < solucion.k; i++){
+					printf(" %d", solucion.v[i]);
+				}
+				printf("\n");
+			}
+			else{
+				printf("no\n");
+			}
+			free(solucion.v);
 		}
-		free(solucion.v);
 		int i;
 		for(i = 0; i < aristas; i++){
 			delete pesos[i];
