@@ -1,17 +1,70 @@
 \section{Ap\'endice: Framework de Benchmarking} \label{casos_de_prueba}
-\subsection{Descripcion de los metodos de benchmarking utilizados y presentacion de graficos}
-\subsection{Resultados}
+
 \subsubsection{Algoritmo exacto para la resolucion de CACM}
-\subsubsection{Heuristicas constructivas golosas I: En cada paso tomar el minimo f2 dentro de las soluciones factibles(con f1 acotada)}
-\subsubsection{Heuristicas constructivas golosas II: En cada paso tomar el minimo cociente de f1/f2 dentro de las soluciones factibles(con f1 acotada)}
-\subsubsection{Heuristicas de busqueda local}
-\subsubsection{Metaheuristica GRASP: Solucion propuesta}
-%Para el testeo de los algoritmos y la medici\'on de tiempos en funci\'on de la entrada, se program\'o una utilidad para generar los casos de prueba.
-%
-%Los n\'umeros aleatorios que se generaron en los casos, se hizo con la funci\'on \emph{random()} de C ( \href{http://linux.die.net/man/3/random}{http://linux.die.net/man/3/random} ) usando como semilla el tiempo en microsegundos.
 
-%Para el ejercicio 2, se le indica al programa la cantidad de ciudades, la cual se fue incrementando para la medici\'on del tiempo, y la cantidad de centrales se indicaba como un n\'umero aleatorio entre 1 y la cantidad de ciudades.
+Se realiz\'o una experimentaci\'on para ver el comportamiento del algoritmo. Como se describi\'o en la secci\'on de complejidad (\ref{exacto:complejidad}), los grafos completos $K_n$ son los que van a requerir de una mayor cantidad de operaciones,
+por lo que se generaron grafos $K_n$, con un $n$ fijo pero con los valore $\omega_1$ y $\omega_2$ aleatorios y un valor aleatorio para la cota $K$.
+Para cada valor de $n$, se crearon varios grafos diferentes, y se midi\'o el tiempo promediado en 5 ejecuciones de cuanto tardaba el programa en encontrar o no la soluci\'on para cada un de esos grafos.
 
-%As\'i se crearon muchos casos donde se fue incrementando el tama\~no de la entrada y ejecutando varios tests de un mismo tama\~no y varias veces el mismo test para obtener un promedio del tiempo que tarda en resolvero y descartar algunas imperfecciones que puedan surgir por el entorno donde se est\'a midiendo los tiempos, como puede ser que justo se ejecute otra tarea.
+Se plasmaron \'estos tiempos en un gr\'afico y se calculo el promedio entre los diferentes grafos para un mismo $n$. Tambi\'en se grafic\'o el cociente entre el tiempo que se tard\'o y $n!$.
 
-%Para los ejercicios 1 y 3, se programaron dentro de las clases Main de los diferentes ejercicio diferentes metodos que se encargan de la codificacion y decodificacion de entrada y salida tanto como de la generacion de tests aleatorios con distribucion uniforme. Se indica por parametro al ejecutable que se desea realizar.
+El programa logr\'o encontrar r\'apidamente soluciones, pero llegando a los $K_{16}$ se not\'o que creci\'o bastante el tiempo de ejecuci\'on y ya para el $K_{17}$ como tardaba m\'as de media hora se decidi\'o parar la prueba.
+
+\subsubsection{Gr\'aficos}
+A continuaci\'on se adjuntan los gr\'aficos del tiempo de ejecuci\'on:
+
+Gr\'afico para grafos desde $K_5$ a $K_{16}$, cada punto azul representa una ejecuci\'on de un grafo en particular, y la l\'inea roja es el promedio entre los grafos del mismo $n$
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fx_n_todo.png}
+\end{center}
+
+Dado que el tiempo crece demaciado r\'apido, tal como se esperaba, se dividi\'o el gr\'afico anterior para que se pueda apreciar mejor como fue creciendo:
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fx_n_5_10.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fx_n_8_15.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fx_n_11_16.png}
+\end{center}
+
+Y luego se realiz\'o el cociente contra $n!$, que es la complejidad esperada. Se puede observar que el gr\'afico parece decrecer, pero s\'olo tenemos pocos valores que pudimos graficar.
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fact_n.png}
+\end{center}
+
+Se dividi\'o el gr\'afico anterior para que se pueda apreciar mejor los valores:
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fact_n_8_16.png}
+\end{center}
+
+\begin{center}
+	\includegraphics[scale=0.41]{img/exacto/fact_n_10_16.png}
+\end{center}
+
+\subsubsection{Concluciones}
+Dada la complejidad del algoritmo, fueron pocos los tama\~nos de entrada que se pudieron medir, pero es el resultado que se esperaba.
+
+Se puede ver que si bien tiende a crecer el tiempo de ejecucion, muchas veces distintos grafos de un mismo $n$ tuvieron tiempos muy diferentes de ejecuci\'on, not\'andose claramente en el $K_{16}$, donde 3 grafos tardaron menos de 5 segundos, pero otros 2 grafos tardaron 20 segundos o m\'as. \'Esto se puede deber a las distintas condiciones y podas del algoritmo para quedarse s\'olo con caminos v\'alidos y que no se pasen de la cota $K$ ni que superen una posible soluci\'on ya encontrada.
+
+\subsubsection{Heur\'istica golosa}
+
+En la experimentaci\'on de perfomance de la heur\'istica golosa utilizamos un generador de grafos aleatorios, hacemos variar la cantidad de nodos, con una cantidad de aristas fija. Sea $n$ la cantidad de nodos, es nuestra variable y probamos con $m = (n^2)/2$, es decir grafos completos, y luego con grafos densamente promedio, un n\'umero de aristas promedio entre $n-1$ (\'arbos) y un grafo completo ($ m = (n - 1 + (n^2)/2) /2 $)
+
+\begin{center}
+\includegraphics[scale=0.45]{img/golosa_fx.png}
+\end{center}
+\vspace{2mm}
+
+Se puede apreciar una curva creciente con concavidad positiva. La curva de mayor valor que corta en 600 representa los valores de los grafos completos, que tuvimos que detener por razones de tiempo de c\'omputo. Vamos a dividir los resultados por $n^2$ y verificar que el resultado sea una curva constante.
+
+
+\begin{center}
+\includegraphics[scale=0.450]{img/golosa_fx2.png}
+\end{center}
+\vspace{2mm}
+
+Puede apreciarse efectivamente una curva constante.
