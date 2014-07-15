@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <random>
 
+#define DEBUG_MESSAGES_ON
+
 using namespace std;
 
 typedef int nodo_t;
@@ -185,7 +187,7 @@ public:
 	//Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
 	Camino dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
 	//Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro
-	void dijkstra(nodo_t origen, nodo_t nodo_origen_a_ignorar, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor);
+	void dijkstra(nodo_t origen, tipo_costo_t target_a_minimizar, vector<costo_t>& costo_minimo, vector<nodo_t>& predecesor);
 	//Dado un nodo_t origen se calcula para cada nodo, la distancia minima en cantidad de aristas de peso constante 1 de cualquier nodo a origen
 	void breadth_first_search(nodo_t origen, vector<distancia_t>& distancias_en_aristas_a_origen);
 

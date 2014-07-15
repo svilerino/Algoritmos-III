@@ -1,23 +1,22 @@
 \section{Heuristica de busqueda local}
 
 Para encontrar soluciones aproximadas al problema de optimizar una funci\'on $f:S \rightarrow \mathbb{R}$ definida sobre un conjunto $S$ de instancias, la heur\'istica de b\'usqueda local consiste en tomar un elemento $e \in S$ y buscar entre los elementos ``cercanos'' a $e$ uno $e'$ en el cual el valor que toma la funci\'on sea mejor ($f(e') < f(e)$ \'o $f(e') > f(e)$ dependiendo de si se busca m\'inimo a o m\'aximo).
-El concepto de cercan\'ia o vecidad se puede definir seg\'un cualquier criterio que se crea conveniente. Formalmente se puede ver como una relaci\'on $R \subseteq S \times S$, que es sim\'etrica y reflexiva. Se busca en lo posible que las vecindades de cada punto sean peque\~nas para que se pueda encontrar r\'apidamente un vecino mejor en caso de que exista.
+El concepto de cercan\'ia o vecidad se puede definir seg\'un cualquier criterio que se crea conveniente de forma tal que evaluar la vecindad sea barato. Se busca en lo posible que las vecindades de cada punto sean peque\~nas para que se pueda encontrar r\'apidamente un vecino mejor en caso de que exista.
 La heur\'istica itera el procedimiento de optimizaci\'on local creando una sucesi\'on de soluciones aproximadas $(X_0, X_1, ... , X_m)$ en $S$ donde el elemento $X_m$ tiene la propiedad de ser un extremo local de la funci\'on $f$ seg\'un el criterio definido de vecindad.
 
+\subsection{Criterios de vecindad}
+Para el problema enunciado del TP, el conjunto $S$ es el conjunto de caminos entre el nodo de partida y el de llegada. Debido a que las $w_1$ y $w_2$ son funciones no negativas, el camino acotado de costo m\'inimo estar\'a en $S' \subseteq S$, el subconjunto de todos los caminos simples. Por lo tanto solo se considerar\'a $S'$ como conjunto de instancias.
 
-\subsection{Criterio de vecindad}
-Para el problema enunciado del TP, el conjunto $S$ es el conjunto de caminos entre el nodo de partida y el de llegada. Debido a que las $w_1$ y $w_2$ son funciones positivas, el camino acotado de costo m\'inimo estar\'a en $S' \subseteq S$, el subconjunto de todos los caminos simples. Por lo tanto solo se considerar\'a $S'$ como conjunto de instancias.
-Se definir\'a primero la relaci\'on de vecindad. Ante todo, la notaci\'on ser\'a la siguiente. $C = (v_1, ..., v_m)$ ser\'a un camino y $A_c$ el conjunto de aristas que lo conforman. Dos caminos $C = (v_1, ... , v_n)$ y $C' = (v'_1, ... , v'_m)$ en $S'$ son vecinos $C \sim C'$ si se cumple alguna de las siguientes condiciones:
+Establecemos la siguiente notaci\'on: $C = (v_1, ..., v_m)$ ser\'a un camino y $A_c$ el conjunto de aristas que lo conforman. Dos caminos $C = (v_1, ... , v_n)$ y $C' = (v'_1, ... , v'_m)$ en $S'$ son vecinos $C \sim C'$ en su vecindad correspondiente si se cumple su condicion asociada.\\
 
+Definiremos a continuacion varias vecindades:
 \begin{enumerate}
-    \item $C = C'$
-    \item $ \exists v \notin C \mid A_{c'} = A_c - \{(v_i,v_{i+1}),(v_{i+1},v_{i+2})\} + \{(v_i,v),(v,v_{i+2})\}$
-    \item $ \exists v \notin C \mid A_{c'} = A_c - \{(v_i,v_{i+1})\} + \{(v_i,v),(v,v_{i+1})\}$
-    \item $A_{c'} = A_c - \{(v_i,v_{i+1}), (v_{i+1},v_{i+2})\} + \{(v_i,v_{i+2})\}$
-
+    \item $ N_1(C): \exists v \notin C \mid A_{c'} = A_c - \{(v_i,v_{i+1}),(v_{i+1},v_{i+2})\} + \{(v_i,v),(v,v_{i+2})\}$
+    \item $ N_2(C): \exists v \notin C \mid A_{c'} = A_c - \{(v_i,v_{i+1})\} + \{(v_i,v),(v,v_{i+1})\}$
+    \item $ N_3(C):  A_{c'} = A_c - \{(v_i,v_{i+1}), (v_{i+1},v_{i+2})\} + \{(v_i,v_{i+2})\}$
 \end{enumerate}
 
-Y adem\'as, que el camino sea factible, es decir, respete la cota de $w_1$ de $K$.
+\textbf{Nota:} $C = C'$ se consideran caminos vecinos en todas las vecindades. Adem\'as debe valer, que el nuevo camino resultante $C'$ sea factible, es decir, respete la cota de $w_1$ de $K$ luego de ser modificado.
 
 \begin{figure}[H]
 \centering
