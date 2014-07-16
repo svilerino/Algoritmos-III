@@ -1411,7 +1411,67 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 
 //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
-	//---------------------------- Inicializo los vectores y datos ----------------
+
+	int n = this->cantidad_nodos;
+	int k = obtener_limite_w1;
+	nodo_t origen = obtener_nodo_origen();
+    nodo_t destino = obtener_nodo_destino();
+    Camino c = obtener_camino_vacio();
+
+    vector<costo_t> costosw1;
+    vector<costo_t> costosw2;
+    vector<nodo_t> predecesores;
+    vector<costo_t> costoCamino; // contiene el costo w1 del camino recorrido hasta cada nodo
+    //dijkstra
+    this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
+
+    costosw2.resize(n, costo_infinito);
+    costoCamino.resize(n, 0); // CHEQUEAR ESTO
+
+    for(int i= 0; i<predecesores.size();i++)
+    {
+    	predecesores[i] = NULL;
+    }
+
+    costosw2[origen] = 0;
+
+    set<pair<costo_t, nodo_t> > cola;
+
+    cola.insert(make_pair(costosw2[origen], origen));
+
+    nodo_t actual = origen;
+    bool hubo_error = false;
+    while(!cola.empty()){
+       
+       pair<costo_t, nodo_t> actual = *cola.begin();
+
+       lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
+
+       for(auto w : vecinos)
+       {
+       	nodo_t nodoW = w.first;
+       	Arista aristaActualW = w.second;
+
+       if (costoCamino[actual.second] + costosw1[nodoW] + obtener_costo_w1(aristaActualW) <= k)
+       {
+       		cola.insert(make_pair(costosw2[nodoW], nodoW));
+
+       		if (costosw2[nodoW]>costosw2[actual]+obtener_costo_w2(aristaActualW))
+      	 	{
+      	 		costosw2[nodoW] = costosw2[actual]+obtener_costo_w2(aristaActualW);
+      	 		costoCamino[nodoW] = costoCamino[actual]+obtener_costo_w1(aristaActualW);
+      	 		predecesor[nodoW] = actual;
+      	 	} 	
+       }
+
+       }
+
+    }
+    return c;
+}
+
+/*
+//---------------------------- Inicializo los vectores y datos ----------------
     nodo_t nodo_dst = obtener_nodo_destino();
     
     vector<costo_t> costos;
@@ -1525,3 +1585,6 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     this->establecer_se_encontro_solucion(!hubo_error);
     return camino;
 }
+
+
+*/
