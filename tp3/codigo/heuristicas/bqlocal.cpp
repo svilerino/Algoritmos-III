@@ -1,6 +1,8 @@
 #include "grafo.h"
 #include "timing.h"
+#include <fstream>
 #define CANT_ITERS_MEDICION 1//ojo que como modifica la solucion de grafo no tiene sentido repetirlo mas de una vez!
+#define FILE_ITERS_MEJORA "evolucion_iteraciones.txt"
 
 void ejecutar_busqueda_local(Grafo &g);
 
@@ -61,6 +63,7 @@ void ejecutar_busqueda_local(Grafo &g){
         uint64_t cant_iters = 0;
         double promedio_parcial = 0;
         double promedio = 0;
+        vector<costo_t> mejora_en_iteraciones;
         do{
             promedio_parcial = 0;
             MEDIR_TIEMPO_PROMEDIO(
@@ -68,6 +71,8 @@ void ejecutar_busqueda_local(Grafo &g){
                 , CANT_ITERS_MEDICION, &promedio_parcial);
             cant_iters++;
             promedio += promedio_parcial;
+            if(mejora_current_iteration > 0)
+                mejora_en_iteraciones.push_back(mejora_current_iteration);
         }while(mejora_current_iteration > 0);
         promedio = promedio /(double) cant_iters;
 
@@ -89,6 +94,14 @@ void ejecutar_busqueda_local(Grafo &g){
         #endif
         g.establecer_se_encontro_solucion(true);
         cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio;
+        
+        //mejora en iteraciones
+        ofstream evolucion_iteraciones;
+        evolucion_iteraciones.open(FILE_ITERS_MEJORA);
+        for(uint i=1;i<=mejora_en_iteraciones.size();i++){
+            evolucion_iteraciones << i << " " << mejora_en_iteraciones[i-1] << endl;
+        }
+        evolucion_iteraciones.close();
     }
 
     g.serialize(cout, FORMATO_1_N_CLOSED);
