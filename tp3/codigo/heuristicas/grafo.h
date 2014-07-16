@@ -189,7 +189,7 @@ public:
 
 	//Algoritmos
 	//Realiza la busqueda local sobre una solucion inicial factible creada por dijkstra sobre COSTO_W1 entre src y dst
-	bool busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion);
+	int busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion);
 	//Devuelve el camino minimo entre origen y destino(calcula el arbol, pero reconstruye solo el camino de origen a destino)
 	Camino dijkstra(nodo_t origen, nodo_t destino, tipo_costo_t target_a_minimizar);
 	//Aplica dijkstra desde nodo origen y calcula el arbol de caminos minimos por referencia a los vectores por parametro

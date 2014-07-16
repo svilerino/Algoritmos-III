@@ -1111,7 +1111,7 @@ int Grafo::busqueda_local_entre_triplas_salteando(Camino& solucion_actual, list<
 	}
 }
 
-bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
+int Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 	//decido que busquedas se van a correr
 	bool bql_subdiv = false;
 	bool bql_mejorar = false;
@@ -1133,7 +1133,7 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 			break;
 		default:
 			cerr << "busqueda_local: tipo ejecucion invalido!" << endl;
-			return false;	
+			return 0;	
 			break;
 	}
 
@@ -1186,7 +1186,7 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 
 	//si son todas las mejoras 0, no mejoro ninguna nada
 	if( (mejora_en_w2_bql_entre_pares == 0) && (mejora_en_w2_entre_triplas_reemplazando == 0) && (mejora_en_w2_entre_triplas_salteando == 0) ){
-		return false;
+		return 0;
 	}else{
 		//existe al menos uno de los 3 que mejoro, es decir que es > 0
 		if(mejora_en_w2_bql_entre_pares > mejora_en_w2_entre_triplas_reemplazando){
@@ -1201,12 +1201,12 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;		
 						#endif
 						this->establecer_camino_solucion(solucion_actual);
-						return true;
+						return mejora_en_w2_bql_entre_pares;
 					}else{
-						return false;				
+						return 0;				
 					}
 				}else{
-					return false;
+					return 0;
 				}
 			}else{
 				//max = mejora_en_w2_entre_triplas_salteando;
@@ -1220,12 +1220,12 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
 						#endif	
 						this->establecer_camino_solucion(solucion_actual);
-						return true;
+						return mejora_en_w2_entre_triplas_salteando;
 					}else{					
-						return false;
+						return 0;
 					}
 				}else{
-					return false;
+					return 0;
 				}
 			}
 		}else{
@@ -1240,12 +1240,12 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
 						#endif
 						this->establecer_camino_solucion(solucion_actual);
-						return true;
+						return mejora_en_w2_entre_triplas_reemplazando;
 					}else{
-						return false;
+						return 0;
 					}
 				}else{
-					return false;
+					return 0;
 				}
 			}else{
 				//max = mejora_en_w2_entre_triplas_salteando;
@@ -1259,12 +1259,12 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
 						#endif	
 						this->establecer_camino_solucion(solucion_actual);
-						return true;
+						return mejora_en_w2_entre_triplas_salteando;
 					}else{
-						return false;
+						return 0;
 					}
 				}else{
-					return false;
+					return 0;
 				}
 			}
 		}

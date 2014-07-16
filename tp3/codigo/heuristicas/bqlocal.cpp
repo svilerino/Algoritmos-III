@@ -57,18 +57,18 @@ void ejecutar_busqueda_local(Grafo &g){
         tipo_ejecucion_bqlocal_t tipo_ejecucion = BQL_COMBINAR;
 
         //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
-        bool hay_mejora = false;
+        int mejora_current_iteration = 0;
         uint64_t cant_iters = 0;
         double promedio_parcial = 0;
         double promedio = 0;
         do{
             promedio_parcial = 0;
             MEDIR_TIEMPO_PROMEDIO(
-                hay_mejora = g.busqueda_local(tipo_ejecucion);
+                mejora_current_iteration = g.busqueda_local(tipo_ejecucion);
                 , CANT_ITERS_MEDICION, &promedio_parcial);
             cant_iters++;
             promedio += promedio_parcial;
-        }while(hay_mejora);
+        }while(mejora_current_iteration > 0);
         promedio = promedio /(double) cant_iters;
 
         #ifdef DEBUG_MESSAGES_ON
