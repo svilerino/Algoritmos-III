@@ -12,11 +12,11 @@ green='\e[0;32m'
 NC='\e[0m' # No Color
 
 cant_nodos_min=10
-cant_nodos_max=11
+cant_nodos_max=200
 peso_maximo_w1=50
 peso_maximo_w2=50
 
-for (( n=$cant_nodos_min; n<=$cant_nodos_max; n++ ))
+for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=25 ))
 do 
 	#aristas_minimas=$n
 	

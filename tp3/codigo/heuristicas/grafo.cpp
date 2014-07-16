@@ -158,8 +158,11 @@ bool Camino::realizar_salto_entre_3_nodos(nodo_t nodo_target){
 		++runner_it;
 	}
 
-	if(runner_it == final_it){
+	if(runner_it == final_it){		
 		cerr << "Camino::realizar_salto_entre_3_nodos. No se encontro el nodo target pasado por parametro en el camino" << endl;
+		cerr << "Nodo target (" << nodo_target << ")" << endl;
+		cerr << "Camino: ";
+		this->imprimir_camino(cerr);
 		return false;
 	}
 
@@ -879,7 +882,9 @@ int Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(Camino& solucion
 	//Caso en que reemplazo vk+1 por otro vecino comun vj, convirtiendo vk---->vk+1---->vk+2 en vk---->vj---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino	
 	//cout << "-------------------------------Comienza iteracion de busqueda local reemplazando intermedio--------------------------------" << endl;
 	if(solucion_actual.obtener_longuitud_camino()<3){
-		cerr << "Camino de menos de 3 nodos. No se puede mejorar nada." << endl;
+		#ifdef DEBUG_MESSAGES_ON
+			cerr << "Camino de menos de 3 nodos. No se puede mejorar nada." << endl;
+		#endif		
 		return false;
 	}
 
@@ -998,7 +1003,9 @@ int Grafo::busqueda_local_entre_triplas_salteando(Camino& solucion_actual, list<
 	//Caso en los que salteo un nodo vk---->vk+1---->vk+2 convirtiendolo en vk---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino	
 	//cout << "-------------------------------Comienza iteracion de busqueda local salteando--------------------------------" << endl;
 	if(solucion_actual.obtener_longuitud_camino()<3){
-		cerr << "Camino de menos de 3 nodos. No se puede mejorar nada." << endl;
+		#ifdef DEBUG_MESSAGES_ON
+			cerr << "Camino de menos de 3 nodos. No se puede mejorar nada." << endl;
+		#endif
 		return false;
 	}
 
@@ -1186,30 +1193,38 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 			//vale mejora_en_w2_bql_entre_pares > mejora_en_w2_entre_triplas_reemplazando
 			if(mejora_en_w2_bql_entre_pares > mejora_en_w2_entre_triplas_salteando){
 				//max = mejora_en_w2_bql_entre_pares;
-				if(solucion_actual.insertar_nodo(conexion_ij_minima_w2_entre_pares)){
-					#ifdef DEBUG_MESSAGES_ON
-						cout << endl << "Nueva solucion obtenida: ";
-				        solucion_actual.imprimir_camino(cout);
-						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;		
-					#endif
-					this->establecer_camino_solucion(solucion_actual);
-					return true;
+				if(mejora_en_w2_bql_entre_pares > 0){
+					if(solucion_actual.insertar_nodo(conexion_ij_minima_w2_entre_pares)){
+						#ifdef DEBUG_MESSAGES_ON
+							cout << endl << "Nueva solucion obtenida: ";
+					        solucion_actual.imprimir_camino(cout);
+							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;		
+						#endif
+						this->establecer_camino_solucion(solucion_actual);
+						return true;
+					}else{
+						return false;				
+					}
 				}else{
-					return false;				
+					return false;
 				}
 			}else{
 				//max = mejora_en_w2_entre_triplas_salteando;
-				nodo_t nodo_i = *punto_de_salto_it;
-				if(solucion_actual.realizar_salto_entre_3_nodos(nodo_i)){
-					//No puede haber ciclos, porque el camino quedo igual o con menos nodos
-					#ifdef DEBUG_MESSAGES_ON
-				        cout << endl << "Nueva solucion obtenida: ";
-				        solucion_actual.imprimir_camino(cout);
-						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
-					#endif	
-					this->establecer_camino_solucion(solucion_actual);
-					return true;
-				}else{					
+				if(mejora_en_w2_entre_triplas_salteando > 0){
+					nodo_t nodo_i = *punto_de_salto_it;
+					if(solucion_actual.realizar_salto_entre_3_nodos(nodo_i)){
+						//No puede haber ciclos, porque el camino quedo igual o con menos nodos
+						#ifdef DEBUG_MESSAGES_ON
+					        cout << endl << "Nueva solucion obtenida: ";
+					        solucion_actual.imprimir_camino(cout);
+							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
+						#endif	
+						this->establecer_camino_solucion(solucion_actual);
+						return true;
+					}else{					
+						return false;
+					}
+				}else{
 					return false;
 				}
 			}
@@ -1217,29 +1232,37 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 			//vale mejora_en_w2_bql_entre_pares <= mejora_en_w2_entre_triplas_reemplazando
 			if(mejora_en_w2_entre_triplas_reemplazando > mejora_en_w2_entre_triplas_salteando){
 				//max = mejora_en_w2_entre_triplas_reemplazando;
-				if(solucion_actual.mejorar_tripla(conexion_ij_minima_w2_entre_triplas)){
-					#ifdef DEBUG_MESSAGES_ON
-					    cout << endl << "Nueva solucion obtenida: ";
-					    solucion_actual.imprimir_camino(cout);
-						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
-					#endif
-					this->establecer_camino_solucion(solucion_actual);
-					return true;
+				if(mejora_en_w2_entre_triplas_reemplazando > 0){
+					if(solucion_actual.mejorar_tripla(conexion_ij_minima_w2_entre_triplas)){
+						#ifdef DEBUG_MESSAGES_ON
+						    cout << endl << "Nueva solucion obtenida: ";
+						    solucion_actual.imprimir_camino(cout);
+							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
+						#endif
+						this->establecer_camino_solucion(solucion_actual);
+						return true;
+					}else{
+						return false;
+					}
 				}else{
 					return false;
 				}
 			}else{
 				//max = mejora_en_w2_entre_triplas_salteando;
-				nodo_t nodo_i = *punto_de_salto_it;
-				if(solucion_actual.realizar_salto_entre_3_nodos(nodo_i)){
-					//No puede haber ciclos, porque el camino quedo igual o con menos nodos
-					#ifdef DEBUG_MESSAGES_ON
-				        cout << endl << "Nueva solucion obtenida: ";
-				        solucion_actual.imprimir_camino(cout);
-						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
-					#endif	
-					this->establecer_camino_solucion(solucion_actual);
-					return true;
+				if(mejora_en_w2_entre_triplas_salteando > 0){
+					nodo_t nodo_i = *punto_de_salto_it;
+					if(solucion_actual.realizar_salto_entre_3_nodos(nodo_i)){
+						//No puede haber ciclos, porque el camino quedo igual o con menos nodos
+						#ifdef DEBUG_MESSAGES_ON
+					        cout << endl << "Nueva solucion obtenida: ";
+					        solucion_actual.imprimir_camino(cout);
+							cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
+						#endif	
+						this->establecer_camino_solucion(solucion_actual);
+						return true;
+					}else{
+						return false;
+					}
 				}else{
 					return false;
 				}

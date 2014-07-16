@@ -16,7 +16,7 @@ if ls test-cases/*.in &> /dev/null; then
 	pushd test-cases
 	for file in *.in; do
 		#for heuristica in "bqlocal" "golosa" "grasp"; do
-		for heuristica in "grasp"; do
+		for heuristica in "bqlocal"; do
 		echo -n "Corriendo $heuristica con archivo de input $file..."
 		"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
 
