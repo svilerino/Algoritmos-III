@@ -17,31 +17,26 @@ if ls test-cases/*.in &> /dev/null; then
 	for file in *.in; do
 		#for heuristica in "bqlocal" "golosa" "grasp"; do
 		for heuristica in "bqlocal"; do
-		echo -n "Corriendo $heuristica con archivo de input $file..."
-		"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
+			echo -n "Corriendo $heuristica con archivo de input $file..."
+			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
 
-	    DIFF=$(diff "../$TESTS_OUTPUT/$heuristica/$file.out" "../no.txt") 
-		if [ "$DIFF" == "" ]
-		then			
-			echo -e "${red}No existia solucion! Descripcion de la salida:"
-			cat "../$TIMING_OUTPUT/$heuristica/$file.out"
-			echo -e -n "${NC}"
-		else    		    
-			cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
-			cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
-		    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
-		    #echo "$cantAristas " >> mediciones.txt
-	    	echo -e "${green}Ok! in $timeElapsed micro-seconds ${NC}"
-		fi
+		    DIFF=$(diff "../$TESTS_OUTPUT/$heuristica/$file.out" "../no.txt") 
+			if [ "$DIFF" == "" ]
+			then			
+				echo -e "${red}No existia solucion! Descripcion de la salida:"
+				cat "../$TIMING_OUTPUT/$heuristica/$file.out"
+				echo -e -n "${NC}"
+			else    		    
+				cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
+				cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
+			    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
+			    echo "$cantNodos $cantAristas $timeElapsed " >> ../"$heuristica".tmpplot
+		    	echo -e "${green}Ok! in $timeElapsed micro-seconds ${NC}"
+			fi
 		done
 	done
-#	#concateno los resultados
-#	cat "$TIMING_OUTPUT"/*.out > tmp_plot.out
-#	#ordeno plot por la primer columna de numeros 
-#	sort tmp_plot.out -k1,1 --numeric-sort > plot.out
-#	rm -f tmp_plot.out
-#	rm -f "$TESTS_OUTPUT"/result_.out
 	popd
+	./plot.sh
 else
     echo "[WARN] NO existen archivos de testing"
 fi

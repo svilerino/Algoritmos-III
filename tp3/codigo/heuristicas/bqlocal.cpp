@@ -62,6 +62,7 @@ void ejecutar_busqueda_local(Grafo &g){
         double promedio_parcial = 0;
         double promedio = 0;
         do{
+            promedio_parcial = 0;
             MEDIR_TIEMPO_PROMEDIO(
                 hay_mejora = g.busqueda_local(tipo_ejecucion);
                 , CANT_ITERS_MEDICION, &promedio_parcial);
