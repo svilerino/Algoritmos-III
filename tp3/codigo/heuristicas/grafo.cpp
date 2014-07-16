@@ -1053,19 +1053,23 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 
 	//Si hubo mejoras, tengo guardada la mejor
 	if(hay_mejoras_para_el_camino){
-		//cout << "Se encontro mejora. La mejor mejora encontrada entre todos los pares de nodos fue:" << endl;
+		#ifdef DEBUG_MESSAGES_ON
+			cout << "Se encontro mejora. La mejor mejora encontrada entre todos los pares de nodos fue:" << endl;
+		#endif
 		//Realizar el salto directo entre 2 nodos dada la arista obtenida
 		list<nodo_t>::const_iterator nodo_j_it = punto_de_salto_it;
 		nodo_j_it++;nodo_j_it++;
 
 		nodo_t nodo_i = *punto_de_salto_it;
-		//nodo_t nodo_j = *nodo_j_it;
+		nodo_t nodo_j = *nodo_j_it;
 
-		//costo_t costo_ij_directo_w1 = conexion_ij_minima_w2.obtener_costo_w1();
-		//costo_t costo_ij_directo_w2 = conexion_ij_minima_w2.obtener_costo_w2();
-		//cout << "\tSe encontro una arista directa entre (" << nodo_i << ") y (" << nodo_j << ") y es " << endl;
-        //cout << "\tCamino (" << nodo_i << ")----[" << costo_ij_directo_w1 << ", " << costo_ij_directo_w2 <<  "]---->(" << nodo_j << ")";
-        //cout <<	" Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_ij_directo_w1 << "     W2: " << costo_ij_directo_w2 << endl;
+		costo_t costo_ij_directo_w1 = conexion_ij_minima_w2.obtener_costo_w1();
+		costo_t costo_ij_directo_w2 = conexion_ij_minima_w2.obtener_costo_w2();
+		#ifdef DEBUG_MESSAGES_ON
+			cout << "\tSe encontro una arista directa entre (" << nodo_i << ") y (" << nodo_j << ") y es " << endl;
+	        cout << "\tCamino (" << nodo_i << ")----[" << costo_ij_directo_w1 << ", " << costo_ij_directo_w2 <<  "]---->(" << nodo_j << ")";
+	        cout <<	" Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_ij_directo_w1 << "     W2: " << costo_ij_directo_w2 << endl;
+       	#endif
 
 		if(!this->camino_obtenido.realizar_salto_entre_3_nodos(nodo_i)){
 			return false;
