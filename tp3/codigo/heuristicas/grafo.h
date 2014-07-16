@@ -21,7 +21,7 @@ typedef double distancia_t;
 typedef double costo_t;
 typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
 typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
-typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
+typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS, BQL_COMBINAR} tipo_ejecucion_bqlocal_t;
 typedef enum criterio_terminacion_grasp_t {CRT_K_ITERS_SIN_MEJORA, CRT_K_ITERS_LIMIT_REACHED, CRT_SOLUTION_GOOD_ENOUGH} criterio_terminacion_grasp_t;
 typedef enum formato_entrada_t {FORMATO_0_N_OPEN, FORMATO_1_N_CLOSED} formato_entrada_t;
 typedef formato_entrada_t formato_salida_t;
@@ -148,9 +148,9 @@ private:
 	vector<pair<nodo_t, Arista> > obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta, vector<costo_t>& costos,
 	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion);
 
-	bool busqueda_local_entre_pares_insertando();
-	bool busqueda_local_entre_triplas_salteando();
-	bool busqueda_local_entre_triplas_reemplazando_intermedio();
+	int busqueda_local_entre_pares_insertando(Camino& solucion_actual, Vecino& conexion_ij_minima_w2);
+	int busqueda_local_entre_triplas_reemplazando_intermedio(Camino& solucion_actual, Vecino& conexion_ij_minima_w2);
+	int busqueda_local_entre_triplas_salteando(Camino& solucion_actual, list<nodo_t>::const_iterator& punto_de_salto_it);
 public:
 	//constructor y destructor
 	Grafo(int cant_inicial_nodos);

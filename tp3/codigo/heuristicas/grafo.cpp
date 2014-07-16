@@ -319,7 +319,6 @@ Vecino::Vecino(){
 }
 
 Vecino::~Vecino(){
-
 }
 
 nodo_t Vecino::obtener_nodo_i(){
@@ -711,10 +710,12 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 					mejor_camino_ij_w2 = hipotetico_w2_total_camino;
 					mejor_vecino_it = vecinos_it;
 				}				
-			}//else{
+			}else{
 				//taboo list skipped!
-				//cout << "Salteamos el nodo (" << nodo_comun << ") como candidato a mejorar la solucion actual porque al pertenecer al camino generaria un ciclo" << endl;
-			//}
+				#ifdef DEBUG_MESSAGES_ON				
+					cout << "Salteamos el nodo (" << nodo_comun << ") como candidato a mejorar la solucion actual porque al pertenecer al camino generaria un ciclo" << endl;
+				#endif
+			}
 		}
 		++vecinos_it;
 	}
@@ -732,33 +733,33 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 //La longuitud de un camino simple puede acotarse por la cantidad de nodos n, luego hay n-1 pares de nodos en el camino
 //Para cada par, es lineal la obtencion de los vecinos en comun, y al ser el camino una lista enlazada, la modificacion tiene costo
 //constante O(1), en total esto nos da un costo cuadratico O(n**2)
-bool Grafo::busqueda_local_entre_pares_insertando(){
+int Grafo::busqueda_local_entre_pares_insertando(Camino& solucion_actual, Vecino& conexion_ij_minima_w2){
 	//cout << "-------------------------------Comienza iteracion de busqueda local insertando entre pares--------------------------------" << endl;
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
-	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it = solucion_actual.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator runner_it = solucion_actual.obtener_iterador_const_begin();
 	runner_it++;
-	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_const_end();
-	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
-	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
+	list<nodo_t>::const_iterator final_camino = solucion_actual.obtener_iterador_const_end();
+	costo_t total_w1 = solucion_actual.obtener_costo_total_w1_camino();
+	costo_t total_w2 = solucion_actual.obtener_costo_total_w2_camino();
+
+	costo_t total_inicial_w2 = total_w2;
 
 	//variables para guardar la mejor solucion de la vecindad
-	costo_t mejor_costo_w1 = costo_infinito;
-	costo_t mejor_costo_w2 = costo_infinito;
-	Vecino conexion_ij_minima_w2;
+	costo_t mejor_costo_w2 = costo_infinito;	
 	list<nodo_t>::const_iterator punto_de_insercion_mejora_it = final_camino;
 	bool hay_mejoras_para_el_camino = false;
 
 	//busco la mejor solucion en la vecindad
 	#ifdef DEBUG_MESSAGES_ON
 		cout << "Solucion actual: ";
-		this->camino_obtenido.imprimir_camino(cout);
+		solucion_actual.imprimir_camino(cout);
 	    cout << "Costo total del camino actual:   W1: " << total_w1 << "    W2: " << total_w2 << endl;
 	#endif
 	while(runner_it != final_camino){
         nodo_t nodo_i = *it;
         nodo_t nodo_j = *runner_it;
-        costo_t costo_ij_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_i, nodo_j);
-    	costo_t costo_ij_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_i, nodo_j);
+        costo_t costo_ij_w1 = solucion_actual.obtener_costo_w1_entre_nodos(nodo_i, nodo_j);
+    	costo_t costo_ij_w2 = solucion_actual.obtener_costo_w2_entre_nodos(nodo_i, nodo_j);
 
     	Vecino mejor_conexion_ij;
     	//le paso una ref a una var tipo vecino, si devuelve true, se escribe por referencia el mejor camino, sino, no cambia lo que le pasamos.
@@ -785,7 +786,6 @@ bool Grafo::busqueda_local_entre_pares_insertando(){
 			costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
 
 			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino < this->obtener_limite_w1())){
-				mejor_costo_w1 = hipotetico_w1_total_camino;
 				mejor_costo_w2 = hipotetico_w2_total_camino;
 				conexion_ij_minima_w2 = mejor_conexion_ij;
 				punto_de_insercion_mejora_it = it;
@@ -820,57 +820,48 @@ bool Grafo::busqueda_local_entre_pares_insertando(){
         costo_t costo_i_comun_j_w2 = i_comun_w2 + j_comun_w2;		
         #ifdef DEBUG_MESSAGES_ON
 	        cout << "Se agregara un nodo intermedio en: (" << nodo_i << ")----[" << i_comun_w1 << ", " << i_comun_w2 <<  "]---->(" << nodo_comun << ")----[" << j_comun_w1 << ", " << j_comun_w2 << "]---->(" << nodo_j << ")" << endl;
-	        cout <<	"Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_i_comun_j_w1 << "     W2: " << costo_i_comun_j_w2 << endl;
-	    #endif
-		
-		if(!this->camino_obtenido.insertar_nodo(conexion_ij_minima_w2)){
-			return false;
-		}
-
-		#ifdef DEBUG_MESSAGES_ON
-	        cout << endl << "Nueva solucion obtenida: ";
-	        this->camino_obtenido.imprimir_camino(cout);
-			cout << "Nuevos costos totales del camino:   W1: " << mejor_costo_w1 << "    W2: "  << mejor_costo_w2 << endl;		
+	        cout <<	"Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_i_comun_j_w1 << "     W2: " << costo_i_comun_j_w2 << endl;	    	       	       
 		#endif
+		return (total_inicial_w2 - mejor_costo_w2);//mejora respecto a w2 en el camino del inicial al actual
 	}else{
 		#ifdef DEBUG_MESSAGES_ON
 			cout << "No se pudo mejorar la solucion." << endl;
 		#endif
+		return 0;//mejoro en 0 el camino respecto a w2
 	}
-	return hay_mejoras_para_el_camino;
 }
 
-bool Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
+int Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(Camino& solucion_actual, Vecino& conexion_ij_minima_w2){
 	//Caso en que reemplazo vk+1 por otro vecino comun vj, convirtiendo vk---->vk+1---->vk+2 en vk---->vj---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino	
 	//cout << "-------------------------------Comienza iteracion de busqueda local reemplazando intermedio--------------------------------" << endl;
-	if(this->camino_obtenido.obtener_longuitud_camino()<3){
+	if(solucion_actual.obtener_longuitud_camino()<3){
 		cerr << "Camino de menos de 3 nodos. No se puede mejorar nada." << endl;
 		return false;
 	}
 
 	//aca vale size(camino)>=3
 
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
-	list<nodo_t>::const_iterator it_sig = this->camino_obtenido.obtener_iterador_const_begin();
-	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it = solucion_actual.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it_sig = solucion_actual.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator runner_it = solucion_actual.obtener_iterador_const_begin();
 	it_sig++;
 	runner_it++;runner_it++;
 
-	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_const_end();
-	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
-	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
+	list<nodo_t>::const_iterator final_camino = solucion_actual.obtener_iterador_const_end();
+	costo_t total_w1 = solucion_actual.obtener_costo_total_w1_camino();
+	costo_t total_w2 = solucion_actual.obtener_costo_total_w2_camino();
+
+	costo_t total_inicial_w2 = total_w2;
 
 	//variables para guardar la mejor solucion de la vecindad
-	costo_t mejor_costo_w1 = costo_infinito;
 	costo_t mejor_costo_w2 = costo_infinito;
-	Vecino conexion_ij_minima_w2;
 	list<nodo_t>::const_iterator punto_de_insercion_mejora_it = final_camino;
 	bool hay_mejoras_para_el_camino = false;
 
 	//busco la mejor solucion en la vecindad
 	#ifdef DEBUG_MESSAGES_ON
 		cout << "Solucion actual: ";
-		this->camino_obtenido.imprimir_camino(cout);
+		solucion_actual.imprimir_camino(cout);
 	    cout << "Costo total del camino actual:   W1: " << total_w1 << "    W2: " << total_w2 << endl;
 	#endif
 	while(runner_it != final_camino){
@@ -878,10 +869,10 @@ bool Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
         nodo_t nodo_medio = *it_sig;
         nodo_t nodo_j = *runner_it;
 
-        costo_t costo_i_medio_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_i, nodo_medio);
-    	costo_t costo_i_medio_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_i, nodo_medio);
-        costo_t costo_medio_j_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_medio, nodo_j);
-    	costo_t costo_medio_j_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_medio, nodo_j);
+        costo_t costo_i_medio_w1 = solucion_actual.obtener_costo_w1_entre_nodos(nodo_i, nodo_medio);
+    	costo_t costo_i_medio_w2 = solucion_actual.obtener_costo_w2_entre_nodos(nodo_i, nodo_medio);
+        costo_t costo_medio_j_w1 = solucion_actual.obtener_costo_w1_entre_nodos(nodo_medio, nodo_j);
+    	costo_t costo_medio_j_w2 = solucion_actual.obtener_costo_w2_entre_nodos(nodo_medio, nodo_j);
 
 
     	//cout << "Intentando mejorar el nodo intermedio entre (" << nodo_i << ")----[" << costo_i_medio_w1 << ", " << costo_i_medio_w2;
@@ -911,7 +902,6 @@ bool Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
 			costo_t hipotetico_w2_total_camino = (total_w2 - (costo_i_medio_w2 + costo_medio_j_w2) + costo_i_comun_j_w2);
 
 			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino < this->obtener_limite_w1())){
-				mejor_costo_w1 = hipotetico_w1_total_camino;
 				mejor_costo_w2 = hipotetico_w2_total_camino;
 				conexion_ij_minima_w2 = mejor_conexion_ij;
 				punto_de_insercion_mejora_it = it;
@@ -951,55 +941,47 @@ bool Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(){
 	        cout << "Se reemplazo el nodo intermedio en: (" << nodo_i << ")----[" << i_comun_w1 << ", " << i_comun_w2 <<  "]---->(" << nodo_comun << ")----[" << j_comun_w1 << ", " << j_comun_w2 << "]---->(" << nodo_j << ")" << endl;
 	        cout <<	"Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_i_comun_j_w1 << "     W2: " << costo_i_comun_j_w2 << endl;
 	    #endif
-
-		if(!this->camino_obtenido.mejorar_tripla(conexion_ij_minima_w2)){
-			return false;
-		}
-
-		#ifdef DEBUG_MESSAGES_ON
-	        cout << endl << "Nueva solucion obtenida: ";
-	        this->camino_obtenido.imprimir_camino(cout);
-			cout << "Nuevos costos totales del camino:   W1: " << mejor_costo_w1 << "    W2: "  << mejor_costo_w2 << endl;
-		#endif
+	    return (total_inicial_w2 - mejor_costo_w2);
 	}else{
 		#ifdef DEBUG_MESSAGES_ON
 			cout << "No se pudo mejorar la solucion." << endl;
 		#endif
+		return 0;
 	}
-	return hay_mejoras_para_el_camino;
 }
 
-bool Grafo::busqueda_local_entre_triplas_salteando(){
+int Grafo::busqueda_local_entre_triplas_salteando(Camino& solucion_actual, list<nodo_t>::const_iterator& punto_de_salto_it){
 	//Caso en los que salteo un nodo vk---->vk+1---->vk+2 convirtiendolo en vk---->vk+2 tal que mejora w2 y w1 no se pasa en el costo total del camino	
 	//cout << "-------------------------------Comienza iteracion de busqueda local salteando--------------------------------" << endl;
-	if(this->camino_obtenido.obtener_longuitud_camino()<3){
+	if(solucion_actual.obtener_longuitud_camino()<3){
 		cerr << "Camino de menos de 3 nodos. No se puede mejorar nada." << endl;
 		return false;
 	}
 
 	//aca vale size(camino)>=3
 
-	list<nodo_t>::const_iterator it = this->camino_obtenido.obtener_iterador_const_begin();
-	list<nodo_t>::const_iterator it_sig = this->camino_obtenido.obtener_iterador_const_begin();
-	list<nodo_t>::const_iterator runner_it = this->camino_obtenido.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it = solucion_actual.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator it_sig = solucion_actual.obtener_iterador_const_begin();
+	list<nodo_t>::const_iterator runner_it = solucion_actual.obtener_iterador_const_begin();
 	it_sig++;
 	runner_it++;runner_it++;
 
-	list<nodo_t>::const_iterator final_camino = this->camino_obtenido.obtener_iterador_const_end();
-	costo_t total_w1 = this->camino_obtenido.obtener_costo_total_w1_camino();
-	costo_t total_w2 = this->camino_obtenido.obtener_costo_total_w2_camino();
+	list<nodo_t>::const_iterator final_camino = solucion_actual.obtener_iterador_const_end();
+	costo_t total_w1 = solucion_actual.obtener_costo_total_w1_camino();
+	costo_t total_w2 = solucion_actual.obtener_costo_total_w2_camino();
+
+	costo_t total_inicial_w2 = total_w2;
 
 	//variables para guardar la mejor solucion de la vecindad
-	costo_t mejor_costo_w1 = costo_infinito;
 	costo_t mejor_costo_w2 = costo_infinito;
 	Arista conexion_ij_minima_w2;
-	list<nodo_t>::const_iterator punto_de_salto_it = final_camino;
+	punto_de_salto_it = final_camino;
 	bool hay_mejoras_para_el_camino = false;
 
 	//busco la mejor solucion en la vecindad
 	#ifdef DEBUG_MESSAGES_ON
 		cout << "Solucion actual: ";
-		this->camino_obtenido.imprimir_camino(cout);
+		solucion_actual.imprimir_camino(cout);
 	    cout << "Costo total del camino actual:   W1: " << total_w1 << "    W2: " << total_w2 << endl;
 	#endif
 	while(runner_it != final_camino){
@@ -1007,10 +989,10 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
         nodo_t nodo_medio = *it_sig;
         nodo_t nodo_j = *runner_it;
 
-        costo_t costo_i_medio_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_i, nodo_medio);
-    	costo_t costo_i_medio_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_i, nodo_medio);
-        costo_t costo_medio_j_w1 = this->camino_obtenido.obtener_costo_w1_entre_nodos(nodo_medio, nodo_j);
-    	costo_t costo_medio_j_w2 = this->camino_obtenido.obtener_costo_w2_entre_nodos(nodo_medio, nodo_j);
+        costo_t costo_i_medio_w1 = solucion_actual.obtener_costo_w1_entre_nodos(nodo_i, nodo_medio);
+    	costo_t costo_i_medio_w2 = solucion_actual.obtener_costo_w2_entre_nodos(nodo_i, nodo_medio);
+        costo_t costo_medio_j_w1 = solucion_actual.obtener_costo_w1_entre_nodos(nodo_medio, nodo_j);
+    	costo_t costo_medio_j_w2 = solucion_actual.obtener_costo_w2_entre_nodos(nodo_medio, nodo_j);
 
 
     	//cout << "Intentando remover el nodo intermedio entre (" << nodo_i << ")----[" << costo_i_medio_w1 << ", " << costo_i_medio_w2;
@@ -1035,7 +1017,6 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 			costo_t hipotetico_w2_total_camino = (total_w2 - (costo_i_medio_w2 + costo_medio_j_w2) + costo_ij_directo_w2);
 
 			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino < this->obtener_limite_w1())){
-				mejor_costo_w1 = hipotetico_w1_total_camino;
 				mejor_costo_w2 = hipotetico_w2_total_camino;
 				hay_mejoras_para_el_camino = true;				
 				conexion_ij_minima_w2 = mejor_conexion_ij;
@@ -1070,38 +1051,133 @@ bool Grafo::busqueda_local_entre_triplas_salteando(){
 	        cout << "\tCamino (" << nodo_i << ")----[" << costo_ij_directo_w1 << ", " << costo_ij_directo_w2 <<  "]---->(" << nodo_j << ")";
 	        cout <<	" Nuevo costo del sendero entre (" << nodo_i << ") y (" << nodo_j << ") aplicando a esta modificacion:    W1: " << costo_ij_directo_w1 << "     W2: " << costo_ij_directo_w2 << endl;
        	#endif
-
-		if(!this->camino_obtenido.realizar_salto_entre_3_nodos(nodo_i)){
-			return false;
-		}
-
-		//No puede haber ciclos, porque el camino quedo igual o con menos nodos
-
-		#ifdef DEBUG_MESSAGES_ON
-	        cout << endl << "Nueva solucion obtenida: ";
-	        this->camino_obtenido.imprimir_camino(cout);
-			cout << "Nuevos costos totales del camino:   W1: " << mejor_costo_w1 << "    W2: "  << mejor_costo_w2 << endl;
-		#endif
+	    return (total_inicial_w2 - mejor_costo_w2);
 	}else{
 		#ifdef DEBUG_MESSAGES_ON
 			cout << "No se pudo mejorar la solucion." << endl;
 		#endif
+		return 0;
 	}
-	return hay_mejoras_para_el_camino;
 }
 
 bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
-	//typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
+	//decido que busquedas se van a correr
+	bool bql_subdiv = false;
+	bool bql_mejorar = false;
+	bool bql_contraer = false;
 	switch(tipo_ejecucion){
 		case BQL_SUBDIVIDIR_PARES:
-			return busqueda_local_entre_pares_insertando();
+			bql_subdiv = true;
+			break;
 		case BQL_CONTRAER_TRIPLAS_A_PARES:		
-			return busqueda_local_entre_triplas_salteando();
+			bql_contraer = true;
+			break;
 		case BQL_MEJORAR_CONEXION_TRIPLAS:		
-			return busqueda_local_entre_triplas_reemplazando_intermedio();
+			bql_mejorar = true;
+			break;
+		case BQL_COMBINAR:
+			bql_subdiv = true;
+			bql_contraer = true;
+			bql_mejorar = true;
+			break;
+		default:
+			cerr << "busqueda_local: tipo ejecucion invalido!" << endl;
+			return false;	
+			break;
 	}
-	cerr << "busqueda_local: tipo ejecucion invalido!" << endl;
-	return false;	
+
+	//establezco solucion actual y corro los algoritmos seleccionados previamente
+	Camino solucion_actual = this->camino_obtenido;
+	costo_t mejora_en_w2_bql_entre_pares = 0;
+	Vecino conexion_ij_minima_w2_entre_pares;
+
+	costo_t mejora_en_w2_entre_triplas_reemplazando = 0;
+	Vecino conexion_ij_minima_w2_entre_triplas;
+	
+	costo_t mejora_en_w2_entre_triplas_salteando = 0;
+	list<nodo_t>::const_iterator punto_de_salto_it = solucion_actual.obtener_iterador_const_end();
+
+	if(bql_subdiv){
+		mejora_en_w2_bql_entre_pares = busqueda_local_entre_pares_insertando(solucion_actual, conexion_ij_minima_w2_entre_pares);
+	}
+
+	if(bql_mejorar){
+		mejora_en_w2_entre_triplas_reemplazando = busqueda_local_entre_triplas_reemplazando_intermedio(solucion_actual, conexion_ij_minima_w2_entre_triplas);		
+	}
+
+	if(bql_contraer){
+		mejora_en_w2_entre_triplas_salteando = busqueda_local_entre_triplas_salteando(solucion_actual, punto_de_salto_it);		
+	}
+
+	//si son todas las mejoras 0, no mejoro ninguna nada
+	if( (mejora_en_w2_bql_entre_pares == 0) && (mejora_en_w2_entre_triplas_reemplazando == 0) && (mejora_en_w2_entre_triplas_salteando == 0) ){
+		return false;
+	}else{
+		//existe al menos uno de los 3 que mejoro, es decir que es > 0
+		if(mejora_en_w2_bql_entre_pares > mejora_en_w2_entre_triplas_reemplazando){
+			//vale mejora_en_w2_bql_entre_pares > mejora_en_w2_entre_triplas_reemplazando
+			if(mejora_en_w2_bql_entre_pares > mejora_en_w2_entre_triplas_salteando){
+				//max = mejora_en_w2_bql_entre_pares;
+				if(solucion_actual.insertar_nodo(conexion_ij_minima_w2_entre_pares)){
+					#ifdef DEBUG_MESSAGES_ON
+						cout << endl << "Nueva solucion obtenida: ";
+				        solucion_actual.imprimir_camino(cout);
+						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;		
+					#endif
+					this->establecer_camino_solucion(solucion_actual);
+					return true;
+				}else{
+					return false;				
+				}
+			}else{
+				//max = mejora_en_w2_entre_triplas_salteando;
+				nodo_t nodo_i = *punto_de_salto_it;
+				if(solucion_actual.realizar_salto_entre_3_nodos(nodo_i)){
+					//No puede haber ciclos, porque el camino quedo igual o con menos nodos
+					#ifdef DEBUG_MESSAGES_ON
+				        cout << endl << "Nueva solucion obtenida: ";
+				        solucion_actual.imprimir_camino(cout);
+						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
+					#endif	
+					this->establecer_camino_solucion(solucion_actual);
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			//vale mejora_en_w2_bql_entre_pares <= mejora_en_w2_entre_triplas_reemplazando
+			if(mejora_en_w2_entre_triplas_reemplazando > mejora_en_w2_entre_triplas_salteando){
+				//max = mejora_en_w2_entre_triplas_reemplazando;
+				if(solucion_actual.mejorar_tripla(conexion_ij_minima_w2_entre_triplas)){
+					#ifdef DEBUG_MESSAGES_ON
+					    cout << endl << "Nueva solucion obtenida: ";
+					    solucion_actual.imprimir_camino(cout);
+						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
+					#endif
+					this->establecer_camino_solucion(solucion_actual);
+					return true;
+				}else{
+					return false;
+				}
+			}else{
+				//max = mejora_en_w2_entre_triplas_salteando;
+				nodo_t nodo_i = *punto_de_salto_it;
+				if(solucion_actual.realizar_salto_entre_3_nodos(nodo_i)){
+					//No puede haber ciclos, porque el camino quedo igual o con menos nodos
+					#ifdef DEBUG_MESSAGES_ON
+				        cout << endl << "Nueva solucion obtenida: ";
+				        solucion_actual.imprimir_camino(cout);
+						cout << "Nuevos costos totales del camino:   W1: " << solucion_actual.obtener_costo_total_w1_camino() << "    W2: "  << solucion_actual.obtener_costo_total_w2_camino() << endl;						
+					#endif	
+					this->establecer_camino_solucion(solucion_actual);
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}
+	}
 }
 
 list<Grafo> Grafo::parsear_varias_instancias(formato_entrada_t formato){
@@ -1118,6 +1194,14 @@ list<Grafo> Grafo::parsear_varias_instancias(formato_entrada_t formato){
     return instancias;
 }
 
+void Grafo::establecer_se_encontro_solucion(bool se_encontro){
+	this->sol_valida = se_encontro;
+}
+
+bool Grafo::hay_solucion(){
+	return this->sol_valida;
+}
+
 bool compare_w1(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
 {
     return (i.second).obtener_costo_w1() < (j.second).obtener_costo_w1();
@@ -1126,14 +1210,6 @@ bool compare_w1(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
 bool compare_w2(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
 {
     return (i.second).obtener_costo_w2() < (j.second).obtener_costo_w2();
-}
-
-void Grafo::establecer_se_encontro_solucion(bool se_encontro){
-	this->sol_valida = se_encontro;
-}
-
-bool Grafo::hay_solucion(){
-	return this->sol_valida;
 }
 
 //parametro beta en RCL_POR_VALOR indica el porcentaje a alejarse del mejor candidato

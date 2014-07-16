@@ -9,7 +9,9 @@ int main(int argc, char **argv){
     list<Grafo> instancias = Grafo::parsear_varias_instancias(FORMATO_1_N_CLOSED);
     uint64_t instance_number = 1;
     for(Grafo &g : instancias){
-        //cout << endl << endl << "Aplicando busqueda local a la " << instance_number << "-esima instancia de input..." << endl;
+        #ifdef DEBUG_MESSAGES_ON
+            cout << endl << endl << "Aplicando busqueda local a la " << instance_number << "-esima instancia de input..." << endl;
+        #endif
         ejecutar_busqueda_local(g);
         instance_number++;
     }
@@ -50,9 +52,9 @@ void ejecutar_busqueda_local(Grafo &g){
         #endif
 
         //--------------------------------- Comienzo la busqueda local -------------------   
-        //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS} tipo_ejecucion_bqlocal_t;
+        //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS, BQL_COMBINAR} tipo_ejecucion_bqlocal_t;
         
-        tipo_ejecucion_bqlocal_t tipo_ejecucion = BQL_CONTRAER_TRIPLAS_A_PARES;
+        tipo_ejecucion_bqlocal_t tipo_ejecucion = BQL_COMBINAR;
 
         //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
         bool hay_mejora = false;
@@ -71,21 +73,22 @@ void ejecutar_busqueda_local(Grafo &g){
         #ifdef DEBUG_MESSAGES_ON
             switch(tipo_ejecucion){
                 case BQL_SUBDIVIDIR_PARES:
-                    cout << "Finalizo la busqueda local insertando entre pares porque no se obtuvo ninguna mejora." << endl;        
+                    cout << "Finalizo la busqueda local insertando entre pares porque no se obtuvieron nuevas mejoras." << endl;        
                     break;
                 case BQL_CONTRAER_TRIPLAS_A_PARES:
-                    cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvo ninguna mejora." << endl;
+                    cout << "Finalizo la busqueda local salteando entre triplas porque no se obtuvieron nuevas mejoras." << endl;
                     break;
                 case BQL_MEJORAR_CONEXION_TRIPLAS:
-                    cout << "Finalizo la busqueda local reemplazando entre triplas porque no se obtuvo ninguna mejora." << endl;
+                    cout << "Finalizo la busqueda local reemplazando entre triplas porque no se obtuvieron nuevas mejoras." << endl;
                     break;
+                case BQL_COMBINAR:
+                    cout << "Finalizo la busqueda local combinada porque no se obtuvieron nuevas mejoras." << endl;
+                    break;                    
             }
         #endif
         g.establecer_se_encontro_solucion(true);
         cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio;
     }
 
-    //cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
-    //cout << endl;
 }

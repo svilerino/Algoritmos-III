@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CFLAGS=-Wall -O2 -g -std=c++0x -pedantic -Werror
+CFLAGS=-Wall -O2 -g -std=c++0x -pedantic -Werror -Wno-unused-variable
 LDFLAGS=
 RM=rm
 
