@@ -359,7 +359,13 @@ Grafo::Grafo(int cant_inicial_nodos) : camino_obtenido(mat_adyacencia) {
 	//inicializo matriz de adyacencia
 	vector<Arista> vec_fila(cantidad_nodos, Arista(false, 0, 0));
 	this->mat_adyacencia.resize(cantidad_nodos, vec_fila);
+	
+	//inicializo lista de adyacencia
 	this->lista_adyacencia.resize(cantidad_nodos);
+
+	//inicializo matriz de vecinos comunes
+	vector<vector<Vecino> > vec_fila_vecinos(cantidad_nodos);
+	this->vecinos_comunes.resize(cantidad_nodos, vec_fila_vecinos);
 }
 
 Grafo::~Grafo(){
@@ -380,6 +386,10 @@ void Grafo::agregar_nodos(int cantidad_nodos_nuevos){
 	//redimensiono lista adyacencias
 	this->lista_adyacencia.resize(cantidad_nodos + cantidad_nodos_nuevos);
 
+	//redimensiono matriz de vecinos comunes
+	vector<vector<Vecino> > vec_fila_vecinos(this->cantidad_nodos + cantidad_nodos_nuevos);
+	this->vecinos_comunes.resize(this->cantidad_nodos + cantidad_nodos_nuevos, vec_fila_vecinos);
+
 	//actualizo cantidad_nodos total del grafo
 	this->cantidad_nodos+=cantidad_nodos_nuevos;
 }
@@ -396,20 +406,6 @@ void Grafo::agregar_arista(nodo_t i, nodo_t j, costo_t w1, costo_t w2){
 	if(!arista.esta_presente()){
 		this->cantidad_aristas++;
 	}
-}
-
-void Grafo::quitar_arista(nodo_t i, nodo_t j){
-	Arista arista = obtener_arista(i, j);
-	//desmarco doble, no es un digrafo
-	this->mat_adyacencia[i][j].desmarcar_presente();
-	this->mat_adyacencia[j][i].desmarcar_presente();
-
-	this->lista_adyacencia[i].remove(make_pair(j, arista));
-	this->lista_adyacencia[j].remove(make_pair(i, arista));
-
-	if(arista.esta_presente()){
-		this->cantidad_aristas--;
-	}	
 }
 
 //consultas
@@ -525,6 +521,13 @@ bool Grafo::unserialize(istream& in, formato_entrada_t formato){
 		this->agregar_arista(nodo_a, nodo_b, costo_w1, costo_w2);
 		count++;
 	}
+
+	//precalcular vecinos en comun
+	for(int i=0;i<cant_nodos_nuevos;i++){
+		for(int j=0;j<cant_nodos_nuevos;j++){
+			precalcular_adyacentes_en_comun(i, j);			
+		}
+	}
 	return true;
 }
 
@@ -624,8 +627,8 @@ void Grafo::breadth_first_search(nodo_t origen, vector<distancia_t>& distancias)
 //dejando complejidad de O(nlogn), de cualquier manera, como se nos pidio que fuera polinomial unicamente
 //uso la matriz de adyacencia, y en O(n) recorro los vecinos de ambos, y donde se cumpla vecindad en ambos
 //lo selecciono como vecino en comun.
-list<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){
-	list<Vecino> res;
+void Grafo::precalcular_adyacentes_en_comun(nodo_t i, nodo_t j){
+	vector<Vecino> res;
 	vector<Arista> adyacentesFila_i = this->mat_adyacencia[i];
 	vector<Arista> adyacentesFila_j = this->mat_adyacencia[j];
 	for(int idx=0;idx<this->cantidad_nodos;idx++){
@@ -633,8 +636,33 @@ list<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){
 			//el nodo idx es adyacente de i y j.
 			res.push_back(Vecino(i, j, idx, adyacentesFila_i[idx], adyacentesFila_j[idx]));
 		}
-	}	
-	return res;
+	}		
+	this->vecinos_comunes[i][j] = res;
+}
+
+vector<Vecino> Grafo::obtener_adyacentes_en_comun(nodo_t i, nodo_t j){	
+	//cout << "Vecinos comunes de (" << i << ") y (" << j << ") : ";
+	#ifdef VECINOS_COMUNES_LAZY
+		vector<Vecino> res;
+		vector<Arista> adyacentesFila_i = this->mat_adyacencia[i];
+		vector<Arista> adyacentesFila_j = this->mat_adyacencia[j];
+		for(int idx=0;idx<this->cantidad_nodos;idx++){
+			if(adyacentesFila_i[idx].esta_presente() && adyacentesFila_j[idx].esta_presente()){
+				//el nodo idx es adyacente de i y j.
+				res.push_back(Vecino(i, j, idx, adyacentesFila_i[idx], adyacentesFila_j[idx]));
+				//cout << "(" << idx << ") --->";
+			}
+		}		
+		//cout << "Nil" << endl;
+		return res;
+	#else
+		//list<Vecino> tmp = this->vecinos_comunes[i][j];
+		//for(Vecino v : tmp){
+			//cout << "(" << v.obtener_nodo_comun() << ") ---> ";
+		//}
+		//cout << "Nil" << endl;
+		return this->vecinos_comunes[i][j];
+	#endif
 }
 
 vector<Arista> Grafo::obtener_vector_fila_vecinos(nodo_t target){
@@ -694,12 +722,12 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 	//DEJA DE SER BUSQUEDA LOCAL, DADO QUE LA SOLUCION QUE SURJA DE ESTO PUEDE NO ESTAR EN LA VECINDAD Vc
 
     //busco la conexion entre i y j pasando por un nodo intermedio tal que minimice la distancia de w2 sin pasarme de la cota total de w1 para el camino
- 	list<Vecino> vecinosEnComun = this->obtener_adyacentes_en_comun(nodo_i, nodo_j);
-	list<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
-	list<Vecino>::iterator final_vecinos = vecinosEnComun.end();
+ 	vector<Vecino> vecinosEnComun = this->obtener_adyacentes_en_comun(nodo_i, nodo_j);
+	vector<Vecino>::iterator vecinos_it = vecinosEnComun.begin();
+	vector<Vecino>::iterator final_vecinos = vecinosEnComun.end();
 	
     //me fijo todos los caminos alternativos agregando un nodo entre los nodos ij,
-    list<Vecino>::iterator mejor_vecino_it = vecinosEnComun.end();//inicializamos en algo que indique que no hay mejora
+    vector<Vecino>::iterator mejor_vecino_it = vecinosEnComun.end();//inicializamos en algo que indique que no hay mejora
 	costo_t mejor_camino_ij_w2 = costo_ij_w2;
 	while(vecinos_it != final_vecinos){
         costo_t i_comun_w1 = vecinos_it->obtener_arista_i_comun().obtener_costo_w1();

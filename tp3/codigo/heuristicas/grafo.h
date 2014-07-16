@@ -13,6 +13,7 @@
 
 #define DEBUG_MESSAGES_ON
 //#define CYCLE_PREVENT_MESSAGE_ON
+//#define VECINOS_COMUNES_LAZY
 
 using namespace std;
 
@@ -78,6 +79,8 @@ public:
 	Arista obtener_arista_j_comun();
 };
 
+typedef vector<vector<vector<Vecino> > > vecinos_comunes_t;
+
 class Camino{
 private:
 	list<nodo_t> camino;
@@ -125,6 +128,7 @@ class Grafo{
 private:
 	//atributos
 	matriz_adyacencia_t mat_adyacencia;
+	vecinos_comunes_t vecinos_comunes;
 	lista_adyacencia_t lista_adyacencia;
 	int cantidad_nodos;
 	int cantidad_aristas;
@@ -145,6 +149,8 @@ private:
 	bool mejorar_conexion_salteando(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
 	 Arista& mejor_vecino);
 
+	void precalcular_adyacentes_en_comun(nodo_t i, nodo_t j);
+
 	//Golosa
 	vector<pair<nodo_t, Arista> > obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta, vector<costo_t>& costos,
 	vector<distancia_t>& distancias, costo_t costoCamino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion);
@@ -160,7 +166,6 @@ public:
 	//Modificadores
 	void agregar_nodos(int cantidad_nodos);
 	void agregar_arista(nodo_t i, nodo_t j, costo_t w1, costo_t w2);
-	void quitar_arista(nodo_t i, nodo_t j);
 
 	//Consultas
 	vector<Arista> obtener_vector_fila_vecinos(nodo_t target);
@@ -169,7 +174,7 @@ public:
 	int obtener_cantidad_aristas();
 	Arista obtener_arista(nodo_t i, nodo_t j);	
 	//pre: 0 <= i <= j < cantidad_nodos y que i,j sean adyacentes
-	list<Vecino> obtener_adyacentes_en_comun(nodo_t i, nodo_t j);
+	vector<Vecino> obtener_adyacentes_en_comun(nodo_t i, nodo_t j);
 	nodo_t obtener_nodo_origen();
 	nodo_t obtener_nodo_destino();
 	costo_t obtener_limite_w1();
