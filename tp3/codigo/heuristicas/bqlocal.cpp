@@ -19,10 +19,10 @@ int main(int argc, char **argv){
 }
 
 void ejecutar_busqueda_local(Grafo &g){
-    #ifdef DEBUG_MESSAGES_ON
-        g.imprimir_lista_adyacencia(cout);
-        //g.imprimir_matriz_adyacencia(cout);
-    #endif
+//    #ifdef DEBUG_MESSAGES_ON
+//        g.imprimir_lista_adyacencia(cout);
+//        //g.imprimir_matriz_adyacencia(cout);
+//    #endif
 
     costo_t limit_w1 = g.obtener_limite_w1();
     nodo_t nodo_src = g.obtener_nodo_origen();

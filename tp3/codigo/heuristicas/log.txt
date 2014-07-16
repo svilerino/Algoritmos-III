@@ -1,0 +1,98 @@
+
+
+Aplicando busqueda local a la 1-esima instancia de input...
+Se requiere un camino entre (0) y (4) que no exceda el costo 10. Costo minimo obtenido: 4...Ok!!
+Camino inicial: (0)----[2, 7]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+
+
+	---- Ejecutando busqueda local entre pares insertando ----
+
+Solucion actual: (0)----[2, 7]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 4    W2: 17
+Se encontro mejora. La mejor mejora encontrada entre todos los pares de nodos fue:
+Se agregara un nodo intermedio en: (0)----[3, 1]---->(5)----[4, 2]---->(6)
+Nuevo costo del sendero entre (0) y (6) aplicando a esta modificacion:    W1: 7     W2: 3
+	---- Mejora tentativa sobre w2 en el camino actual aplicando esta mejora: 4
+
+	---- Ejecutando busqueda local entre triplas reemplazando intermedio ----
+
+Solucion actual: (0)----[2, 7]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 4    W2: 17
+No se pudo mejorar la solucion.
+
+	---- Ejecutando busqueda local entre triplas salteando ----
+
+Solucion actual: (0)----[2, 7]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 4    W2: 17
+No se pudo mejorar la solucion.
+
+Nueva solucion obtenida: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Nuevos costos totales del camino:   W1: 9    W2: 13
+
+	---- Ejecutando busqueda local entre pares insertando ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 9    W2: 13
+Se encontro mejora. La mejor mejora encontrada entre todos los pares de nodos fue:
+Se agregara un nodo intermedio en: (6)----[1, 1]---->(2)----[1, 3]---->(7)
+Nuevo costo del sendero entre (6) y (7) aplicando a esta modificacion:    W1: 2     W2: 4
+	---- Mejora tentativa sobre w2 en el camino actual aplicando esta mejora: 3
+
+	---- Ejecutando busqueda local entre triplas reemplazando intermedio ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 9    W2: 13
+No se pudo mejorar la solucion.
+
+	---- Ejecutando busqueda local entre triplas salteando ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 7]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 9    W2: 13
+No se pudo mejorar la solucion.
+
+Nueva solucion obtenida: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 3]---->(7)----[1, 3]---->(4)
+Nuevos costos totales del camino:   W1: 10    W2: 10
+
+	---- Ejecutando busqueda local entre pares insertando ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 3]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 10    W2: 10
+No se pudo mejorar la solucion.
+
+	---- Ejecutando busqueda local entre triplas reemplazando intermedio ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 3]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 10    W2: 10
+Se encontro mejora. La mejor mejora encontrada entre todos los pares de nodos fue:
+Se reemplazo el nodo intermedio en: (2)----[1, 2]---->(3)----[1, 3]---->(4)
+Nuevo costo del sendero entre (2) y (4) aplicando a esta modificacion:    W1: 2     W2: 5
+	---- Mejora tentativa sobre w2 en el camino actual aplicando esta mejora: 1
+
+	---- Ejecutando busqueda local entre triplas salteando ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 3]---->(7)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 10    W2: 10
+No se pudo mejorar la solucion.
+
+Nueva solucion obtenida: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 2]---->(3)----[1, 3]---->(4)
+Nuevos costos totales del camino:   W1: 10    W2: 9
+
+	---- Ejecutando busqueda local entre pares insertando ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 2]---->(3)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 10    W2: 9
+No se pudo mejorar la solucion.
+
+	---- Ejecutando busqueda local entre triplas reemplazando intermedio ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 2]---->(3)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 10    W2: 9
+No se pudo mejorar la solucion.
+
+	---- Ejecutando busqueda local entre triplas salteando ----
+
+Solucion actual: (0)----[3, 1]---->(5)----[4, 2]---->(6)----[1, 1]---->(2)----[1, 2]---->(3)----[1, 3]---->(4)
+Costo total del camino actual:   W1: 10    W2: 9
+No se pudo mejorar la solucion.
+Finalizo la busqueda local combinada porque no se obtuvieron nuevas mejoras.
+10 9 6 1 6 7 3 4 5 

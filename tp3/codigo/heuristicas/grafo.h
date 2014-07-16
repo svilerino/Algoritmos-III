@@ -12,6 +12,7 @@
 #include <random>
 
 #define DEBUG_MESSAGES_ON
+//#define CYCLE_PREVENT_MESSAGE_ON
 
 using namespace std;
 

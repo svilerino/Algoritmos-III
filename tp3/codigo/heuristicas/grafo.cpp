@@ -659,11 +659,25 @@ bool Grafo::mejorar_conexion_salteando(nodo_t nodo_i, nodo_t nodo_j, costo_t cos
 	//me fijo si i y j son adyacentes
 	Arista candidato_a_mejor_camino = this->obtener_arista(nodo_i, nodo_j);
 	if(candidato_a_mejor_camino.esta_presente()){
-		//si asigno candidato_a_mejor_camino estoy devolviendo una referencia a una variable de stack y catapunchis!
-		mejor_vecino = this->obtener_arista(nodo_i, nodo_j);
-		return true;
+		//FIX. ADEMAS DE EXISTIR LA ARISTA, EL CAMINO DIRECTO TIENE QUE SER MEJOR ESTRICTO QUE LA SUMA DE LAS DOS ARISTAS EXISTENTES
+
+		costo_t hipotetico_w1_total_camino = (total_w1 - (costo_ij_w1) + candidato_a_mejor_camino.obtener_costo_w1());
+		bool es_mejora_factible = (candidato_a_mejor_camino.obtener_costo_w2() < costo_ij_w2) /*mejora la arista directa*/&&
+			(hipotetico_w1_total_camino <= this->obtener_limite_w1()); /*no se pasa de la cota*/
+		if(es_mejora_factible){
+			//la arista directa mejora el camino en w2 pero no se pasa de w1 el camino
+			
+			//OJO en esta linea!: si asigno candidato_a_mejor_camino estoy devolviendo una referencia a una variable de stack y catapunchis!
+			mejor_vecino = this->obtener_arista(nodo_i, nodo_j);
+			return true;
+		}else{
+			//o no mejora o se pasa w1 => false
+			return false;
+		}
+	}else{
+		//no hay arista directa => false
+		return false;		
 	}
-	return false;
 }
 
 bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t costo_ij_w1, costo_t costo_ij_w2, costo_t total_w1, costo_t total_w2,
@@ -698,7 +712,7 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 		costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
 			
 		//veamos si el camino es una solucion factible
-		if(hipotetico_w1_total_camino < this->obtener_limite_w1()){
+		if(hipotetico_w1_total_camino <= this->obtener_limite_w1()){
 			//es factible, veamos si mejora al ultimo mejor revisado
 
 			//VEAMOS ADEMAS, QUE NO ESTE EN NUESTRA TABOO LIST(QUE NO PERTENEZCA AL CAMINO DE LA SOL. ACTUAL)			
@@ -712,8 +726,10 @@ bool Grafo::mejorar_conexion_entre_pares(nodo_t nodo_i, nodo_t nodo_j, costo_t c
 				}				
 			}else{
 				//taboo list skipped!
-				#ifdef DEBUG_MESSAGES_ON				
-					cout << "Salteamos el nodo (" << nodo_comun << ") como candidato a mejorar la solucion actual porque al pertenecer al camino generaria un ciclo" << endl;
+				#ifdef DEBUG_MESSAGES_ON	
+					#ifdef CYCLE_PREVENT_MESSAGE_ON
+					cout << "Salteamos el nodo (" << nodo_comun << ") entre (" << nodo_i << ") y (" << nodo_j << ") como candidato a mejorar la solucion actual porque al pertenecer al camino generaria un ciclo" << endl;
+					#endif
 				#endif
 			}
 		}
@@ -785,7 +801,7 @@ int Grafo::busqueda_local_entre_pares_insertando(Camino& solucion_actual, Vecino
 			costo_t hipotetico_w1_total_camino = (total_w1 - costo_ij_w1 + costo_i_comun_j_w1);
 			costo_t hipotetico_w2_total_camino = (total_w2 - costo_ij_w2 + costo_i_comun_j_w2);
 
-			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino < this->obtener_limite_w1())){
+			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino <= this->obtener_limite_w1())){
 				mejor_costo_w2 = hipotetico_w2_total_camino;
 				conexion_ij_minima_w2 = mejor_conexion_ij;
 				punto_de_insercion_mejora_it = it;
@@ -901,7 +917,7 @@ int Grafo::busqueda_local_entre_triplas_reemplazando_intermedio(Camino& solucion
 			costo_t hipotetico_w1_total_camino = (total_w1 - (costo_i_medio_w1 + costo_medio_j_w1) + costo_i_comun_j_w1);
 			costo_t hipotetico_w2_total_camino = (total_w2 - (costo_i_medio_w2 + costo_medio_j_w2) + costo_i_comun_j_w2);
 
-			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino < this->obtener_limite_w1())){
+			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino <= this->obtener_limite_w1())){
 				mejor_costo_w2 = hipotetico_w2_total_camino;
 				conexion_ij_minima_w2 = mejor_conexion_ij;
 				punto_de_insercion_mejora_it = it;
@@ -1016,7 +1032,7 @@ int Grafo::busqueda_local_entre_triplas_salteando(Camino& solucion_actual, list<
 			costo_t hipotetico_w1_total_camino = (total_w1 - (costo_i_medio_w1 + costo_medio_j_w1) + costo_ij_directo_w1);
 			costo_t hipotetico_w2_total_camino = (total_w2 - (costo_i_medio_w2 + costo_medio_j_w2) + costo_ij_directo_w2);
 
-			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino < this->obtener_limite_w1())){
+			if( (hipotetico_w2_total_camino < mejor_costo_w2) && (hipotetico_w1_total_camino <= this->obtener_limite_w1())){
 				mejor_costo_w2 = hipotetico_w2_total_camino;
 				hay_mejoras_para_el_camino = true;				
 				conexion_ij_minima_w2 = mejor_conexion_ij;
@@ -1098,15 +1114,39 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 	list<nodo_t>::const_iterator punto_de_salto_it = solucion_actual.obtener_iterador_const_end();
 
 	if(bql_subdiv){
+		#ifdef DEBUG_MESSAGES_ON
+			cout << endl << "\t---- Ejecutando busqueda local entre pares insertando ----" << endl << endl;
+		#endif
 		mejora_en_w2_bql_entre_pares = busqueda_local_entre_pares_insertando(solucion_actual, conexion_ij_minima_w2_entre_pares);
+		#ifdef DEBUG_MESSAGES_ON
+			if(mejora_en_w2_bql_entre_pares > 0){
+				cout << "\t---- Mejora tentativa sobre w2 en el camino actual aplicando esta mejora: " << mejora_en_w2_bql_entre_pares << endl;				
+			}
+		#endif
 	}
 
 	if(bql_mejorar){
+		#ifdef DEBUG_MESSAGES_ON
+			cout << endl << "\t---- Ejecutando busqueda local entre triplas reemplazando intermedio ----" << endl << endl;
+		#endif
 		mejora_en_w2_entre_triplas_reemplazando = busqueda_local_entre_triplas_reemplazando_intermedio(solucion_actual, conexion_ij_minima_w2_entre_triplas);		
+		#ifdef DEBUG_MESSAGES_ON
+			if(mejora_en_w2_entre_triplas_reemplazando > 0){
+				cout << "\t---- Mejora tentativa sobre w2 en el camino actual aplicando esta mejora: " << mejora_en_w2_entre_triplas_reemplazando << endl;				
+			}
+		#endif
 	}
 
 	if(bql_contraer){
+		#ifdef DEBUG_MESSAGES_ON
+			cout << endl << "\t---- Ejecutando busqueda local entre triplas salteando ----" << endl << endl;
+		#endif
 		mejora_en_w2_entre_triplas_salteando = busqueda_local_entre_triplas_salteando(solucion_actual, punto_de_salto_it);		
+		#ifdef DEBUG_MESSAGES_ON
+			if(mejora_en_w2_entre_triplas_salteando > 0){
+				cout << "\t---- Mejora tentativa sobre w2 en el camino actual aplicando esta mejora: " << mejora_en_w2_entre_triplas_salteando << endl;				
+			}
+		#endif
 	}
 
 	//si son todas las mejoras 0, no mejoro ninguna nada
@@ -1141,7 +1181,7 @@ bool Grafo::busqueda_local(tipo_ejecucion_bqlocal_t tipo_ejecucion){
 					#endif	
 					this->establecer_camino_solucion(solucion_actual);
 					return true;
-				}else{
+				}else{					
 					return false;
 				}
 			}
