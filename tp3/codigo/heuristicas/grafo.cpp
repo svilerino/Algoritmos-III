@@ -1415,8 +1415,8 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 	int k = obtener_limite_w1();
 	nodo_t origen = obtener_nodo_origen();
 	nodo_t destino = obtener_nodo_destino();
-	cout << "Nodo Origen: " << origen << endl;
-	cout << "Nodo Destino: " << destino << endl;
+	//cout << "Nodo Origen: " << origen << endl;
+	//cout << "Nodo Destino: " << destino << endl;
 
 	//dijkstra de inicializacion
 	vector<costo_t> costosw1;
@@ -1426,7 +1426,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 	//Estructuras del greedy
 	vector<costo_t> costosw2(n, costo_infinito);
 	// contiene el costo w1 del camino recorrido hasta cada nodo
-	vector<costo_t> costoCamino(n, costo_infinito); 
+	vector<costo_t> costoCamino(n, costo_nulo); 
 
 	//Comienza el algoritmo
 	//reseteamos los predecesores
@@ -1456,7 +1456,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 					cola.erase(make_pair(costosw2[nodoW], nodoW));
 
 					costosw2[nodoW] = costo_tentativo;
-					costoCamino[nodoW] = costoCamino[actual.second]+aristaActualW.obtener_costo_w1();
+					costoCamino[nodoW] = costoCamino[actual.second] + aristaActualW.obtener_costo_w1();
 					predecesores[nodoW] = actual.second;
 					
 					cola.insert(make_pair(costosw2[nodoW], nodoW));
@@ -1467,14 +1467,14 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 
 	Camino c(this->mat_adyacencia);
 	nodo_t nodo = destino;
-	cout <<"Nodos" << endl;
+	//cout <<"Nodos" << endl;
 	do{
-		cout << nodo << " " ;
+		//cout << nodo << " " ;
 		c.agregar_nodo_adelante(nodo);
 		nodo = predecesores[nodo];
 	}while(nodo != predecesor_nulo);
 
-	cout << endl << "Fin Nodos" << endl;
+	//cout << endl << "Fin Nodos" << endl;
 	this->establecer_se_encontro_solucion(true);
 	return c;
 }
