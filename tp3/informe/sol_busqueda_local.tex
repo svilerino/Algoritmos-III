@@ -127,10 +127,10 @@ Similar a los casos anteriores, itera sobre las 3-uplas de nodos del camino, int
 \end{itemize}
 
 \subsection{Nivel de optimalidad de las soluciones}
+\subsubsection{Familias de grafos malas para esta heur\'istica}
 
 La heur\'istica va a fallar en todos los casos en los cuales no se pueda mejorar un par o tripla de nodos agregando, quitando o reemplazando de a un nodo, por ejemplo, casos en los que la mejora sea un subcamino de longitud mayor a 2, o casos en los que el camino \'optimo no tiene ning\'in tipo de conexi\'on con el camino m\'inimo seg\'un $w_1$. Podria intentar arreglarse el problema generalizando la idea de contraer triplas a contraer subcaminos consecutivos de mayor longuitud con alguna variaci\'on de BFS pero podr\'ia incrementarse mucho el cardinal de las vecindades, siendo esto un problema para la exploraci\'on de las mismas.
 
-\subsubsection{Familias de grafos malas para esta heur\'istica}
 En el proximo ejemplo. Mostraremos un grafo en el cual la heur\'istica no devuelve la soluci\'on \'optima.
 
 \begin{figure}[H]
