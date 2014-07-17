@@ -208,3 +208,118 @@ La taboo list est\'a implementada como un vector de bool que forma parte de los 
  
 \subsection{Prec\'omputo de vecinos en comun}
 Para agilizar la b\'usqueda de vecinos en comun entre 2 nodos para la exploracion de las vecindades y aprovechando que el grafo es estatico, es decir, no se agregan o quitan aristas luego de ser leido de la entrada, se precomputa, para cada par de nodos $v_i,v_j$ una lista con los nodos adyacentes en comun. Luego para obtener los vecinos en comun en los diversos algoritmos implementados, solo basta con obtener esta informaci\'on precomputada.
+
+\subsection{Experimentacion: Mediciones de Performance}
+En esta secci\'on se mostrar\'an resultados de complejidad temporal emp\'irica acerca del costo promedio de una iteracion de busqueda local, veremos que tal como analizamos en la secci\'on anterior de complejidad, dicho costo esta situacion en el orden cuadratico $O(n^2)$.
+Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas sobre grafos aleatorios de distintos tama\~nos(en cantidad de nodos), y por cada cantidad $n$ de nodos, variamos las densidades de aristas dentro de cierto rango alrededor de una funcion de $n$, las densidades elegidas fueron:
+\begin{itemize}
+	\item m = $a*n + b$. Es decir una cantidad lineal de aristas en base a los nodos. $a \in \mathbb{N}_{>1}$
+	\item m = $\frac{n*(n-1)}{2}$. Es decir grafos cercanos o iguales a cliques de n nodos.
+\end{itemize}
+
+
+\textbf{Nota: } Como mencionamos anteriormente, las funciones son variadas en un rango, es decir, por ejemplo, para el caso de cliques, los grafos generados tienen entre $\frac{n*(n-1)}{5}$ y $\frac{n*(n-1)}{2}$ aristas para aleatorizar mas la generacion de grafos densos.\\
+
+\textbf{Nota: } Los graficos que contienen puntos rojos y una curva verde, indican, para cada valor del eje X(cantidad de nodos), los puntos rojos son los tiempos de ejecucion para los diferentes valores de aristas en el rango de la familia, asimismo, la curva verde indica el promedio de estos puntos para cada X. \\
+\textbf{Nota: }Para verificar que se trata de una curva cuadratica dividimos las funciones por $n^1$, $n^2$, $n^3$, $n^4$ y como en los trabajos practicos anteriores concluimos de que curva se trata.\\
+
+A continuacion presentamos los resultados de estos experimentos:\\
+\subsubsection{Rendimiento para grafos con densidad lineal de aristas}
+\begin{itemize}
+	\item cant nodos min = $200$
+	\item cant nodos max = $2000$
+	\item peso maximo w1 = $200$
+	\item peso maximo w2 = $200$
+	\item step nodos = $200$
+	\item step aristas = $2500$
+	\item aristas minimas = $n-1$
+	\item aristas maximas = $10*n$
+\end{itemize}								
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_lineales/complexity_variation.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_lineales/complexity_med_over_n.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_lineales/complexity_med_over_n_square.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_lineales/complexity_med_over_n_cube.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_lineales/complexity_med_over_n_fourth.png}
+\end{center}
+
+\subsubsection{Rendimiento para grafos con densidad cuadratica de aristas}
+\begin{itemize}
+	\item cant nodos min = $100$
+	\item cant nodos max = $2000$
+	\item peso maximo w1 = $200$
+	\item peso maximo w2 = $200$
+	\item step nodos = $200$
+	\item step aristas = $2500$
+	\item aristas minimas = $\frac{n*(n-1)}{17}$
+	\item aristas maximas = $\frac{n*(n-1)}{14}$
+\end{itemize}								
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_cuadraticas_3/complexity_variation.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_cuadraticas_3/complexity_med_over_n.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_cuadraticas_3/complexity_med_over_n_square.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_cuadraticas_3/complexity_med_over_n_cube.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_cuadraticas_3/complexity_med_over_n_fourth.png}
+\end{center}
+
+Como vemos en las 2 secciones de resultados anteriores, para $n^2$, $n^3$ se mantiene constante dentro de un rango muy reducido en el eje Y, pero para $n^3$ y $n^4$ es una funcion marcadamente decreciente, con lo cual, llegamos a la conclusion de que la curva es cuadr\'atica, afirmando nuestra complejidad teorica esperada.
+
+
+\subsection{Experimentacion: Variaci\'on evolutiva de mejora en cada iteracion}
+\subsubsection{Rendimiento evolutivo en grafos muy densos}
+Resumen del analisis:
+\begin{itemize}
+	\item Cantidad de tests realizados: 24
+	\item Iteraciones promedio: 5
+	\item Minima cantidad de iteraciones: 2
+	\item Maxima cantidad de iteraciones: 16
+\end{itemize}
+
+\begin{center}
+	\textbf{Ejemplo de la evoluci\'on en la mejora de la solucion durante las iteraciones de la busqueda local}\\
+	\textbf{$y = f(x)$, para cada x=numero de iteracion, f(x) expresa la mejora obtenida en $w_2$ en dicha iteracion}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_evolucion_iteraciones_cliques/test-results/bqlocal/instancia_120_7130_in_iters.png}
+\end{center}
+
+En general, todas las funciones son estrictamente decrecientes, salvo excepciones donde en ciertos puntos crece muy poco y vuelve a decrecer mas fuertemente. Esto nos da la pauta de que el grado de mejora en cada iteracion durante la vida del ciclo de la busqueda local decrece a medida que hacemos mas iteraciones, para finalmente estancarse en cero y llegar al criterio de terminaci\'on.
+
+\subsection{Experimentacion: Distintas soluciones iniciales factibles}
+Como mencionamos antes, se utiliza Dijkstra sobre $w_1$ para obtener la solucion inicial factible, para comenzar las iteraciones de b\'usqueda local. En esta secci\'on decidimos variar esto y establecer la solucion inicial de busqueda local con la heuristica golosa. Para ciertos grafos preestablecidos que pueden encontrarse en la carpeta \texttt{grafos especiales} las soluciones finales de busqueda local con los 2 modos de solucion inicial son iguales, lo que vari\'o de forma notable fue la cantidad de iteraciones de busqueda local necesarias para llegar a dicha solucion final, debajo se muestra una tabla indicando esto:
