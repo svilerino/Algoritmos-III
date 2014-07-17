@@ -1383,120 +1383,66 @@ Camino Grafo::obtener_solucion_golosa(){
 	return c;
 }
 
-bool compare_w1(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
-{
-    return (i.second).obtener_costo_w1() < (j.second).obtener_costo_w1();
-}
-
-bool compare_w2(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
-{
-    return (i.second).obtener_costo_w2() < (j.second).obtener_costo_w2();
-}
-
 //parametro beta en RCL_POR_VALOR indica el porcentaje a alejarse del mejor candidato
 //parametro beta en RCL_POR_CANTIDAD indica la candidad de "mejores" candidatos a elegir
-vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t actual, double parametro_beta,
-	vector<costo_t>& costos, vector<distancia_t>& distancias, costo_t costo_camino, distancia_t distanciaLlegada, tipo_ejecucion_golosa_t tipo_ejecucion){
-	
-	vector<pair<nodo_t, Arista> > candidatos;
-	
-	//voy a filtrar todos los candidatos factibles localmente (que elegir dicho candidato no me pase de la cota de w1
-	//y que me acerco a destino) y finalmente, segun el tipo de ejecucion voy a hacer una de las siguientes cosas:
-	//	- RCL_DETERMINISTICO: tomo el minimo respecto a w2
-	//  - RCL_POR_CANTIDAD: ordeno el vector segun w2 y resizeo a los primeros parametro_beta elementos. Esto me da los parametro_beta elementos mas chicos segun w2
-	//	- RCL_POR_VALOR: ordeno el vector segun w2 y elimino los menores que (minimo_w2 * (1 + parametro_beta)). Esto me da los candidatos que se acercan parametro_beta % al minimo_w2
+set<pair<costo_t, nodo_t> >::iterator Grafo::obtener_candidato_randomizado(tipo_ejecucion_golosa_t tipo_ejecucion, const set<pair<costo_t, nodo_t> > & cola, double parametro_beta){
+	set<pair<costo_t, nodo_t> >::iterator retorno;
+	if(tipo_ejecucion == RCL_DETERMINISTICO){
+		retorno = cola.begin();
+	}else if(tipo_ejecucion == RCL_POR_CANTIDAD){		
+		//tengo que elegir un numero i, aleatorio entre 0 y min{cola.size(), parametro_beta} -1 elemento de la cola
+		//y devolver el i-esimo elemento en orden de la cola
+		//dado que la cola esta ordenada, cumple una RCL_POR_CANTIDAD
+		uint rcl_target_top = std::min(cola.size(), (uint) parametro_beta) - 1;
 
-	lista_adyacentes vecinos = this->obtener_lista_vecinos(actual);	
-	if(!vecinos.empty()){
-		lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
-        lista_adyacentes::iterator final_it = vecinos.end();
+		//generacion numero random c++11 con distribucion uniforme
+		random_device rd;
+		mt19937 gen(rd());
+		uniform_int_distribution<> dis(0, rcl_target_top);
+		uint rcl_target_random = dis(gen); // generates number in the range 0..rcl_target_top
 
-        //cout << "Costo del camino parcial actual: " << costo_camino << endl;
-		//recolecto los factibles locales        
-        while(incidentes_i_it != final_it){
-        	nodo_t vecino_actual = incidentes_i_it->first;
-        	//cout << "Costo del vecino a destino (" << vecino_actual << "): " << costos[vecino_actual] << endl;
-        	//cout << "Costo tentativo del camino parcial desde origen yendo por la direccion del vecino(" << vecino_actual << "): " << costos[vecino_actual] + costo_camino << endl;
-        	bool no_me_paso_w1 = (costos[vecino_actual] + costo_camino <= this->cota_w1);
-        	bool me_acerco_a_destino = (distancias[incidentes_i_it->first] < distanciaLlegada);
-        	if(no_me_paso_w1 && me_acerco_a_destino){
-                pair<nodo_t, Arista> target = *incidentes_i_it;
-				candidatos.push_back(target);
-            }
-            incidentes_i_it++;
-        }
+		//cout << "cola size: " << cola.size() << endl;
+		//cout << "parametro_beta: " << parametro_beta << endl;
+		//cout << "rango random [0.." << rcl_target_top << "]" << endl;
+		//cout << "tomando random: " << rcl_target_random << endl;
+		//for(int i=0; i<22;i++){
+		//	cout << dis(gen) << endl;
+		//}
 
-        if(candidatos.size()==0){
-        	cerr << "Lista de cantidatos factibles vacia (condicion requerida: no se pasa de w1 y se acerca a destino) en el nodo (" << actual << ")" << endl;
-        	cerr << "Lista de nodos vecinos:" << endl;
-        	lista_adyacentes::iterator incidentes_i_it = vecinos.begin();
-        	lista_adyacentes::iterator final_it = vecinos.end();
-        	while(incidentes_i_it != final_it){
-	        	cerr << "(" << incidentes_i_it->first << ") costos w1: " << incidentes_i_it->second.obtener_costo_w1() << " costos w2:";
-	        	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
-	            incidentes_i_it++;
-        	}
-        	return candidatos;
-        }else{
-//        	cerr << "Lista de nodos factibles:" << endl;
-//	    	vector<pair<nodo_t, Arista> >::iterator incidentes_i_it = candidatos.begin();
-//	    	vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
-//	    	while(incidentes_i_it != final_it){
-//	        	cerr << "(" << incidentes_i_it->first << ") costos w1: " << incidentes_i_it->second.obtener_costo_w1() << " costos w2:";
-//	        	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
-//	            incidentes_i_it++;
-//	    	}
-        }
+		//sabemos que  esta en rango del iterador pues rcl_target_top <= cola.size() -1 y tomamos begin() que es el primero, es decir 0
+		retorno = cola.begin();
+		uint avance = 0;
+		while(avance < rcl_target_random){
+			retorno ++;
+			avance++;
+		}
+	}else if (tipo_ejecucion == RCL_POR_VALOR){
+		//itero sobre toda la cola, filtrando los elementos que esten dentro del porcentaje del parametro
+		//luego selecciono uno al azar del vector de candidatos filtrados
+		pair<costo_t, nodo_t> minimo = *cola.begin();
+		double valor_limite = (parametro_beta + 1) * minimo.first;
+		vector<set<pair<costo_t, nodo_t> >::iterator > candidatos;
+		
+		set<pair<costo_t, nodo_t> >::iterator it_cola = cola.begin();
+		set<pair<costo_t, nodo_t> >::iterator it_cola_fin = cola.end();
 
-        //ordeno los candidatos factibles, sobre la funcion w2 de menor a mayor
-        sort(candidatos.begin(), candidatos.end(), compare_w2);
-
-        if(tipo_ejecucion == RCL_DETERMINISTICO){
-        	//cout <<"RCL_DETERMINISTICO" << endl;
-    		candidatos.resize(1);
-    		//elimino todos salvo el minimo factible sobre w2
-    	}else if(tipo_ejecucion == RCL_POR_VALOR){
-    		//cout <<"RCL_POR_VALOR" << endl;
-    		pair<nodo_t, Arista> minimo = candidatos.front();
-    		double valor_limite = (parametro_beta + 1) * minimo.second.obtener_costo_w2();
-    		vector<pair<nodo_t, Arista> >::iterator it = candidatos.begin();
-    		vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
-
-    		//filtro los que se pasen del valor limite
-    		while(it != final_it){
-    			if(it->second.obtener_costo_w2() > valor_limite){
-    				it = candidatos.erase(it);
-    				if(it == final_it){
-    					//caso donde borro el ultimo, me queda final_it y no puedo hacerle ++ porque estalla
-    					break;
-    				}
-    			}
-    			it++;
-    		}
-    	}else if(tipo_ejecucion == RCL_POR_CANTIDAD){
-    		//cout <<"RCL_POR_CANTIDAD" << endl;
-			uint cantidad_trim = (int) parametro_beta;
-			if (cantidad_trim < 1){
-				cerr << "EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO, LE PONGO 1" << endl;
-				cantidad_trim = 1;
+		while(it_cola != it_cola_fin){
+			if(it_cola->first <= valor_limite){
+				candidatos.push_back(it_cola);
 			}
-			if(cantidad_trim > candidatos.size()){
-				//dejo solo los primeros cantidad_trim elementos mas chicos respecto a w2.
-				candidatos.resize(cantidad_trim);				
-			}
-    	}
+			it_cola++;
+		}
+		
+		random_device rd;
+		mt19937 gen(rd());
+		uniform_int_distribution<> dis(0, candidatos.size() -1);
+		uint rcl_target_random = dis(gen); // generates number in the range 0..candidatos.size() -1
+		retorno = candidatos[rcl_target_random];
+	}else{
+		cerr << "[Error] Parametro no soportado de randomizacion de RCL. Asumiendo RCL_DETERMINISTICO " << tipo_ejecucion << endl;
+		retorno = cola.begin();
 	}
-
-//   	cerr << "Lista de nodos factibles filtrados:" << endl;
-//   	vector<pair<nodo_t, Arista> >::iterator incidentes_i_it = candidatos.begin();
-//   	vector<pair<nodo_t, Arista> >::iterator final_it = candidatos.end();
-//   	while(incidentes_i_it != final_it){
-//       	cerr << "(" << incidentes_i_it->first << ") costos w1: " << incidentes_i_it->second.obtener_costo_w1() << " costos w2:";
-//       	cerr << incidentes_i_it->second.obtener_costo_w2() << endl;
-//           incidentes_i_it++;
-//   	}      
-	
-	return candidatos;
+	return retorno;
 }
 
 //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
@@ -1526,24 +1472,7 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 		//ADEMAS DE SER UTIL PARA PREGUNTAR DESDE EL MAIN SI HUBO SOL.
         this->establecer_se_encontro_solucion(false);
     }else{
-    	//------------------------------------- Comienza Greedy ----------------------------------------------------
-
-//		Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
-//        pair<nodo_t, Arista> minimo;
-//    	if(tipo_ejecucion == RCL_DETERMINISTICO){
-//    		//el metodo obtener_lista_restringida_candidatos me devuelve un unico elemento, el de la decision greedy 
-//			minimo = candidatos.front();        		        		
-//    	}else if(tipo_ejecucion == RCL_POR_VALOR || tipo_ejecucion == RCL_POR_CANTIDAD){
-//        	std::default_random_engine generator;
-//			//generacion numero random c++11 con distribucion uniforme
-//			random_device rd;
-//		    mt19937 gen(rd());
-//		    uniform_int_distribution<> dis(0, candidatos.size()-1);
-//			int candidato_random = dis(gen);
-//			//indexo con el numero random obtenido
-//			minimo = candidatos[candidato_random];   		
-//    	}
-
+    	//------------------------------------- Comienza Greedy randomized----------------------------------------------------
 		//Estructuras del greedy
 		vector<costo_t> costosw2(n, costo_infinito);
 		// contiene el costo w1 del camino recorrido hasta cada nodo
@@ -1560,8 +1489,11 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 		cola.insert(make_pair(costosw2[origen], origen));
 
 		while(!cola.empty()){
-			pair<costo_t, nodo_t> actual = *cola.begin();
-			cola.erase(cola.begin());
+			//Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
+			set<pair<costo_t, nodo_t> >::iterator it_candidato = obtener_candidato_randomizado(tipo_ejecucion, cola, parametro_beta);
+
+			pair<costo_t, nodo_t> actual = *it_candidato;
+			cola.erase(it_candidato);
 
 			lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
 
@@ -1601,7 +1533,7 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 			//cout << endl << "Fin Nodos" << endl;
 			this->establecer_se_encontro_solucion(true);
 		//}
-		//------------------------------------- Fin Greedy ----------------------------------------------------
+		//------------------------------------- Fin Greedy randomized----------------------------------------------------
 	}
 	return c;
 }

@@ -1,8 +1,6 @@
 #include "grafo.h"
 #include "timing.h"
 #include <fstream>
-#define CANT_ITERS_MEDICION 1//ojo que como modifica la solucion de grafo no tiene sentido repetirlo mas de una vez!
-//#define FILE_ITERS_MEJORA "/home/svilerino/devel/Algoritmos-III/tp3/codigo/heuristicas/test-cases/evolucion_iteraciones.txt"
 #define FILE_ITERS_MEJORA "evolucion_iteraciones.txt"
 
 void ejecutar_busqueda_local(Grafo &g);
@@ -65,7 +63,6 @@ void ejecutar_busqueda_local(Grafo &g){
 
         //--------------------------------- Comienzo la busqueda local -------------------   
         //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS, BQL_COMBINAR} tipo_ejecucion_bqlocal_t;
-        
         tipo_ejecucion_bqlocal_t tipo_ejecucion = BQL_COMBINAR;
 
         //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
@@ -78,7 +75,7 @@ void ejecutar_busqueda_local(Grafo &g){
             promedio_parcial = 0;
             MEDIR_TIEMPO_PROMEDIO(
                 mejora_current_iteration = g.busqueda_local(tipo_ejecucion);
-                , CANT_ITERS_MEDICION, &promedio_parcial);
+                , 1, &promedio_parcial);
             cant_iters++;
             promedio += promedio_parcial;            
             mejora_en_iteraciones.push_back(mejora_current_iteration);

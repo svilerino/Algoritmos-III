@@ -45,7 +45,5 @@ void ejecutar_greedy(Grafo &g){
 
     }
 
-    //cout << "Salida del algoritmo: " << endl;
     g.serialize(cout, FORMATO_1_N_CLOSED);
-    //cout << endl;
 }
