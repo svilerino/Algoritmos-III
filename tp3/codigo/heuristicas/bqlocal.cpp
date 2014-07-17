@@ -2,6 +2,7 @@
 #include "timing.h"
 #include <fstream>
 #define CANT_ITERS_MEDICION 1//ojo que como modifica la solucion de grafo no tiene sentido repetirlo mas de una vez!
+//#define FILE_ITERS_MEJORA "/home/svilerino/devel/Algoritmos-III/tp3/codigo/heuristicas/test-cases/evolucion_iteraciones.txt"
 #define FILE_ITERS_MEJORA "evolucion_iteraciones.txt"
 
 void ejecutar_busqueda_local(Grafo &g);
@@ -70,9 +71,8 @@ void ejecutar_busqueda_local(Grafo &g){
                 mejora_current_iteration = g.busqueda_local(tipo_ejecucion);
                 , CANT_ITERS_MEDICION, &promedio_parcial);
             cant_iters++;
-            promedio += promedio_parcial;
-            if(mejora_current_iteration > 0)
-                mejora_en_iteraciones.push_back(mejora_current_iteration);
+            promedio += promedio_parcial;            
+            mejora_en_iteraciones.push_back(mejora_current_iteration);
         }while(mejora_current_iteration > 0);
         promedio = promedio /(double) cant_iters;
 
