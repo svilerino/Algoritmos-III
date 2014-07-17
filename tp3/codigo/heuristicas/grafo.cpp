@@ -1415,32 +1415,32 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 	int k = obtener_limite_w1();
 	nodo_t origen = obtener_nodo_origen();
 	nodo_t destino = obtener_nodo_destino();
+	cout << "Nodo Origen: " << origen << endl;
+	cout << "Nodo Destino: " << destino << endl;
 
+	//dijkstra de inicializacion
 	vector<costo_t> costosw1;
-	vector<costo_t> costosw2;
 	vector<nodo_t> predecesores;
-	vector<costo_t> costoCamino; // contiene el costo w1 del camino recorrido hasta cada nodo
-	//dijkstra
 	this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
 
-	costosw2.resize(n, costo_infinito);
-	costoCamino.resize(n, costo_infinito); // CHEQUEAR ESTO
+	//Estructuras del greedy
+	vector<costo_t> costosw2(n, costo_infinito);
+	// contiene el costo w1 del camino recorrido hasta cada nodo
+	vector<costo_t> costoCamino(n, costo_infinito); 
 
-	for(uint i= 0; i<predecesores.size();i++){
-		predecesores[i] = predecesor_nulo;
-	}
+	//Comienza el algoritmo
+	//reseteamos los predecesores
+	predecesores.clear();
+	predecesores.resize(n, predecesor_nulo);
 
-	costosw2[origen] = 0;
+	costosw2[origen] = costo_nulo;
 
 	set<pair<costo_t, nodo_t> > cola;
-
 	cola.insert(make_pair(costosw2[origen], origen));
 
-	while(!cola.empty()){
-
+	while(!cola.empty()){		
 		pair<costo_t, nodo_t> actual = *cola.begin();
-
-		cola.erase(cola.begin())	;
+		cola.erase(cola.begin());
 
 		lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
 
@@ -1450,11 +1450,16 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 			Arista aristaActualW = w.second;
 
 			if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k){
-				cola.insert(make_pair(costosw2[nodoW], nodoW));
-				if (costosw2[nodoW]>costosw2[actual.second]+aristaActualW.obtener_costo_w2()){
-					costosw2[nodoW] = costosw2[actual.second]+aristaActualW.obtener_costo_w2();
+				costo_t costo_tentativo = costosw2[actual.second] + aristaActualW.obtener_costo_w2();
+				if (costosw2[nodoW] > costo_tentativo)
+				{
+					cola.erase(make_pair(costosw2[nodoW], nodoW));
+
+					costosw2[nodoW] = costo_tentativo;
 					costoCamino[nodoW] = costoCamino[actual.second]+aristaActualW.obtener_costo_w1();
 					predecesores[nodoW] = actual.second;
+					
+					cola.insert(make_pair(costosw2[nodoW], nodoW));
 				} 	
 			}
 		}
