@@ -19,9 +19,15 @@ int main(int argc, char **argv){
 }
 
 void ejecutar_greedy(Grafo &g){
+    int limit_w1 = g.obtener_limite_w1();
+    nodo_t nodo_src = g.obtener_nodo_origen();
+    nodo_t nodo_dst = g.obtener_nodo_destino();
     #ifdef DEBUG_MESSAGES_ON
         //g.imprimir_lista_adyacencia(cout);
-        //g.imprimir_matriz_adyacencia(cout);
+        //g.imprimir_matriz_adyacencia(cout);    
+    #endif
+    #ifdef DEBUG_MESSAGES_ON
+        cout << "Se requiere un camino entre (" << nodo_src << ") y (" << nodo_dst<< ") que no exceda el costo " << limit_w1 << endl;
     #endif
     double promedio_medicion = 0;
     double parametro_beta=1;
