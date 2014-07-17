@@ -32,7 +32,16 @@ void ejecutar_busqueda_local(Grafo &g){
     nodo_t nodo_dst = g.obtener_nodo_destino();
     
     //--------------------------------- Busco solucion inicial ----------------------
-    Camino c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
+
+    //typedef enum tipo_sol_inicial_bqlocal {DIJKSTRA_INICIAL, GREEDY_INICIAL} tipo_sol_inicial_bqlocal_t;
+    tipo_sol_inicial_bqlocal_t tipo_sol_inicial = DIJKSTRA_INICIAL;
+
+    Camino c = g.obtener_camino_vacio();
+    if(tipo_sol_inicial == GREEDY_INICIAL){
+        c = g.obtener_solucion_golosa(RCL_DETERMINISTICO, 1);
+    }else if(tipo_sol_inicial == DIJKSTRA_INICIAL){
+        c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
+    }
     g.establecer_camino_solucion(c);
 
     //--------------------------------- Valido la factibilidad de la solucion----------------
