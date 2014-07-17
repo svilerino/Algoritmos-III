@@ -29,10 +29,14 @@ if ls test-cases/*.in &> /dev/null; then
 			else    		    
 				cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
 				cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
+				cantIters=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')
 			    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
 			    echo "$cantNodos $cantAristas $timeElapsed " >> ../"$heuristica".tmpplot
-		    	echo -e "${green}Ok! in $timeElapsed micro-seconds ${NC}"
+		    	echo -e "${green}Ok! $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
+
+		    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters.png "evolucion_iteraciones.txt" 5
 			fi
+			rm evolucion_iteraciones.txt
 		done
 	done
 	popd
