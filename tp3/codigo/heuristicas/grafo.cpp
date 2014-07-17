@@ -1426,7 +1426,7 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
 
     costosw2.resize(n, costo_infinito);
-    costoCamino.resize(n, 0); // CHEQUEAR ESTO
+    costoCamino.resize(n, costo_infinito); // CHEQUEAR ESTO
 
     for(uint i= 0; i<predecesores.size();i++)
     {
@@ -1444,6 +1444,8 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     while(!cola.empty()){
        
        pair<costo_t, nodo_t> actual = *cola.begin();
+
+       cola.erase(cola.begin())	;
 
        lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
 
