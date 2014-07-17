@@ -22,11 +22,11 @@ do
 	#aristas_minimas=$((n * (n-1)/2 - 10))
 	#aristas_maximas=$((n * (n-1)/2))
 	
-	aristas_minimas=$((n-1))
-	aristas_maximas=$((10*n))
+	#aristas_minimas=$((n-1))
+	#aristas_maximas=$((10*n))
 	
-	#aristas_minimas=$((n * (n-1)/17))
-	#aristas_maximas=$((n * (n-1)/14))
+	aristas_minimas=$((n * (n-1)/17))
+	aristas_maximas=$((n * (n-1)/14))
 
 	echo "Generando grafos de $n nodos con cantidad de aristas aleatorias en el rango [$aristas_minimas .. $aristas_maximas]"
 	echo "Los pesos W1 de las aristas van a estar en un rango preestablecido aleatorio entre [1..$peso_maximo_w1]"
