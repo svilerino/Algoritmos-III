@@ -1411,74 +1411,67 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 
 //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
-
 	int n = this->cantidad_nodos;
 	int k = obtener_limite_w1();
 	nodo_t origen = obtener_nodo_origen();
-    nodo_t destino = obtener_nodo_destino();
-   
+	nodo_t destino = obtener_nodo_destino();
 
-    vector<costo_t> costosw1;
-    vector<costo_t> costosw2;
-    vector<nodo_t> predecesores;
-    vector<costo_t> costoCamino; // contiene el costo w1 del camino recorrido hasta cada nodo
-    //dijkstra
-    this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
+	vector<costo_t> costosw1;
+	vector<costo_t> costosw2;
+	vector<nodo_t> predecesores;
+	vector<costo_t> costoCamino; // contiene el costo w1 del camino recorrido hasta cada nodo
+	//dijkstra
+	this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
 
-    costosw2.resize(n, costo_infinito);
-    costoCamino.resize(n, costo_infinito); // CHEQUEAR ESTO
+	costosw2.resize(n, costo_infinito);
+	costoCamino.resize(n, costo_infinito); // CHEQUEAR ESTO
 
-    for(uint i= 0; i<predecesores.size();i++)
-    {
-    	predecesores[i] = predecesor_nulo;
-    }
+	for(uint i= 0; i<predecesores.size();i++){
+		predecesores[i] = predecesor_nulo;
+	}
 
-    costosw2[origen] = 0;
+	costosw2[origen] = 0;
 
-    set<pair<costo_t, nodo_t> > cola;
+	set<pair<costo_t, nodo_t> > cola;
 
-    cola.insert(make_pair(costosw2[origen], origen));
+	cola.insert(make_pair(costosw2[origen], origen));
 
-    
-    
-    while(!cola.empty()){
-       
-       pair<costo_t, nodo_t> actual = *cola.begin();
+	while(!cola.empty()){
 
-       cola.erase(cola.begin())	;
+		pair<costo_t, nodo_t> actual = *cola.begin();
 
-       lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
+		cola.erase(cola.begin())	;
 
-       for(auto w : vecinos)
-       {
-       	nodo_t nodoW = w.first;
-       	Arista aristaActualW = w.second;
+		lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
 
-       if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k)
-       {
-       		cola.insert(make_pair(costosw2[nodoW], nodoW));
+		for(auto w : vecinos)
+		{
+			nodo_t nodoW = w.first;
+			Arista aristaActualW = w.second;
 
-       		if (costosw2[nodoW]>costosw2[actual.second]+aristaActualW.obtener_costo_w2())
-      	 	{
-      	 		costosw2[nodoW] = costosw2[actual.second]+aristaActualW.obtener_costo_w2();
-      	 		costoCamino[nodoW] = costoCamino[actual.second]+aristaActualW.obtener_costo_w1();
-      	 		predecesores[nodoW] = actual.second;
-      	 	} 	
-       }
+			if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k){
+				cola.insert(make_pair(costosw2[nodoW], nodoW));
+				if (costosw2[nodoW]>costosw2[actual.second]+aristaActualW.obtener_costo_w2()){
+					costosw2[nodoW] = costosw2[actual.second]+aristaActualW.obtener_costo_w2();
+					costoCamino[nodoW] = costoCamino[actual.second]+aristaActualW.obtener_costo_w1();
+					predecesores[nodoW] = actual.second;
+				} 	
+			}
+		}
+	}
 
-       }
-
-    }
-
-   Camino c(this->mat_adyacencia);
-   nodo_t nodo = destino;
+	Camino c(this->mat_adyacencia);
+	nodo_t nodo = destino;
+	cout <<"Nodos" << endl;
 	do{
-		//cout << nodo << " " ;
+		cout << nodo << " " ;
 		c.agregar_nodo_adelante(nodo);
 		nodo = predecesores[nodo];
 	}while(nodo != predecesor_nulo);
 
-    return c;
+	cout << endl << "Fin Nodos" << endl;
+	this->establecer_se_encontro_solucion(true);
+	return c;
 }
 
 /*
