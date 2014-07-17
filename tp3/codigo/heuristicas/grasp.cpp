@@ -1,5 +1,9 @@
 #include "grafo.h"
 #include "timing.h"
+#include <fstream>
+
+#define FILE_ITERS_MEJORA "evolucion_iteraciones_grasp.txt"
+
 void ejecutar_grasp(Grafo &g);
 
 // -------------- Main ---------------------------------
@@ -28,7 +32,7 @@ void ejecutar_grasp(Grafo &g){
     criterio_terminacion_grasp_t criterio_terminacion = CRT_K_ITERS_SIN_MEJORA;
     //este parametro denota la cantidad de iteraciones maxima, dependiendo del tipo de criterio, de cantidad fija de iteraciones o cantidad de iters
     //consecutivas sin mejora
-    uint64_t ITERS_LIMIT = 100;
+    uint64_t ITERS_LIMIT = 10;
     //este parametro denota el valor aceptable de la funcion objetivo w2 a partir del cual, dejamos de mejorar la solucion y consideramos que es lo suficientemente buena
 
 //----- Configuracion de los modos de la busqueda local y golosa -----
@@ -58,6 +62,7 @@ void ejecutar_grasp(Grafo &g){
     bool sol_valida_greedy = false;
     //ciclo greedy
 
+    vector<pair<uint, costo_t> > mejora_iters_grasp;
     do{
         MEDIR_TIEMPO_PROMEDIO(
             camino = g.obtener_solucion_golosa_randomizada(modo_golosa, parametro_beta);
@@ -73,25 +78,39 @@ void ejecutar_grasp(Grafo &g){
                 while(g.busqueda_local(modo_busqueda_local) > 0);//recordemos que busqueda_local devuelve la mejora numerica en cada iteracion, cuando es 0 cortamos
             , 1, &tiempo_bqlocal);
 
+
             //el tiempo de esta iteracion es la greedy randomized + bqlocal sobre esa sol inicial
             promedio += tiempo_golosa_randomized;
             promedio += tiempo_bqlocal;
             
             //en este punto la bqlocal mejoro todo lo que pudo la sol. inicial obtenida con la randomized greedy
             //me fijo si esta solucion es mejor que la que tenia guardada, de ser asi actualizo el maximo y guardo la sol actual como la nueva mejor.
+            camino = g.obtener_camino_solucion();
             costo_t costo_solucion_actual = camino.obtener_costo_total_w2_camino();
+            //cout << "Costo de la solucion en la iteracion numero " << cant_iters << " : " << costo_solucion_actual << endl;
+            //cout << "Sol actual :";
+            //camino.imprimir_camino(cout);
+
             if(costo_solucion_actual < costo_mejor_solucion){
+                //guardamos que en esta iteracion se encontro una mejora
+                if(cant_iters>0){//sino la primera vez pone infinito(costo_mejor_solucion es infinito al inicializar)
+                    mejora_iters_grasp.push_back(make_pair(cant_iters, costo_mejor_solucion - costo_solucion_actual));                    
+                }
                 costo_mejor_solucion = costo_solucion_actual;
                 mejor_solucion = g.obtener_camino_solucion();
                 //reseteo el contador
                 cant_iters_sin_mejora = 0;
             }else{
                 //una iteracion consecutiva mas sin mejora
+                //guardamos que en esta iteracion se encontro una mejora
+                if(cant_iters>0){//sino la primera vez pone infinito(costo_mejor_solucion es infinito al inicializar)
+                    mejora_iters_grasp.push_back(make_pair(cant_iters, 0));
+                }
                 cant_iters_sin_mejora++;
             }
             cant_iters++;
         }else{
-            cerr << "Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;
+            cerr << "Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
             break;
         }
 
@@ -100,7 +119,7 @@ void ejecutar_grasp(Grafo &g){
         }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
             condicion_terminacion = (cant_iters_sin_mejora < ITERS_LIMIT);
         }
-    }while(!condicion_terminacion);
+    }while(condicion_terminacion);
     promedio = promedio / (double) cant_iters;
 
     //imprimo mediciones en stderr
@@ -115,6 +134,14 @@ void ejecutar_grasp(Grafo &g){
 //        cout << "CRT_K_ITERS_SIN_MEJORA";
 //    }
 //    cout << endl;
+
+        //mejora en iteraciones
+        ofstream evolucion_iteraciones;
+        evolucion_iteraciones.open(FILE_ITERS_MEJORA);
+        for(auto element : mejora_iters_grasp){
+            evolucion_iteraciones << element.first << " " << element.second << endl;
+        }
+        evolucion_iteraciones.close();
 
     g.serialize(cout, FORMATO_1_N_CLOSED);
 }
