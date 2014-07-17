@@ -30,11 +30,9 @@ void ejecutar_greedy(Grafo &g){
         cout << "Se requiere un camino entre (" << nodo_src << ") y (" << nodo_dst<< ") que no exceda el costo " << limit_w1 << endl;
     #endif
     double promedio_medicion = 0;
-    double parametro_beta=1;
-    //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
     Camino camino = g.obtener_camino_vacio();
     MEDIR_TIEMPO_PROMEDIO(
-                camino = g.obtener_solucion_golosa(RCL_DETERMINISTICO, parametro_beta);
+                camino = g.obtener_solucion_golosa();
     , CANT_ITERS_MEDICION, &promedio_medicion);    
     
     g.establecer_camino_solucion(camino);

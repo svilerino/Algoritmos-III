@@ -199,7 +199,8 @@ public:
 	void breadth_first_search(nodo_t origen, vector<distancia_t>& distancias_en_aristas_a_origen);
 
 	//Golosa
-	Camino obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta);
+	Camino obtener_solucion_golosa();
+	Camino obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta);
 
 	//Metodos utilitarios
 	static list<Grafo> parsear_varias_instancias(formato_entrada_t formato);

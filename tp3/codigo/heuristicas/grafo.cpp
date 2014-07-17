@@ -1293,6 +1293,96 @@ bool Grafo::hay_solucion(){
 	return this->sol_valida;
 }
 
+Camino Grafo::obtener_solucion_golosa(){
+	int n = this->cantidad_nodos;
+	int k = obtener_limite_w1();
+	nodo_t origen = obtener_nodo_origen();
+	nodo_t destino = obtener_nodo_destino();
+
+	//camino a devolver
+	Camino c(this->mat_adyacencia);
+
+	//dijkstra de inicializacion
+	vector<costo_t> costosw1;
+	vector<nodo_t> predecesores;
+	this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
+
+	//ACA YA PUEDO SABER SI NO VA A HABER SOLUCION FACTIBLE CON EL DIJKSTRA PREPROCESADO
+	if(costosw1[origen] == costo_infinito){//dist_w1(origen, destino) == infinito?
+        cerr << "No existe solucion factible. No existe camino entre origen(" << origen << ") y destino(" << destino << ") " << endl;
+		//ESTO HACE SI LE PONES FALSE, QUE GRAFO IMPRIMA "no" EN EL METODO SERIALIZE DE LA SALIDA.
+		//ADEMAS DE SER UTIL PARA PREGUNTAR DESDE EL MAIN SI HUBO SOL.
+        this->establecer_se_encontro_solucion(false);
+    }else if(costosw1[origen] > k){//dist_w1(origen, destino) > limit_w1 = k?
+        cerr << "No existe solucion factible. El camino minimo respecto a w1 de origen(" << origen << ") a destino(" << destino << ") es de costo " << costosw1[origen] << endl;
+        //ESTO HACE SI LE PONES FALSE, QUE GRAFO IMPRIMA "no" EN EL METODO SERIALIZE DE LA SALIDA.
+		//ADEMAS DE SER UTIL PARA PREGUNTAR DESDE EL MAIN SI HUBO SOL.
+        this->establecer_se_encontro_solucion(false);
+    }else{
+    	//------------------------------------- Comienza Greedy ----------------------------------------------------
+
+		//Estructuras del greedy
+		vector<costo_t> costosw2(n, costo_infinito);
+		// contiene el costo w1 del camino recorrido hasta cada nodo
+		vector<costo_t> costoCamino(n, costo_nulo); 
+
+		//Comienza el algoritmo
+		//reseteamos los predecesores
+		predecesores.clear();
+		predecesores.resize(n, predecesor_nulo);
+
+		costosw2[origen] = costo_nulo;
+
+		set<pair<costo_t, nodo_t> > cola;
+		cola.insert(make_pair(costosw2[origen], origen));
+
+		while(!cola.empty()){
+			pair<costo_t, nodo_t> actual = *cola.begin();
+			cola.erase(cola.begin());
+
+			lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
+
+			for(auto w : vecinos)
+			{
+				nodo_t nodoW = w.first;
+				Arista aristaActualW = w.second;
+
+				if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k){
+					costo_t costo_tentativo = costosw2[actual.second] + aristaActualW.obtener_costo_w2();
+					if (costosw2[nodoW] > costo_tentativo)
+					{
+						cola.erase(make_pair(costosw2[nodoW], nodoW));
+
+						costosw2[nodoW] = costo_tentativo;
+						costoCamino[nodoW] = costoCamino[actual.second] + aristaActualW.obtener_costo_w1();
+						predecesores[nodoW] = actual.second;
+						
+						cola.insert(make_pair(costosw2[nodoW], nodoW));
+					} 	
+				}
+			}
+		}
+
+		//if(se_encontro_sol?) suponiendo que si hay sol factible el algoritmo encuentra una solucion, esto no hace falta
+		//{
+			//como podes saber aca si lo que encontro greedy es valido? tal vez deberiamos validar esto		
+			//armar camino encontrado por la greedy
+			nodo_t nodo = destino;
+			//cout <<"Nodos" << endl;
+			do{
+				//cout << nodo << " " ;
+				c.agregar_nodo_adelante(nodo);
+				nodo = predecesores[nodo];
+			}while(nodo != predecesor_nulo);
+
+			//cout << endl << "Fin Nodos" << endl;
+			this->establecer_se_encontro_solucion(true);
+		//}
+		//------------------------------------- Fin Greedy ----------------------------------------------------
+	}
+	return c;
+}
+
 bool compare_w1(const pair<nodo_t, Arista>& i, const pair<nodo_t, Arista>& j)
 {
     return (i.second).obtener_costo_w1() < (j.second).obtener_costo_w1();
@@ -1410,7 +1500,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 }
 
 //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
-Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
+Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
 	int n = this->cantidad_nodos;
 	int k = obtener_limite_w1();
 	nodo_t origen = obtener_nodo_origen();

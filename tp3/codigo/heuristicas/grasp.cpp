@@ -67,7 +67,7 @@ void ejecutar_grasp(Grafo &g){
 
     do{
         MEDIR_TIEMPO_PROMEDIO(
-            camino = g.obtener_solucion_golosa(modo_golosa, parametro_beta);
+            camino = g.obtener_solucion_golosa_randomizada(modo_golosa, parametro_beta);
             //cout << "Solucion inicial de la greedy:" << endl;
             //camino.imprimir_camino(cout);
         , 1, &tiempo_golosa_randomized);

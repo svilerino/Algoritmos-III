@@ -38,7 +38,7 @@ void ejecutar_busqueda_local(Grafo &g){
 
     Camino c = g.obtener_camino_vacio();
     if(tipo_sol_inicial == GREEDY_INICIAL){
-        c = g.obtener_solucion_golosa(RCL_DETERMINISTICO, 1);
+        c = g.obtener_solucion_golosa();
     }else if(tipo_sol_inicial == DIJKSTRA_INICIAL){
         c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
     }
