@@ -14,9 +14,16 @@ TIMING_OUTPUT="timings-out"
 echo -n "no" > no.txt
 if ls test-cases/*.in &> /dev/null; then
 	pushd test-cases
-	for file in *.in; do
-		#for heuristica in "bqlocal" "golosa" "grasp"; do
-		for heuristica in "bqlocal"; do
+
+	#Heuristica busqueda local
+	#------------------------------------------------------------------------------------------------------------
+		min_iteraciones=20000000
+		max_iteraciones=0
+		promedio_iters=0
+		cant_test_files=0
+		for file in *.in; do
+			#for heuristica in "bqlocal" "golosa" "grasp"; do
+			heuristica="bqlocal"
 			echo -n "Corriendo $heuristica con archivo de input $file..."
 			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
 
@@ -35,10 +42,28 @@ if ls test-cases/*.in &> /dev/null; then
 		    	echo -e "${green}Ok! $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
 
 		    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters.png "evolucion_iteraciones.txt" 5
+
+		    	if [ $min_iteraciones -gt $cantIters ]
+				then
+					min_iteraciones=$cantIters					
+				fi
+
+				if [ $max_iteraciones -lt $cantIters ]
+				then
+					max_iteraciones=$cantIters					
+				fi
+				promedio_iters=$(($promedio_iters + $cantIters))
 			fi
-			rm evolucion_iteraciones.txt
+			rm -rf evolucion_iteraciones.txt
+			cant_test_files=$((cant_test_files+1))
 		done
-	done
+		promedio_iters=$((promedio_iters / cant_test_files))
+		rm -rf ../resumen_busqueda_local.txt
+		echo "Cantidad de tests realizados: $cant_test_files" >> ../resumen_busqueda_local.txt
+		echo "Iteraciones promedio: $promedio_iters" >> ../resumen_busqueda_local.txt
+		echo "Minima cantidad de iteraciones: $min_iteraciones" >> ../resumen_busqueda_local.txt
+		echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_busqueda_local.txt
+	#------------------------------------------------------------------------------------------------------------
 	popd
 	./plot.sh
 else

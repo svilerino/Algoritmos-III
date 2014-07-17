@@ -19,11 +19,11 @@ peso_maximo_w2=200
 for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=10 ))
 do 
 	#seleccionar aca abajo una combinacion de aristas... para establecer un valor fijo hay que poner max y min iguales.
-	aristas_minimas=$((n * (n-1)/2 - 10))
-	aristas_maximas=$((n * (n-1)/2))
+	#aristas_minimas=$((n * (n-1)/2 - 10))
+	#aristas_maximas=$((n * (n-1)/2))
 	
-	#aristas_minimas=$((n-1))
-	#aristas_maximas=$((10*n))
+	aristas_minimas=$((n-1))
+	aristas_maximas=$((10*n))
 	
 	#aristas_minimas=$((n * (n-1)/17))
 	#aristas_maximas=$((n * (n-1)/14))
