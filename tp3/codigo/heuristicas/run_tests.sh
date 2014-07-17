@@ -15,15 +15,59 @@ echo -n "no" > no.txt
 if ls test-cases/*.in &> /dev/null; then
 	pushd test-cases
 
-	#Heuristica busqueda local
+#	#Heuristica busqueda local
+#	#------------------------------------------------------------------------------------------------------------
+#		min_iteraciones=20000000
+#		max_iteraciones=0
+#		promedio_iters=0
+#		cant_test_files=0
+#		for file in *.in; do
+#			heuristica="bqlocal"
+#			echo -n "Corriendo $heuristica con archivo de input $file..."
+#			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
+#
+#		    DIFF=$(diff "../$TESTS_OUTPUT/$heuristica/$file.out" "../no.txt") 
+#			if [ "$DIFF" == "" ]
+#			then			
+#				echo -e "${red}No existia solucion! Descripcion de la salida:"
+#				cat "../$TIMING_OUTPUT/$heuristica/$file.out"
+#				echo -e -n "${NC}"
+#			else    		    
+#				cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
+#				cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
+#				cantIters=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')
+#			    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
+#			    echo "$cantNodos $cantAristas $timeElapsed " >> ../"$heuristica".tmpplot
+#		    	echo -e "${green}Ok! $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
+#
+#		    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters.png "evolucion_iteraciones.txt" 5
+#
+#		    	if [ $min_iteraciones -gt $cantIters ]
+#				then
+#					min_iteraciones=$cantIters					
+#				fi
+#
+#				if [ $max_iteraciones -lt $cantIters ]
+#				then
+#					max_iteraciones=$cantIters					
+#				fi
+#				promedio_iters=$(($promedio_iters + $cantIters))
+#			fi
+#			rm -rf evolucion_iteraciones.txt
+#			cant_test_files=$((cant_test_files+1))
+#		done
+#		promedio_iters=$((promedio_iters / cant_test_files))
+#		rm -rf ../resumen_busqueda_local.txt
+#		echo "Cantidad de tests realizados: $cant_test_files" >> ../resumen_busqueda_local.txt
+#		echo "Iteraciones promedio: $promedio_iters" >> ../resumen_busqueda_local.txt
+#		echo "Minima cantidad de iteraciones: $min_iteraciones" >> ../resumen_busqueda_local.txt
+#		echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_busqueda_local.txt
+#	#------------------------------------------------------------------------------------------------------------
+
+	#Heuristica golosa
 	#------------------------------------------------------------------------------------------------------------
-		min_iteraciones=20000000
-		max_iteraciones=0
-		promedio_iters=0
-		cant_test_files=0
 		for file in *.in; do
-			#for heuristica in "bqlocal" "golosa" "grasp"; do
-			heuristica="bqlocal"
+			heuristica="golosa"
 			echo -n "Corriendo $heuristica con archivo de input $file..."
 			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
 
@@ -33,36 +77,15 @@ if ls test-cases/*.in &> /dev/null; then
 				echo -e "${red}No existia solucion! Descripcion de la salida:"
 				cat "../$TIMING_OUTPUT/$heuristica/$file.out"
 				echo -e -n "${NC}"
-			else    		    
+			else
 				cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
 				cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
 				cantIters=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')
 			    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
 			    echo "$cantNodos $cantAristas $timeElapsed " >> ../"$heuristica".tmpplot
 		    	echo -e "${green}Ok! $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
-
-		    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters.png "evolucion_iteraciones.txt" 5
-
-		    	if [ $min_iteraciones -gt $cantIters ]
-				then
-					min_iteraciones=$cantIters					
-				fi
-
-				if [ $max_iteraciones -lt $cantIters ]
-				then
-					max_iteraciones=$cantIters					
-				fi
-				promedio_iters=$(($promedio_iters + $cantIters))
-			fi
-			rm -rf evolucion_iteraciones.txt
-			cant_test_files=$((cant_test_files+1))
+		    fi
 		done
-		promedio_iters=$((promedio_iters / cant_test_files))
-		rm -rf ../resumen_busqueda_local.txt
-		echo "Cantidad de tests realizados: $cant_test_files" >> ../resumen_busqueda_local.txt
-		echo "Iteraciones promedio: $promedio_iters" >> ../resumen_busqueda_local.txt
-		echo "Minima cantidad de iteraciones: $min_iteraciones" >> ../resumen_busqueda_local.txt
-		echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_busqueda_local.txt
 	#------------------------------------------------------------------------------------------------------------
 	popd
 	./plot.sh
