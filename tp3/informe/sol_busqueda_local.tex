@@ -321,10 +321,23 @@ Resumen del analisis:
 
 En general, todas las funciones son estrictamente decrecientes, salvo excepciones donde en ciertos puntos crece muy poco y vuelve a decrecer mas fuertemente. Esto nos da la pauta de que el grado de mejora en cada iteracion durante la vida del ciclo de la busqueda local decrece a medida que hacemos mas iteraciones, para finalmente estancarse en cero y llegar al criterio de terminaci\'on.
 
+\subsubsection{Rendimiento evolutivo en grafos con densidad lineal de aristas}
+
+Resumen del analisis:
+\begin{itemize}
+	\item Cantidad de tests realizados: 282
+	\item Iteraciones promedio: 2
+	\item Minima cantidad de iteraciones: 1
+	\item Maxima cantidad de iteraciones: 9
+\end{itemize}
+
+Observamos que para grafos menos densos, disminuye la cantidad promedio de iteraciones, esto tambien podr\'ia indicar que hay algun tipo de relacion entre la cantidad de aristas y el cardinal de la vecindad $N$, lo cual tiene sentido, porque a mayor cantidad de aristas en el grafo, mas modificaci\'ones locales pueden hacerse al camino inicial.
+
 \subsection{Experimentacion: Distintas soluciones iniciales factibles}
 Como mencionamos antes, se utiliza Dijkstra sobre $w_1$ para obtener la solucion inicial factible, para comenzar las iteraciones de b\'usqueda local. En esta secci\'on decidimos variar esto y establecer la solucion inicial de busqueda local con la heuristica golosa. Para ciertos grafos preestablecidos que pueden encontrarse en la carpeta \texttt{grafos especiales} las soluciones finales de busqueda local con los 2 modos de solucion inicial son iguales, lo que vari\'o de forma notable fue la cantidad de iteraciones de busqueda local necesarias para llegar a dicha solucion final, debajo se muestra una tabla indicando esto:
 \begin{center}
 	\begin{tabular}{ | l | c | c |}
+	  \hline
 	  Grafo especial numero & Cant. iters Dijkstra & Cant. iters Greedy \\
 	  \hline
 	  Grafo\_1.txt & 3 & 0 \\
