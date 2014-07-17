@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <random>
 
-#define DEBUG_MESSAGES_ON
+//#define DEBUG_MESSAGES_ON
 //#define CYCLE_PREVENT_MESSAGE_ON
 //#define VECINOS_COMUNES_LAZY
 

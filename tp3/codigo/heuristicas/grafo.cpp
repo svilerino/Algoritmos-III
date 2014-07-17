@@ -1387,7 +1387,7 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
     		//cout <<"RCL_POR_CANTIDAD" << endl;
 			uint cantidad_trim = (int) parametro_beta;
 			if (cantidad_trim < 1){
-				cerr << "EH, EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO, LE PONGO 1!!" << endl;
+				cerr << "EL PARAMETRO BETA POR CANTIDAD TOMANDO FLOOR ME DA MENOR QUE UNO, LE PONGO 1" << endl;
 				cantidad_trim = 1;
 			}
 			if(cantidad_trim > candidatos.size()){
@@ -1415,185 +1415,103 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 	int k = obtener_limite_w1();
 	nodo_t origen = obtener_nodo_origen();
 	nodo_t destino = obtener_nodo_destino();
-	//cout << "Nodo Origen: " << origen << endl;
-	//cout << "Nodo Destino: " << destino << endl;
+
+	//camino a devolver
+	Camino c(this->mat_adyacencia);
 
 	//dijkstra de inicializacion
 	vector<costo_t> costosw1;
 	vector<nodo_t> predecesores;
 	this->dijkstra(destino, COSTO_W1, costosw1, predecesores);
 
-	//Estructuras del greedy
-	vector<costo_t> costosw2(n, costo_infinito);
-	// contiene el costo w1 del camino recorrido hasta cada nodo
-	vector<costo_t> costoCamino(n, costo_nulo); 
+	//ACA YA PUEDO SABER SI NO VA A HABER SOLUCION FACTIBLE CON EL DIJKSTRA PREPROCESADO
+	if(costosw1[origen] == costo_infinito){//dist_w1(origen, destino) == infinito?
+        cerr << "No existe solucion factible. No existe camino entre origen(" << origen << ") y destino(" << destino << ") " << endl;
+		//ESTO HACE SI LE PONES FALSE, QUE GRAFO IMPRIMA "no" EN EL METODO SERIALIZE DE LA SALIDA.
+		//ADEMAS DE SER UTIL PARA PREGUNTAR DESDE EL MAIN SI HUBO SOL.
+        this->establecer_se_encontro_solucion(false);
+    }else if(costosw1[origen] > k){//dist_w1(origen, destino) > limit_w1 = k?
+        cerr << "No existe solucion factible. El camino minimo respecto a w1 de origen(" << origen << ") a destino(" << destino << ") es de costo " << costosw1[origen] << endl;
+        //ESTO HACE SI LE PONES FALSE, QUE GRAFO IMPRIMA "no" EN EL METODO SERIALIZE DE LA SALIDA.
+		//ADEMAS DE SER UTIL PARA PREGUNTAR DESDE EL MAIN SI HUBO SOL.
+        this->establecer_se_encontro_solucion(false);
+    }else{
+    	//------------------------------------- Comienza Greedy ----------------------------------------------------
 
-	//Comienza el algoritmo
-	//reseteamos los predecesores
-	predecesores.clear();
-	predecesores.resize(n, predecesor_nulo);
+//		Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
+//        pair<nodo_t, Arista> minimo;
+//    	if(tipo_ejecucion == RCL_DETERMINISTICO){
+//    		//el metodo obtener_lista_restringida_candidatos me devuelve un unico elemento, el de la decision greedy 
+//			minimo = candidatos.front();        		        		
+//    	}else if(tipo_ejecucion == RCL_POR_VALOR || tipo_ejecucion == RCL_POR_CANTIDAD){
+//        	std::default_random_engine generator;
+//			//generacion numero random c++11 con distribucion uniforme
+//			random_device rd;
+//		    mt19937 gen(rd());
+//		    uniform_int_distribution<> dis(0, candidatos.size()-1);
+//			int candidato_random = dis(gen);
+//			//indexo con el numero random obtenido
+//			minimo = candidatos[candidato_random];   		
+//    	}
 
-	costosw2[origen] = costo_nulo;
+		//Estructuras del greedy
+		vector<costo_t> costosw2(n, costo_infinito);
+		// contiene el costo w1 del camino recorrido hasta cada nodo
+		vector<costo_t> costoCamino(n, costo_nulo); 
 
-	set<pair<costo_t, nodo_t> > cola;
-	cola.insert(make_pair(costosw2[origen], origen));
+		//Comienza el algoritmo
+		//reseteamos los predecesores
+		predecesores.clear();
+		predecesores.resize(n, predecesor_nulo);
 
-	while(!cola.empty()){		
-		pair<costo_t, nodo_t> actual = *cola.begin();
-		cola.erase(cola.begin());
+		costosw2[origen] = costo_nulo;
 
-		lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
+		set<pair<costo_t, nodo_t> > cola;
+		cola.insert(make_pair(costosw2[origen], origen));
 
-		for(auto w : vecinos)
-		{
-			nodo_t nodoW = w.first;
-			Arista aristaActualW = w.second;
+		while(!cola.empty()){
+			pair<costo_t, nodo_t> actual = *cola.begin();
+			cola.erase(cola.begin());
 
-			if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k){
-				costo_t costo_tentativo = costosw2[actual.second] + aristaActualW.obtener_costo_w2();
-				if (costosw2[nodoW] > costo_tentativo)
-				{
-					cola.erase(make_pair(costosw2[nodoW], nodoW));
+			lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
 
-					costosw2[nodoW] = costo_tentativo;
-					costoCamino[nodoW] = costoCamino[actual.second] + aristaActualW.obtener_costo_w1();
-					predecesores[nodoW] = actual.second;
-					
-					cola.insert(make_pair(costosw2[nodoW], nodoW));
-				} 	
+			for(auto w : vecinos)
+			{
+				nodo_t nodoW = w.first;
+				Arista aristaActualW = w.second;
+
+				if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k){
+					costo_t costo_tentativo = costosw2[actual.second] + aristaActualW.obtener_costo_w2();
+					if (costosw2[nodoW] > costo_tentativo)
+					{
+						cola.erase(make_pair(costosw2[nodoW], nodoW));
+
+						costosw2[nodoW] = costo_tentativo;
+						costoCamino[nodoW] = costoCamino[actual.second] + aristaActualW.obtener_costo_w1();
+						predecesores[nodoW] = actual.second;
+						
+						cola.insert(make_pair(costosw2[nodoW], nodoW));
+					} 	
+				}
 			}
 		}
+
+		//if(se_encontro_sol?) suponiendo que si hay sol factible el algoritmo encuentra una solucion, esto no hace falta
+		//{
+			//como podes saber aca si lo que encontro greedy es valido? tal vez deberiamos validar esto		
+			//armar camino encontrado por la greedy
+			nodo_t nodo = destino;
+			//cout <<"Nodos" << endl;
+			do{
+				//cout << nodo << " " ;
+				c.agregar_nodo_adelante(nodo);
+				nodo = predecesores[nodo];
+			}while(nodo != predecesor_nulo);
+
+			//cout << endl << "Fin Nodos" << endl;
+			this->establecer_se_encontro_solucion(true);
+		//}
+		//------------------------------------- Fin Greedy ----------------------------------------------------
 	}
-
-	Camino c(this->mat_adyacencia);
-	nodo_t nodo = destino;
-	//cout <<"Nodos" << endl;
-	do{
-		//cout << nodo << " " ;
-		c.agregar_nodo_adelante(nodo);
-		nodo = predecesores[nodo];
-	}while(nodo != predecesor_nulo);
-
-	//cout << endl << "Fin Nodos" << endl;
-	this->establecer_se_encontro_solucion(true);
 	return c;
 }
-
-/*
-//---------------------------- Inicializo los vectores y datos ----------------
-    nodo_t nodo_dst = obtener_nodo_destino();
-    
-    vector<costo_t> costos;
-    vector<nodo_t> predecesores;
-    //dijkstra
-    this->dijkstra(nodo_dst, COSTO_W1, costos, predecesores);
-
-    vector<distancia_t> distancias;
-    this->breadth_first_search(nodo_dst, distancias);
-
-    Camino camino(this->mat_adyacencia);
-    camino.agregar_nodo(nodo_src);
-    costo_t costo_camino = 0;
-    distancia_t distanciaLlegada = distancias[nodo_src];
-
-    if(distanciaLlegada == distancia_infinita){
-    	cerr << "[Golosa] la distancia en aristas entre src y dst es infinita => no hay solucion." << endl;
-    	//no hay camino entre src y dst => no hay solucion
-    	this->establecer_se_encontro_solucion(false);
-    	return camino;
-    }else if(distanciaLlegada == 1){
-    //Si distanciaLlegada == 1 entonces lo busco entre los vecinos y reviso esa arista para ver si w1(arista) > limit_w1
-    	lista_adyacentes vecinos_src = obtener_lista_vecinos(nodo_src);
-    	lista_adyacentes::iterator it = vecinos_src.begin();
-    	lista_adyacentes::iterator final_it = vecinos_src.end();
-    	while((it != final_it) && (it->first == nodo_dst)){
-    		it++;
-    	}
-    	if(it == final_it){
-    		cerr << "Distancia en aristas 1 y no son adyacentes src y dst...turbio" << endl;
-    	}else{
-    		costo_t limit_w1 = this->obtener_limite_w1();
-    		if((it->second).obtener_costo_w1() > limit_w1){
-    			cerr << "[Golosa] la distancia en costo entre src y dst es " << (it->second).obtener_costo_w1() << " > " << limit_w1 << " => no hay solucion." << endl;
-		    	//el camino minimo se pasa de la cota => no hay solucion
-		    	this->establecer_se_encontro_solucion(false);
-		    	return camino;
-    		}
-    	}
-    }else{//distanciaLlegada > 1
-	    //como IGNORE nodo_src en dijkstra, la distancia va a ser distancia_infinita.
-	    //pero quiero saber si el camino minimo sobre w1 es factible cuando distanciaLlegada>1
-	    //entonces obtengo el minimo vecino sobre el peso w1 en la arista que los une
-	    //y me fijo si dist(src, min_ady) +  dist(min_ady, dst) > K. Si esto vale
-	    //el camino minimo sobre w1 entre src y dst se pasa de la cota, indicando que no hay sol.
-	    //factible
-
-		lista_adyacentes vecinos_src = obtener_lista_vecinos(nodo_src);
-
-		pair<nodo_t, Arista > min_ady_pair = *min_element(vecinos_src.begin(), vecinos_src.end(), compare_w1);
-
-	    nodo_t min_ady = min_ady_pair.first;
-	    costo_t min_ady_src_w1 = (min_ady_pair.second).obtener_costo_w1();
-
-	    distancia_t dist_cost_src_dst = costos[min_ady] + min_ady_src_w1;
-
-	    costo_t limit_w1 = this->obtener_limite_w1();
-
-	    if(dist_cost_src_dst > limit_w1){
-	    	cerr << "[Golosa] la distancia en costo entre src y dst es " << dist_cost_src_dst << " > " << limit_w1 << " => no hay solucion." << endl;
-	    	//el camino minimo se pasa de la cota => no hay solucion
-	    	this->establecer_se_encontro_solucion(false);
-	    	return camino;
-	    }    	
-	    //else{
-	    	//cout << "Distancia en costo entre src y dst: " << dist_cost_src_dst << endl;
-	    //}
-	}
-    //--------------------------Comienza la busqueda golosa ----------------
-
-    //cout << "Distancia en aristas entre src y dst: " << distanciaLlegada << endl;
-    nodo_t actual = nodo_src;
-    //cout << "Nodo inicial: " << actual << endl;
-    bool hubo_error = false;
-    while(actual != nodo_dst){
-       
-        vector<pair<nodo_t, Arista> > candidatos = this->obtener_lista_restringida_candidatos(actual, parametro_beta, costos, distancias, costo_camino, distanciaLlegada, tipo_ejecucion);
-
-        //cout << "Obteniendo mejor vecino del nodo (" << actual << ") segun decision greedy..." << endl;
-        if(candidatos.empty()){
-        	cerr << "[Golosa] Candidatos vacio. Cortando algoritmo, devolviendo camino parcial obtenido." << endl;
-        	hubo_error = true;
-        	break;
-        }
-
-        //Seleccion de decision greedy segun tipo de ejecucion requerido por parametro
-        pair<nodo_t, Arista> minimo;
-    	if(tipo_ejecucion == RCL_DETERMINISTICO){
-    		//el metodo obtener_lista_restringida_candidatos me devuelve un unico elemento, el de la decision greedy 
-			minimo = candidatos.front();        		        		
-    	}else if(tipo_ejecucion == RCL_POR_VALOR || tipo_ejecucion == RCL_POR_CANTIDAD){
-        	std::default_random_engine generator;
-			//generacion numero random c++11 con distribucion uniforme
-			random_device rd;
-		    mt19937 gen(rd());
-		    uniform_int_distribution<> dis(0, candidatos.size()-1);
-			int candidato_random = dis(gen);
-			//indexo con el numero random obtenido
-			minimo = candidatos[candidato_random];   		
-    	}
-
-        //cout << "\tEl mejor vecino segun decision greedy para el nodo (" << actual << ") es (";
-        //cout << minimo.first << ") con un costo (w1: " << (minimo.second).obtener_costo_w1() << ", w2: " << (minimo.second).obtener_costo_w2() << ")" << endl;
-        //cout << endl;
-
-        camino.agregar_nodo(minimo.first);
-        costo_camino += (minimo.second).obtener_costo_w1();
-        actual = minimo.first;
-        distanciaLlegada--;
-    }
-    this->establecer_se_encontro_solucion(!hubo_error);
-    return camino;
-}
-
-
-*/
