@@ -1413,10 +1413,10 @@ vector<pair<nodo_t, Arista> > Grafo::obtener_lista_restringida_candidatos(nodo_t
 Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
 
 	int n = this->cantidad_nodos;
-	int k = obtener_limite_w1;
+	int k = obtener_limite_w1();
 	nodo_t origen = obtener_nodo_origen();
     nodo_t destino = obtener_nodo_destino();
-    Camino c = obtener_camino_vacio();
+   
 
     vector<costo_t> costosw1;
     vector<costo_t> costosw2;
@@ -1428,9 +1428,9 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
     costosw2.resize(n, costo_infinito);
     costoCamino.resize(n, 0); // CHEQUEAR ESTO
 
-    for(int i= 0; i<predecesores.size();i++)
+    for(uint i= 0; i<predecesores.size();i++)
     {
-    	predecesores[i] = NULL;
+    	predecesores[i] = predecesor_nulo;
     }
 
     costosw2[origen] = 0;
@@ -1439,8 +1439,8 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
 
     cola.insert(make_pair(costosw2[origen], origen));
 
-    nodo_t actual = origen;
-    bool hubo_error = false;
+    
+    
     while(!cola.empty()){
        
        pair<costo_t, nodo_t> actual = *cola.begin();
@@ -1452,21 +1452,30 @@ Camino Grafo::obtener_solucion_golosa(tipo_ejecucion_golosa_t tipo_ejecucion, do
        	nodo_t nodoW = w.first;
        	Arista aristaActualW = w.second;
 
-       if (costoCamino[actual.second] + costosw1[nodoW] + obtener_costo_w1(aristaActualW) <= k)
+       if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k)
        {
        		cola.insert(make_pair(costosw2[nodoW], nodoW));
 
-       		if (costosw2[nodoW]>costosw2[actual]+obtener_costo_w2(aristaActualW))
+       		if (costosw2[nodoW]>costosw2[actual.second]+aristaActualW.obtener_costo_w2())
       	 	{
-      	 		costosw2[nodoW] = costosw2[actual]+obtener_costo_w2(aristaActualW);
-      	 		costoCamino[nodoW] = costoCamino[actual]+obtener_costo_w1(aristaActualW);
-      	 		predecesor[nodoW] = actual;
+      	 		costosw2[nodoW] = costosw2[actual.second]+aristaActualW.obtener_costo_w2();
+      	 		costoCamino[nodoW] = costoCamino[actual.second]+aristaActualW.obtener_costo_w1();
+      	 		predecesores[nodoW] = actual.second;
       	 	} 	
        }
 
        }
 
     }
+
+   Camino c(this->mat_adyacencia);
+   nodo_t nodo = destino;
+	do{
+		//cout << nodo << " " ;
+		c.agregar_nodo_adelante(nodo);
+		nodo = predecesores[nodo];
+	}while(nodo != predecesor_nulo);
+
     return c;
 }
 
