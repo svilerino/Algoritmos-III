@@ -32,9 +32,9 @@ void ejecutar_grasp(Grafo &g){
     criterio_terminacion_grasp_t criterio_terminacion = CRT_K_ITERS_SIN_MEJORA;
     //este parametro denota la cantidad de iteraciones maxima, dependiendo del tipo de criterio, de cantidad fija de iteraciones o cantidad de iters
     //consecutivas sin mejora
-    uint64_t ITERS_LIMIT = 10;
+    uint64_t ITERS_LIMIT = 2;
     //consecutivas sin que greedy rand me de una solucion factible
-    uint64_t RAND_GREEDY_BAD_ITERS_LIMIT = 5;
+    uint64_t RAND_GREEDY_BAD_ITERS_LIMIT = 3;
     //este parametro denota el valor aceptable de la funcion objetivo w2 a partir del cual, dejamos de mejorar la solucion y consideramos que es lo suficientemente buena
 
 //----- Configuracion de los modos de la busqueda local y golosa -----
@@ -130,7 +130,7 @@ void ejecutar_grasp(Grafo &g){
             cant_iters++;
         }else{
             //cerr << "[Grasp] Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
-            cant_iters_sin_sol_greedy_rand_factible++;
+            cant_iters_sin_sol_greedy_rand_factible++;            
         }
 
         if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
@@ -138,7 +138,7 @@ void ejecutar_grasp(Grafo &g){
         }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
             condicion_terminacion = (cant_iters_sin_mejora < ITERS_LIMIT);
         }
-        condicion_terminacion = condicion_terminacion || (cant_iters_sin_sol_greedy_rand_factible >= RAND_GREEDY_BAD_ITERS_LIMIT);
+        condicion_terminacion = condicion_terminacion && (cant_iters_sin_sol_greedy_rand_factible < RAND_GREEDY_BAD_ITERS_LIMIT);
     }while(condicion_terminacion);
     promedio = promedio / (double) cant_iters;
 
