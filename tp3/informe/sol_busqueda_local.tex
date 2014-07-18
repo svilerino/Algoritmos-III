@@ -235,6 +235,8 @@ Veamos que no es el \'optimo. Soluci\'on del algoritmo exacto:
 
 Donde vemos que el camino \'optimo es el 1,4,5,6. Esto se da por la poca densidad del grafo, y en particular, por ser disjuntos los caminos de salida a llegada, la b\'usqueda local no encuentra mejora para realizar y se queda con la soluci\'on que brinda el dijkstra inicial.
 
+Es f\'acil notar que el hecho de agregarle aristas al grafo, posibilita a la b\'usqueda a comenzar a realizar mejoras, por lo tanto el algoritmo funciona mejor para grafos con una mayor densidad de aristas. Vamos a realizar pruebas sobre esto en la secci\'on de experimentaci\'on.
+
 \subsection{Complejidad}
 Para la explorac\'ion de las vecindades $N_1$ y $N_2$ se recorren las duplas/triplas consecutivas de nodos, segun corresponda, lo cual toma $O(n)$, y por cada una de las triplas, se obtienen los vecinos en comun de los nodos extremos, esto cuesta $O(n)$, sin embargo, fue mejorada la constante debido a un preprocesamiento mencionado debajo. Luego la complejidad temporal de explorar sucesivamente las vecindades mencionadas es $k*O(n^2)$, donde k es la cantidad de iteraciones necesarias hasta finalizar la b\'usqueda local.\\
 Para la vecindad $N_3$ se recorren todas las triplas consecutivas, nuevamente con un costo temporal de \'orden lineal. Para cada tripla, se verifica en tiempo constante por matriz de adyacencia que exista una arista directa entre los extremos y se validan las restricciones de factibilidad y mejora de $w_1$ y $w_2$ respectivamente. Luego, el costo temporal de exploracion sucesiva se la vecindad es $k*O(n)$, donde k es la cantidad de iteraciones que fueron realizadas hasta finalizar la b\'usqueda local.\\
