@@ -33,6 +33,8 @@ void ejecutar_grasp(Grafo &g){
     //este parametro denota la cantidad de iteraciones maxima, dependiendo del tipo de criterio, de cantidad fija de iteraciones o cantidad de iters
     //consecutivas sin mejora
     uint64_t ITERS_LIMIT = 10;
+    //consecutivas sin que greedy rand me de una solucion factible
+    uint64_t RAND_GREEDY_BAD_ITERS_LIMIT = 5;
     //este parametro denota el valor aceptable de la funcion objetivo w2 a partir del cual, dejamos de mejorar la solucion y consideramos que es lo suficientemente buena
 
 //----- Configuracion de los modos de la busqueda local y golosa -----
@@ -54,6 +56,7 @@ void ejecutar_grasp(Grafo &g){
     Camino mejor_solucion = g.obtener_camino_vacio();
     costo_t costo_mejor_solucion = costo_infinito;
     uint64_t cant_iters = 0;
+    uint64_t cant_iters_sin_sol_greedy_rand_factible = 0;
     uint64_t cant_iters_sin_mejora = 0;
     double tiempo_golosa_randomized = 0;
     double tiempo_bqlocal = 0;
@@ -70,11 +73,16 @@ void ejecutar_grasp(Grafo &g){
             //camino.imprimir_camino(cout);
         , 1, &tiempo_golosa_randomized);
 
-        sol_valida_greedy = g.hay_solucion();
+        //la sol greedy rand a veces da cosas no factibles, asi que verifico:
+        //g.hay_solucion() nos indica si existe una sol factible(greedy rand lo setea en false si el minimo dijktra sobre w1 > limit_w1)
+        //(camino.obtener_costo_total_w1_camino() < g.obtener_limite_w1()); para chequear la validez del camino final de greedy rand
+        sol_valida_greedy = g.hay_solucion() && (camino.obtener_costo_total_w1_camino() < g.obtener_limite_w1());
         if(sol_valida_greedy){//puede que la greedy randomized no encuentre solucion!
             //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)   
             g.establecer_camino_solucion(camino);
-
+        
+            //reseteo el contador de sol malas greedy rand
+            cant_iters_sin_sol_greedy_rand_factible=0;
 
             int mejora_current_iteration = 0;
             uint64_t cant_iters_bqlocal = 0;
@@ -121,8 +129,8 @@ void ejecutar_grasp(Grafo &g){
             }
             cant_iters++;
         }else{
-            cerr << "[Grasp] Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
-            break;
+            //cerr << "[Grasp] Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
+            cant_iters_sin_sol_greedy_rand_factible++;
         }
 
         if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
@@ -130,6 +138,7 @@ void ejecutar_grasp(Grafo &g){
         }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
             condicion_terminacion = (cant_iters_sin_mejora < ITERS_LIMIT);
         }
+        condicion_terminacion = condicion_terminacion || (cant_iters_sin_sol_greedy_rand_factible >= RAND_GREEDY_BAD_ITERS_LIMIT);
     }while(condicion_terminacion);
     promedio = promedio / (double) cant_iters;
 
