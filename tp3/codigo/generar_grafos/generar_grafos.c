@@ -17,14 +17,16 @@ int main(int argc, char **argv)
 	
 	struct timeval tv;
 
-	if(argc != 5){
-		fprintf(stderr, "%s cantidad_nodos cantidad_aristas maximo_random_w1 maximo_random_w2\nK va a estar aleatoriamente entre 0 y cantidad_aristas * maximo_random_w1\n", argv[0]);
+	if(argc != 6){
+		fprintf(stderr, "%s cantidad_nodos cantidad_aristas maximo_random_w1 maximo_random_w2 limite_w1\nK va a estar aleatoriamente entre 0 y cantidad_aristas * maximo_random_w1\n", argv[0]);
 		return -1;
 	}
 	cantidad_nodos = atoi(argv[1]);
 	cantidad_aristas = atoi(argv[2]);
 	maximo_random_w1 = atoi(argv[3]);
 	maximo_random_w2 = atoi(argv[4]);
+	K = atoi(argv[5]);
+
 	v = random() % cantidad_nodos;
 	v++;
 	w = random() % cantidad_nodos;
@@ -35,7 +37,7 @@ int main(int argc, char **argv)
 	gettimeofday(&tv, NULL);
 
 	srandom(tv.tv_usec);
-	K = random() % ((cantidad_aristas * maximo_random_w1) + 1);
+	//K = random() % ((cantidad_aristas * maximo_random_w1) + 1);
 	
 	printf("%d %d %d %d %d\n", cantidad_nodos, cantidad_aristas, v, w, K);
 	aristas = (int **)calloc(cantidad_nodos + 1, sizeof(int *));

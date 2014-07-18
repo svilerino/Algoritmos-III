@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -O2
 LDFLAGS=
 RM=rm
 OBJECTS=generar_grafos.o
