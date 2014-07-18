@@ -22,7 +22,10 @@ grasp: grasp.o grafo.o
 golosa: golosa.o grafo.o
 	$(LD) $(LDFLAGS) -o golosa golosa.o grafo.o
 
-tests: codigo
+generador:
+	$(MAKE) -C ../generar_grafos	
+
+tests: generador codigo
 	./create_tests.sh
 
 graphics: tests
@@ -33,6 +36,7 @@ graphics: tests
 	./run_optimality_tests.sh --use-exacta
 
 clean:
+	$(MAKE) -C ../generar_grafos clean
 	$(MAKE) -C ../sol_exacta clean
 	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.* test-results/exacta/*.*
 	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.* timings-out/exacta/*.*

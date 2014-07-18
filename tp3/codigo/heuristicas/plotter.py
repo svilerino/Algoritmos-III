@@ -275,7 +275,7 @@ else:
 				
 			#------------------------------------------------------------------------------------------------											
 			if(graphictype == 7):
-				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*',  graphic_med_x_file3, graphic_med_y_file3, 'y*', label="")	
+				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*',  graphic_med_x_file3, graphic_med_y_file3, 'y+', label="")	
 			else:
 				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*', label="")	
 			plt.xlabel('x = Cantidad de nodos', fontsize=14)
