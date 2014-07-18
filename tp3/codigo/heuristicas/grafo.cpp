@@ -1393,7 +1393,7 @@ set<pair<costo_t, nodo_t> >::iterator Grafo::obtener_candidato_randomizado(tipo_
 		//tengo que elegir un numero i, aleatorio entre 0 y min{cola.size(), parametro_beta} -1 elemento de la cola
 		//y devolver el i-esimo elemento en orden de la cola
 		//dado que la cola esta ordenada, cumple una RCL_POR_CANTIDAD
-		uint rcl_target_top = std::min(cola.size(), (uint) parametro_beta) - 1;
+		uint rcl_target_top = (uint) std::min((uint)cola.size(), (uint) parametro_beta) - 1;
 
 		//generacion numero random c++11 con distribucion uniforme
 		random_device rd;
