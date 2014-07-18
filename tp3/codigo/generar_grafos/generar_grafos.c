@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <random>
+
+using namespace std;
 
 int main(int argc, char **argv)
 {
@@ -15,8 +18,6 @@ int main(int argc, char **argv)
 	int **aristas;
 	int i, j, a, b;
 	
-	struct timeval tv;
-
 	if(argc != 6){
 		fprintf(stderr, "%s cantidad_nodos cantidad_aristas maximo_random_w1 maximo_random_w2 limite_w1\nK va a estar aleatoriamente entre 0 y cantidad_aristas * maximo_random_w1\n", argv[0]);
 		return -1;
@@ -27,27 +28,27 @@ int main(int argc, char **argv)
 	maximo_random_w2 = atoi(argv[4]);
 	K = atoi(argv[5]);
 
-	v = random() % cantidad_nodos;
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_int_distribution<> dis(0, cantidad_nodos-1);
+	//dis(gen) genera el numerito
+
+	v = dis(gen);
 	v++;
-	w = random() % cantidad_nodos;
+	w = dis(gen);
 	w++;
 	if(cantidad_aristas > (cantidad_nodos * (cantidad_nodos - 1)) / 2)
 		cantidad_aristas = (cantidad_nodos * (cantidad_nodos - 1)) / 2;
 
-	gettimeofday(&tv, NULL);
-
-	srandom(tv.tv_usec);
-	//K = random() % ((cantidad_aristas * maximo_random_w1) + 1);
-	
 	printf("%d %d %d %d %d\n", cantidad_nodos, cantidad_aristas, v, w, K);
 	aristas = (int **)calloc(cantidad_nodos + 1, sizeof(int *));
 	for(i = 0; i <= cantidad_nodos; i++){
 		aristas[i] = (int *)calloc(cantidad_nodos + 1, sizeof(int));
 	}
 	while(cantidad_aristas > 0){
-		i = random() % cantidad_nodos;
+		i = dis(gen);
 		i++;
-		j = random() % cantidad_nodos;
+		j = dis(gen);
 		j++;
 		if(i == j || aristas[i][j] || aristas[j][i]){
 			a = (i + j + 1) % (cantidad_nodos * cantidad_nodos);
@@ -72,7 +73,11 @@ int main(int argc, char **argv)
 		}
 		aristas[i][j] = 1;
 		aristas[j][i] = 1;
-		printf("%d %d %ld.0 %ld.0\n", i, j, random() % maximo_random_w1, random() % maximo_random_w2);
+
+		uniform_int_distribution<> disrw1(0, maximo_random_w1);
+		uniform_int_distribution<> disrw2(0, maximo_random_w2);
+		
+		printf("%d %d %ld.0 %ld.0\n", i, j, disrw1(gen), disrw2(gen));
 		cantidad_aristas--;
 	}
 	printf("0");
