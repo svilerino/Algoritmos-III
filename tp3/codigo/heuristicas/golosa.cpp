@@ -42,7 +42,6 @@ void ejecutar_greedy(Grafo &g){
             cout << endl << "Solucion obtenida con golosa" << endl;
             camino.imprimir_camino(cout);
         #endif
-
     }
 
     g.serialize(cout, FORMATO_1_N_CLOSED);

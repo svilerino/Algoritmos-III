@@ -31,28 +31,34 @@ void ejecutar_busqueda_local(Grafo &g){
     
     //--------------------------------- Busco solucion inicial ----------------------
 
-    //typedef enum tipo_sol_inicial_bqlocal {DIJKSTRA_INICIAL, GREEDY_INICIAL} tipo_sol_inicial_bqlocal_t;
-    tipo_sol_inicial_bqlocal_t tipo_sol_inicial = DIJKSTRA_INICIAL;
-
-    Camino c = g.obtener_camino_vacio();
-    if(tipo_sol_inicial == GREEDY_INICIAL){
-        c = g.obtener_solucion_golosa();
-    }else if(tipo_sol_inicial == DIJKSTRA_INICIAL){
-        c = g.dijkstra(nodo_src, nodo_dst, COSTO_W1);
-    }
-    g.establecer_camino_solucion(c);
+    vector<costo_t> costo_minimo;
+    vector<nodo_t> predecesor;
+    g.dijkstra(nodo_src, COSTO_W1, costo_minimo, predecesor);
+    
+    costo_t costo_src_dst = costo_minimo[nodo_dst];//costo(src, dst)
 
     //--------------------------------- Valido la factibilidad de la solucion----------------
     #ifdef DEBUG_MESSAGES_ON
         cout << "Se requiere un camino entre (" << nodo_src << ") y (" << nodo_dst<< ") que no exceda el costo " << limit_w1;
     #endif
-    if(c.obtener_costo_total_w1_camino() == costo_infinito){
+    if(costo_src_dst == costo_infinito){
         cerr << "No existe solucion factible. No existe camino entre origen(" << nodo_src << ") y destino(" << nodo_dst << ") " << endl;
         g.establecer_se_encontro_solucion(false);
-    }else if(c.obtener_costo_total_w1_camino() > limit_w1){
-        cerr << "No existe solucion factible. El camino minimo respecto a w1 de origen(" << nodo_src << ") a destino(" << nodo_dst << ") es de costo " << c.obtener_costo_total_w1_camino() << endl;
+    }else if(costo_src_dst > limit_w1){
+        cerr << "No existe solucion factible. El camino minimo respecto a w1 de origen(" << nodo_src << ") a destino(" << nodo_dst << ") es de costo " << costo_src_dst << endl;
         g.establecer_se_encontro_solucion(false);
     }else{
+        //armar camino entre origen y destino y lo establezco como sol inicial
+        Camino c = g.obtener_camino_vacio();
+        nodo_t nodo = nodo_dst;
+        do{
+            //cout << nodo << " " ;
+            c.agregar_nodo_adelante(nodo);
+            nodo = predecesor[nodo];
+        }while(nodo != predecesor_nulo);
+        g.establecer_camino_solucion(c);
+
+        //imprimo sol inicial.
         #ifdef DEBUG_MESSAGES_ON
             cout << ". Costo minimo obtenido: " << c.obtener_costo_total_w1_camino();
             cout << "...Ok!!" << endl;

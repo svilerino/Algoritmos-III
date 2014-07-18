@@ -5,6 +5,8 @@
 #include "parser.h"
 #include "timing.h"
 
+#define CANT_ITERS_MEDICION 1
+
 using namespace std;
 
 typedef struct peso{
@@ -103,8 +105,8 @@ int main(int argc, char **argv)
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
 		if(medir_tiempo){
-			double promedio = 0.0;
-			MEDIR_TIEMPO_PROMEDIO(
+			double promedio_medicion = 0.0;
+			MEDIR_TIEMPO_PROMEDIO(				
 				solucion.W1 = 0;
 				solucion.W2 = 0;
 				solucion.k = 1;
@@ -118,11 +120,12 @@ int main(int argc, char **argv)
 					printf("\n");
 				}
 				else{
-					printf("no\n");
+					printf("no");
 				}
 				free(solucion.v);
-			, 5, &promedio);
-			cerr << promedio << " " << nodos << " " << aristas << endl;
+			, CANT_ITERS_MEDICION, &promedio_medicion);
+			//cerr << promedio << " " << nodos << " " << aristas << endl;
+			cerr << nodos << " " << aristas << " " << CANT_ITERS_MEDICION << " " << promedio_medicion;
 		}
 		else{
 			solucion.W1 = 0;
@@ -138,7 +141,7 @@ int main(int argc, char **argv)
 				printf("\n");
 			}
 			else{
-				printf("no\n");
+				printf("no");
 			}
 			free(solucion.v);
 		}

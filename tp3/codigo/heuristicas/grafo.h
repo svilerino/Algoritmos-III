@@ -22,7 +22,6 @@ typedef int longuitud_t;
 typedef double distancia_t;
 typedef double costo_t;
 typedef enum tipo_costo_t {COSTO_W1, COSTO_W2} tipo_costo_t;
-typedef enum tipo_sol_inicial_bqlocal {DIJKSTRA_INICIAL, GREEDY_INICIAL} tipo_sol_inicial_bqlocal_t;
 typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS, BQL_COMBINAR} tipo_ejecucion_bqlocal_t;
 typedef enum criterio_terminacion_grasp_t {CRT_K_ITERS_SIN_MEJORA, CRT_K_ITERS_LIMIT_REACHED} criterio_terminacion_grasp_t;
