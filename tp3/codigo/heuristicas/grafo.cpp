@@ -1530,6 +1530,8 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 				nodo = predecesores[nodo];
 			}while(nodo != predecesor_nulo);
 
+			assert(c.obtener_costo_total_w1_camino() == costoCamino[destino]);
+
 			//cout << endl << "Fin Nodos" << endl;
 			this->establecer_se_encontro_solucion(true);
 		//}

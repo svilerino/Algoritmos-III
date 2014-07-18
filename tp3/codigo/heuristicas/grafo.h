@@ -10,6 +10,7 @@
 #include <limits>
 #include <algorithm>
 #include <random>
+#include <cassert>
 
 //#define DEBUG_MESSAGES_ON
 //#define CYCLE_PREVENT_MESSAGE_ON
