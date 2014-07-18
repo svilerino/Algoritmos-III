@@ -98,8 +98,8 @@ int main(int argc, char **argv)
 	int u, v, K, nodos, aristas, i;
 	Solucion solucion;
 
-	if(argc != 1)
-		medir_tiempo = 1;
+	//if(argc != 1)
+	medir_tiempo = 1;
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
 		if(medir_tiempo){

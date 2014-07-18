@@ -32,8 +32,8 @@ graphics: tests
 	./run_optimality_tests.sh
 
 clean:
-	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.*
-	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.*
+	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.* test-results/exacta/*.*
+	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.* timings-out/exacta/*.*
 	- $(RM) -rf exacta
 	- $(RM) -rf *.tmpplot
 	- $(RM) -rf *.png
