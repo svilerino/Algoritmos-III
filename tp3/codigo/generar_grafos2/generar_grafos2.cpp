@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ struct argumento {
 	int *entero;
 };
 
-int conexo = 0, k_n = 0, min_w1 = -1, max_w1 = -1, min_w2 = -1, max_w2 = -1, nodos = -1, vertices = -1;
+int conexo = 0, k_n = -1, min_w1 = -1, max_w1 = -1, min_w2 = -1, max_w2 = -1, nodos = -1, vertices = -1, min_k = -1, max_k = -1;
 
 int parsear_args(argumento *argumentos, int n, int argc, char **argv)
 {
@@ -48,7 +49,7 @@ int parsear_args(argumento *argumentos, int n, int argc, char **argv)
 	return r;
 }
 
-argumento argumentos[8] =
+argumento argumentos[10] =
 {
 	{
 		.nombre = "--conexo", //fuerza a que sea conexo
@@ -57,7 +58,7 @@ argumento argumentos[8] =
 		.entero = NULL
 	},
 	{
-		.nombre = "--K", //fuerza un K
+		.nombre = "--Kn", //fuerza un grafo completo
 		.seteado = NULL,
 		.valor = NULL,
 		.entero = &k_n
@@ -87,6 +88,18 @@ argumento argumentos[8] =
 		.entero = &max_w2
 	},
 	{
+		.nombre = "--min-k",
+		.seteado = NULL,
+		.valor = NULL,
+		.entero = &min_k
+	},
+	{
+		.nombre = "--max-k",
+		.seteado = NULL,
+		.valor = NULL,
+		.entero = &max_k
+	},
+	{
 		.nombre = "--vertices",
 		.seteado = NULL,
 		.valor = NULL,
@@ -99,6 +112,29 @@ argumento argumentos[8] =
 		.entero = &nodos
 	}
 };
+
+void generar_kn(void)
+{
+	int i, j, u, v, K, w1, w2;
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+
+	srandom(tv.tv_usec);
+
+	u = (random() % k_n) + 1;
+	v = (random() % k_n) + 1;
+	K = (random() % (max_k - min_k)) + min_k;
+
+	cout << k_n << " " << (k_n * (k_n - 1)) / 2 << " " << u << " " << v << " " << K << endl;
+	for(i = 1; i <= k_n; i++){
+		for(j = i + 1; j <= k_n; j++){
+			w1 = (random() % (max_w1 - min_w1)) + min_w1;
+			w2 = (random() % (max_w2 - min_w2)) + min_w2;
+			cout << i << " " << j << " " << w1 << " " << w2 << endl;
+		}
+	}
+}
 
 int main(int argc, char **argv)
 {
@@ -115,6 +151,7 @@ int main(int argc, char **argv)
 	if(k_n > 0){
 		nodos = k_n;
 		vertices = (nodos * (nodos - 1)) / 2;
+		generar_kn();
 	}
 	else{
 		if(nodos <= 0 || vertices < 0)
