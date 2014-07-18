@@ -24,6 +24,15 @@ if ls test-cases/*.in &> /dev/null; then
 	#seleccionar aca abajo en el for heuristica que heuristicas se quieren comparar entre si
 	for file in *.in; do
 		for heuristica in "bqlocal" "golosa" "grasp" "exacta"; do
+			if [ "$heuristica" == "exacta" ]
+			then
+				if [ "${1}" != "--use-exacta" ]
+				then
+					#ignoro la corrida de exacta salvo que me pasen el parametro
+					echo "Ignorando exacta para archivo de entrada $file"
+					continue
+				fi
+			fi			
 			echo -n "Corriendo $heuristica con archivo de input $file..."
 			limitw1=$(cat "$file" | awk -F' ' '{print $5}')
 			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
@@ -54,8 +63,16 @@ if ls test-cases/*.in &> /dev/null; then
 			fi
 		done
 	done
+	#estos archivos se crean en las ejecuciones de grasp y bqlocal. los borro
+	rm -rf evolucion_iteraciones.txt
+	rm -rf evolucion_iteraciones_grasp.txt
 	popd
-	python plotter.py comparacion_optimalidad.png "comparacion_optimalidad_golosa".tmpplot 7 "comparacion_optimalidad_bqlocal".tmpplot "comparacion_optimalidad_grasp".tmpplot "comparacion_optimalidad_exacta".tmpplot
+	if [ "${1}" != "--use-exacta" ]
+	then
+		python plotter.py comparacion_optimalidad.png "comparacion_optimalidad_golosa".tmpplot 6 "comparacion_optimalidad_bqlocal".tmpplot "comparacion_optimalidad_grasp".tmpplot
+	else
+		python plotter.py comparacion_optimalidad.png "comparacion_optimalidad_golosa".tmpplot 7 "comparacion_optimalidad_bqlocal".tmpplot "comparacion_optimalidad_grasp".tmpplot "comparacion_optimalidad_exacta".tmpplot
+	fi
 	#------------------------------------------------------------------------------------------------------------	
 else
     echo "[WARN] NO existen archivos de testing"

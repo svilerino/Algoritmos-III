@@ -29,9 +29,11 @@ graphics: tests
 	#./run_performance_tests.sh bqlocal
 	#./run_performance_tests.sh golosa
 	#./run_performance_tests.sh grasp
-	./run_optimality_tests.sh
+	#./run_optimality_tests.sh --use-exacta
+	./run_optimality_tests.sh --use-exacta
 
 clean:
+	$(MAKE) -C ../sol_exacta clean
 	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.* test-results/exacta/*.*
 	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.* timings-out/exacta/*.*
 	- $(RM) -rf exacta
@@ -39,8 +41,8 @@ clean:
 	- $(RM) -rf *.png
 	- $(RM) -rf resumen_grasp.txt
 	- $(RM) -rf resumen_busqueda_local.txt
-	- $(RM) -rf evolucion_iteraciones.txt
-	- $(RM) -rf evolucion_iteraciones_grasp.txt
+	- $(RM) -rf test-cases/evolucion_iteraciones.txt
+	- $(RM) -rf test-cases/evolucion_iteraciones_grasp.txt
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) -o "$@" "$<"
