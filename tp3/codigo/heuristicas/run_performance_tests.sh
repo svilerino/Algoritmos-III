@@ -64,11 +64,16 @@ if ls test-cases/*.in &> /dev/null; then
 			echo "Minima cantidad de iteraciones: $min_iteraciones" >> ../resumen_busqueda_local.txt
 			echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_busqueda_local.txt
 			popd
-			./plot.sh "$heuristica".tmpplot 0
+
+			#curve fit para heuristica
+			fitType=2
+			echo "$heuristica -> fitType=$fitType"
+
+			./plot.sh "$heuristica".tmpplot 0 "$fitType"
 			./plot.sh "$heuristica".tmpplot 1
 			./plot.sh "$heuristica".tmpplot 2
 			./plot.sh "$heuristica".tmpplot 3
-			./plot.sh "$heuristica".tmpplot 4			
+			./plot.sh "$heuristica".tmpplot 4
 		#------------------------------------------------------------------------------------------------------------	
 	elif [ "${1}" == "golosa" ]
 	then
@@ -95,11 +100,15 @@ if ls test-cases/*.in &> /dev/null; then
 			    fi
 			done
 			popd
-			./plot.sh "$heuristica".tmpplot 0
+			#curve fit para heuristica
+			fitType=2
+			echo "$heuristica -> fitType=$fitType"
+
+			./plot.sh "$heuristica".tmpplot 0 "$fitType"
 			./plot.sh "$heuristica".tmpplot 1
 			./plot.sh "$heuristica".tmpplot 2
 			./plot.sh "$heuristica".tmpplot 3
-			./plot.sh "$heuristica".tmpplot 4			
+			./plot.sh "$heuristica".tmpplot 4		
 		#------------------------------------------------------------------------------------------------------------	
 	elif [ "${1}" == "grasp" ]
 	then
@@ -151,11 +160,50 @@ if ls test-cases/*.in &> /dev/null; then
 			echo "Minima cantidad de iteraciones: $min_iteraciones" >> ../resumen_grasp.txt
 			echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_grasp.txt
 			popd
-			./plot.sh "$heuristica".tmpplot 0
+			#curve fit para heuristica
+			fitType=2
+			echo "$heuristica -> fitType=$fitType"
+
+			./plot.sh "$heuristica".tmpplot 0 "$fitType"
 			./plot.sh "$heuristica".tmpplot 1
 			./plot.sh "$heuristica".tmpplot 2
 			./plot.sh "$heuristica".tmpplot 3
-			./plot.sh "$heuristica".tmpplot 4			
+			./plot.sh "$heuristica".tmpplot 4		
+		#------------------------------------------------------------------------------------------------------------	
+	elif [ "${1}" == "exacta" ]
+	then 
+		#Algoritmo exacto
+		#------------------------------------------------------------------------------------------------------------
+			for file in *.in; do
+				heuristica="exacta"
+				echo -n "Corriendo $heuristica con archivo de input $file..."
+				"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
+
+			    DIFF=$(diff "../$TESTS_OUTPUT/$heuristica/$file.out" "../no.txt") 
+				if [ "$DIFF" == "" ]
+				then			
+					echo -e "${red}No existia solucion! Descripcion de la salida:"
+					cat "../$TIMING_OUTPUT/$heuristica/$file.out"
+					echo -e -n "${NC}"
+				else
+					cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
+					cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
+					cantIters=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')
+				    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
+				    echo "$cantNodos $cantAristas $timeElapsed " >> ../"$heuristica".tmpplot
+			    	echo -e "${green}Ok! $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
+			    fi
+			done
+			popd
+			#curve fit para exacta
+			fitType=$((seq -s "*" 1 "$cantNodos" |bc))
+			echo "$heuristica -> fitType=$fitType"
+
+			./plot.sh "$heuristica".tmpplot 0 "$fitType"
+			./plot.sh "$heuristica".tmpplot 1
+			./plot.sh "$heuristica".tmpplot 2
+			./plot.sh "$heuristica".tmpplot 3
+			./plot.sh "$heuristica".tmpplot 4		
 		#------------------------------------------------------------------------------------------------------------	
 	else
 		echo "Modo invalido de ejecucion: ./run_performance_tests.sh <algoritmo> donde las opciones para algoritmo son: bqlocal - golosa - grasp"

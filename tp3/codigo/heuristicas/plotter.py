@@ -1,4 +1,4 @@
-import numpy as np
+import numpy
 import matplotlib.pyplot as plt
 import sys
 import math
@@ -66,11 +66,23 @@ if(graphictype <=4):
 	graphic_med_y_over_n_cube.append(float(value / math.pow(ultima_cant_nodos, 3)))
 	graphic_med_y_over_n_fourth.append(float(value / math.pow(ultima_cant_nodos, 4)))
 
+
 	#plot the data
 	if(graphictype == 0):
-		plt.plot(graphic_med_x, graphic_med_y, 'g-', graphic_med_x, graphic_med_y, 'go', graphic_x, graphic_y, 'ro', label="")	
+		#print "Fit type: " + sys.argv[4]
+		fit_order = int(sys.argv[4])
+		if(fit_order != -1):
+			coefficients = numpy.polyfit(graphic_med_x, graphic_med_y, fit_order)
+			polynomial = numpy.poly1d(coefficients)
+			graphic_med_y_fit = polynomial(graphic_med_x)
+
+			plt.plot(graphic_med_x, graphic_med_y, 'g-', graphic_med_x, graphic_med_y, 'go', graphic_x, graphic_y, 'ro', graphic_med_x, graphic_med_y_fit, 'm-.', label="")	
+			plt.ylabel('\nf(x) = Verde: Tiempo consumido en promedio para densidades de este orden\nRojo: Variacion de tiempos para las densidades\nMagenta:Curva fitteada orden ' + str(fit_order), fontsize=14)
+		else:
+			plt.plot(graphic_med_x, graphic_med_y, 'g-', graphic_med_x, graphic_med_y, 'go', graphic_x, graphic_y, 'ro', label="")	
+			plt.ylabel('\nf(x) = Verde: Tiempo consumido en promedio para densidades de este orden\nRojo: Variacion de tiempos para las densidades', fontsize=14)
+
 		plt.xlabel('x = Cantidad de nodos', fontsize=14)
-		plt.ylabel('\nf(x) = Verde: Tiempo consumido en promedio para densidades de este orden\nRojo: Variacion de tiempos para las densidades', fontsize=14)
 		plt.title("Rendimiento")
 		#plt.yscale('log')
 		plt.grid()
@@ -276,10 +288,11 @@ else:
 			#------------------------------------------------------------------------------------------------											
 			if(graphictype == 7):
 				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*',  graphic_med_x_file3, graphic_med_y_file3, 'y+', label="")	
+				plt.ylabel('\nf(x) = peso w2 / Verde: Golosa\nAzul: Local \nRoja: Grasp\nAmarilla:Exacta', fontsize=14)
 			else:
 				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*', label="")	
+				plt.ylabel('\nf(x) = peso w2 / Verde: Golosa\nAzul: Local \nRoja: Grasp', fontsize=14)
 			plt.xlabel('x = Cantidad de nodos', fontsize=14)
-			plt.ylabel('\nf(x) = peso w2 / Verde: Golosa\nAzul: Local \nRoja: Grasp', fontsize=14)
 			plt.title("Comparacion de rendimiento de diferentes heuristicas")
 			#plt.yscale('log')
 			plt.grid()
