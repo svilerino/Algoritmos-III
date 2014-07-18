@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 				solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 				solucion.v[0] = u;
 				if(resolver(*grafo, u, v, K, &solucion)){
-					printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+					printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
 					for(i = 0; i < solucion.k; i++){
 						printf(" %d", solucion.v[i]);
 					}
@@ -131,7 +131,7 @@ int main(int argc, char **argv)
 			solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 			solucion.v[0] = u;
 			if(resolver(*grafo, u, v, K, &solucion)){
-				printf("%f %f %d", solucion.W1, solucion.W2, solucion.k);
+				printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
 				for(i = 0; i < solucion.k; i++){
 					printf(" %d", solucion.v[i]);
 				}
