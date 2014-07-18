@@ -298,3 +298,4 @@ else:
 			plt.grid()
 			#plt.show()
 			plt.savefig(outputFilePath)
+plt.close()
