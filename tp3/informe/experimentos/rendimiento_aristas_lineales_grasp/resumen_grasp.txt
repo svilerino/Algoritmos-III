@@ -1,0 +1,4 @@
+Cantidad de tests realizados: 48
+Iteraciones promedio: 9
+Minima cantidad de iteraciones: 11
+Maxima cantidad de iteraciones: 11

@@ -129,7 +129,7 @@ Similar a los casos anteriores, itera sobre las 3-uplas de nodos del camino, int
 \subsection{Nivel de optimalidad de las soluciones}
 \subsubsection{Familias de grafos malas para esta heur\'istica}
 
-La heur\'istica va a fallar en todos los casos en los cuales no se pueda mejorar un par o tripla de nodos agregando, quitando o reemplazando de a un nodo, por ejemplo, casos en los que la mejora sea un subcamino de longitud mayor a 2, o casos en los que el camino \'optimo no tiene ning\'in tipo de conexi\'on con el camino m\'inimo seg\'un $w_1$. Podria intentar arreglarse el problema generalizando la idea de contraer triplas a contraer subcaminos consecutivos de mayor longuitud con alguna variaci\'on de BFS pero podr\'ia incrementarse mucho el cardinal de las vecindades, siendo esto un problema para la exploraci\'on de las mismas.
+La heur\'istica va a fallar en todos los casos en los cuales no se pueda mejorar un par o tripla de nodos agregando, quitando o reemplazando de a un nodo, por ejemplo, casos en los que la mejora entre dos nodos sea un subcamino de longitud mayor a 2, o casos en los que el camino \'optimo no tiene ning\'in tipo de conexi\'on con el camino m\'inimo seg\'un $w_1$. Podria intentar arreglarse el problema generalizando la idea de contraer triplas a contraer subcaminos consecutivos de mayor longuitud con alguna variaci\'on de BFS pero podr\'ia incrementarse mucho el cardinal de las vecindades, siendo esto un problema para la exploraci\'on de las mismas.
 
 En el proximo ejemplo. Mostraremos un grafo en el cual la heur\'istica no devuelve la soluci\'on \'optima.
 
@@ -185,6 +185,57 @@ Salida del algoritmo de soluci\'on exacta
 \begin{lstlisting}[frame=single]
 	10 1 2 1 5, es decir. La arista directa entre (1) y (5) con un peso w1: 10 y peso w2: 1
 \end{lstlisting}
+
+Otro ejemplo, en el cual el camino que devuelve el dijkstra inicial, y el camino \'optimo son disjuntos en nodos, por lo cual no hay ninguna mejora para hacer, y con lo cual vemos que la soluci\'on de la heur\'istica puede alejarse de la \'optima arbitrariamente.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[shorten >=1pt, auto, node distance=3cm, ultra thick,
+   edge_style/.style={draw=black, ultra thick,font=\sffamily\tiny\bfseries}]
+	\node [circle,draw=black,fill=blue!20] (n1) at (1,2)  {$v_1$};
+	\node [circle,draw=black,fill=blue!20] (n2) at (3,4)  {$v_2$};
+	\node [circle,draw=black,fill=blue!20] (n3) at (6,4)  {$v_3$};
+	\node [circle,draw=black,fill=blue!20] (n4) at (3,0)  {$v_4$};
+	\node [circle,draw=black,fill=blue!20] (n5) at (6,0)  {$v_5$};
+	\node [circle,draw=black,fill=blue!20] (n6) at (8,2)  {$v_6$};
+	
+
+	\foreach \from/\to/\distance/\cost in {
+		n1/n2/1/3,
+		n2/n3/1/2,
+		n3/n6/1/3,
+		n1/n4/2/1,
+		n4/n5/3/1,
+		n5/n6/1/3
+		}
+	  \draw [edge_style] (\from) edge node{(\distance, \cost)} (\to);
+	
+	
+
+	\end{tikzpicture}
+	\caption{Ejemplo grafo malo para la heur\'istica.} \label{fig:vida_real_1}
+\end{figure}
+
+\begin{lstlisting}[frame=single]
+Camino inicial: (1)----[1, 3]---->(2)----[1, 2]---->(3)----[1, 3]---->(6)
+\end{lstlisting}
+
+Soluci\'on final de la heur\'istica:
+
+
+\begin{lstlisting}[frame=single]
+(1)----[1, 3]---->(2)----[1, 2]---->(3)----[1, 3]---->(6)
+\end{lstlisting}
+
+Veamos que no es el \'optimo. Soluci\'on del algoritmo exacto:
+
+\begin{lstlisting}[frame=single]
+6.000000 5.000000 4 1 4 5 6
+\end{lstlisting}
+
+Donde vemos que el camino \'optimo es el 1,4,5,6. Esto se da por la poca densidad del grafo, y en particular, por ser disjuntos los caminos de salida a llegada, la b\'usqueda local no encuentra mejora para realizar y se queda con la soluci\'on que brinda el dijkstra inicial.
+
+Es f\'acil notar que el hecho de agregarle aristas al grafo, posibilita a la b\'usqueda a comenzar a realizar mejoras, por lo tanto el algoritmo funciona mejor para grafos con una mayor densidad de aristas. Vamos a realizar pruebas sobre esto en la secci\'on de experimentaci\'on.
 
 \subsection{Complejidad}
 Para la explorac\'ion de las vecindades $N_1$ y $N_2$ se recorren las duplas/triplas consecutivas de nodos, segun corresponda, lo cual toma $O(n)$, y por cada una de las triplas, se obtienen los vecinos en comun de los nodos extremos, esto cuesta $O(n)$, sin embargo, fue mejorada la constante debido a un preprocesamiento mencionado debajo. Luego la complejidad temporal de explorar sucesivamente las vecindades mencionadas es $k*O(n^2)$, donde k es la cantidad de iteraciones necesarias hasta finalizar la b\'usqueda local.\\
@@ -300,7 +351,7 @@ A continuacion presentamos los resultados de estos experimentos:\\
 	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_aristas_cuadraticas_3/complexity_med_over_n_fourth.png}
 \end{center}
 
-Como vemos en las 2 secciones de resultados anteriores, para $n^2$, $n^3$ se mantiene constante dentro de un rango muy reducido en el eje Y, pero para $n^3$ y $n^4$ es una funcion marcadamente decreciente, con lo cual, llegamos a la conclusion de que la curva es cuadr\'atica, afirmando nuestra complejidad teorica esperada.
+Como vemos en las 2 secciones de resultados anteriores, para $n^2$, $n^3$ se mantiene constante dentro de un rango muy reducido en el eje Y, pero para $n^3$ y $n^4$ es una funcion marcadamente decreciente, con lo cual, llegamos a la conclusion de que la curva es o bien,  cuadr\'atica o c\'ubica. Pero analizando con m\'as detalle notamos que la constante para $n^2$ es positiva y un n\'umero razonable (mayor a 1), mientras que la constante de $n^3$ tiende a cero y se aplasta contra el eje X, lo cual es el resultado de dividir una constante por la variable de experimentaci\'on. Con lo cual, al ser $f(x)/x$ creciente,  $f(x)/x^2$ una constante cercana a 10, y $f(x)/x^3$ una curva que tiende a cero, es un buen indicio de que la complejidad te\'orica de $O(n^2)$ es acertada.
 
 
 \subsection{Experimentacion: Variaci\'on evolutiva de mejora en cada iteracion}

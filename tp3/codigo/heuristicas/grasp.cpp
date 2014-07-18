@@ -46,7 +46,7 @@ void ejecutar_grasp(Grafo &g){
     //donde valor limite es  (parametro_beta + 1) * minimo.second.obtener_costo_w2();
     //si el tipo de golosa es RCL_POR_CANTIDAD, este parametro indica la cantidad min{cant_candidatos, parametro_beta} de soluciones a considerar en la lista
     //si el tipo es RCL_DETERMINISTICO, este parametro es ignorado por el metodo.    
-    double parametro_beta = 50;
+    double parametro_beta = 1000;
 
     //-------------------------------------------------------
 
@@ -110,7 +110,7 @@ void ejecutar_grasp(Grafo &g){
             }
             cant_iters++;
         }else{
-            cerr << "Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
+            cerr << "[Grasp] Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
             break;
         }
 
@@ -123,7 +123,9 @@ void ejecutar_grasp(Grafo &g){
     promedio = promedio / (double) cant_iters;
 
     //imprimo mediciones en stderr
-    cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio;
+    if(g.hay_solucion()){
+        cerr << g.obtener_cantidad_nodos() << " " << g.obtener_cantidad_aristas() << " " << cant_iters << " " << promedio;        
+    }
 
     //cout << endl << "Se cumplio el criterio de terminacion elegido: ";
 //    if(iters_golosa_bad_solution > GOLOSA_BAD_SOLUTION_CONSECUTIVAS_LIMIT){

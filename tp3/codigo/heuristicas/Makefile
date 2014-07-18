@@ -23,11 +23,18 @@ tests: codigo
 	./create_tests.sh
 
 graphics: tests
-	./run_tests.sh
+	#./run_performance_tests.sh bqlocal
+	#./run_performance_tests.sh golosa
+	#./run_performance_tests.sh grasp
+	./run_optimality_tests.sh
 
 clean:
 	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.*
 	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.*
+	- $(RM) -rf *.tmpplot
+	- $(RM) -rf *.png
+	- $(RM) -rf resumen_grasp.txt
+	- $(RM) -rf resumen_busqueda_local.txt
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) -o "$@" "$<"
