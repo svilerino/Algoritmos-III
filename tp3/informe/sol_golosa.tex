@@ -45,8 +45,7 @@ Este dibujo representa la ejecuci\'on de la inicializaci\'on de la heur\'stica, 
 
 \subsubsection{Heur\'istica golosa}
 
-El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra, utilizando costos $w_2$. El agregado al algoritmo es la estrategia previamente explicada, teniendo la informaci\'on que nos brindan $CostosW1$ y $CostoCamino$, cuando sacamos un nodo $v$ de la cola y procedemos a actualizar sus vecinos $x$, s\'olo vamos a considerar actualizar los valores $CostosW2$ y $precedesor$ para aquellos que sean factibles, es decir, aquellos para los cuales el costo $w_1$ del camino m\'inimo $x$ - llegada + el costo de la arista entre los nodos $(v,x)$ + el costo $w_1$ del camino recorrido potencial recorrido hasta $v$ es menor o igual a K, dicho en t\'erminos del algoritmo: $CostosW1[x]+costo(v,x)+costoCamino[v]\leq K$.
-
+El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra, utilizando costos $w_2$. El agregado al algoritmo es la estrategia previamente explicada, teniendo la informaci\'on que nos brindan $CostosW1$ y $CostoCamino$, cuando sacamos un nodo $v$ de la cola y procedemos a actualizar sus vecinos $x$, s\'olo vamos a considerar actualizar los valores $CostosW2$ y $precedesor$ para aquellos que sean factibles, es decir, aquellos para los cuales el costo $w_1$ del camino m\'inimo $x$ - llegada + el costo de la arista entre los nodos $(v,x)$ + el costo $w_1$ del camino recorrido potencial recorrido hasta $v$ es menor o igual a K, dicho en t\'erminos del algoritmo: $CostosW1[x]+costo(v,x)+costoCamino[v]\leq K$. Esto nos asegura que el camino de un nodo nunca va a ser actualizado por un camino no factible.
 
 \subsubsection{Pseudoc\'odigo}
 
@@ -90,17 +89,21 @@ El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra,
 
 \While{$cola != []$}
 	\Comment $ O(n)$
-	\State $ par<costow_2, nodo> actual \gets cola.pop $ 
+	\State $ par<costow_2, nodo> actual \gets cola.pop $
+	\Comment $O(logn)$
 	\For{$ w \: : \: adyacentes(actual_2) $}
 		\Comment $ O(n)$
-		\If{ $costoCamino[actual_2] + costosw_1(w) + costow_1Arista(actual_2,w) \leq K $ }
+		\If{ $costoCamino[actual_2] + costosw_1(w) + costow_1Arista(actual_2,w) \leq K ORDENARR $ }
 		
 
 			\If{$ costosw_2[w] > costosw_2[actual_2] + costow_2Arista(actual,w) $}
-			\State $cola.push(costow_2(w), w)$
+			\Comment $O(logn)$
 			\State $ costosw_2[w] \gets costosw_2[actual_2] + costow_2Arista(actual,w) $
 			\State $ costoCamino[w] \gets costoCamino[actual_2] + costow_1Arista(actual_2,w) $
 			\State $ predecesor[w] = actual $
+			\State $cola.push(costow_2(w), w)$
+			\Comment $O(logn)$
+
 
 			\EndIf
 
@@ -117,3 +120,4 @@ El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra,
 \end{algorithm}
 
 
+s
