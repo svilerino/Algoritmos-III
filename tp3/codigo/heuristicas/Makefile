@@ -35,6 +35,8 @@ clean:
 	- $(RM) -rf *.png
 	- $(RM) -rf resumen_grasp.txt
 	- $(RM) -rf resumen_busqueda_local.txt
+	- $(RM) -rf evolucion_iteraciones.txt
+	- $(RM) -rf evolucion_iteraciones_grasp.txt
 
 %.o: %.cpp
 	$(CC) -c $(CFLAGS) -o "$@" "$<"
