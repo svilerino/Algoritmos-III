@@ -8,7 +8,10 @@ RM=rm
 
 all: codigo
 
-codigo: bqlocal golosa grasp 
+codigo: bqlocal golosa grasp exacta
+
+exacta:
+	$(MAKE) -C ../sol_exacta && cp ../sol_exacta/exacta ./exacta
 
 bqlocal: bqlocal.o grafo.o
 	$(LD) $(LDFLAGS) -o bqlocal bqlocal.o grafo.o
@@ -31,6 +34,7 @@ graphics: tests
 clean:
 	- $(RM) -rf *.o *~ bqlocal golosa grasp test-cases/*.* test-results/golosa/*.* test-results/grasp/*.* test-results/bqlocal/*.*
 	- $(RM) -rf timings-out/golosa/*.* timings-out/grasp/*.* timings-out/bqlocal/*.*
+	- $(RM) -rf exacta
 	- $(RM) -rf *.tmpplot
 	- $(RM) -rf *.png
 	- $(RM) -rf resumen_grasp.txt

@@ -138,7 +138,7 @@ else:
 		#print outputFilePath
 		plt.savefig(outputFilePath)
 	else: 
-		if(graphictype == 6):
+		if(graphictype == 6 or graphictype == 7):
 			#tengo parametros extra!
 			#outputFilePath = str(sys.argv[1])
 			#dataFile = open(sys.argv[2], 'r')
@@ -238,6 +238,40 @@ else:
 			graphic_med_x_file3.append(ultima_cant_nodos_file3)
 			value = acum_file3 / float(cant_densidades_por_cant_nodos_file3)
 			graphic_med_y_file3.append(value)	
+				
+			#------------------------------------------------------------------------------------------------							
+
+			#------------------------------------------------------------------------------------------------											
+			if(graphictype == 7):
+				dataFile4 = open(sys.argv[6], 'r')
+				graphic_med_x_file4 = []
+				graphic_med_y_file4 = []												
+
+				cant_densidades_por_cant_nodos_file4 = 0
+				ultima_cant_nodos_file4 = -1
+				acum_file4 = 0
+
+				for line in dataFile4:
+					#parse line data
+					nodos = float(line.split()[0])
+					aristas = float(line.split()[1])
+					pesow2 = float(line.split()[2])
+					if(ultima_cant_nodos_file4 != nodos):
+						if(ultima_cant_nodos_file4 != -1):						
+							graphic_med_x_file4.append(ultima_cant_nodos_file4)
+							value = acum_file4 / float(cant_densidades_por_cant_nodos_file4)
+							graphic_med_y_file4.append(value)																								
+							acum_file4 = 0
+							cant_densidades_por_cant_nodos_file4 = 0
+					
+					ultima_cant_nodos_file4 = nodos
+					cant_densidades_por_cant_nodos_file4 = cant_densidades_por_cant_nodos_file4 + 1
+					acum_file4 = acum_file4 + pesow2
+
+				#el ultimo valor de cant_nodos no va a entrar al if de ultima_cant_nodos_file4
+				graphic_med_x_file4.append(ultima_cant_nodos_file4)
+				value = acum_file4 / float(cant_densidades_por_cant_nodos_file4)
+				graphic_med_y_file4.append(value)	
 				
 			#------------------------------------------------------------------------------------------------											
 
