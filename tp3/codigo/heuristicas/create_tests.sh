@@ -16,8 +16,8 @@ NC='\e[0m' # No Color
 cant_nodos_min=100
 cant_nodos_max=700
 peso_maximo_w1=250
-peso_maximo_w2=120
-limit_w1=500
+peso_maximo_w2=400
+limit_w1=80
 
 for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=100 ))
 #for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=50 ))
