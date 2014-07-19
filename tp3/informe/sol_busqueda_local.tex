@@ -353,54 +353,6 @@ A continuacion presentamos los resultados de estos experimentos:\\
 
 Como vemos en las 2 secciones de resultados anteriores, para $n^2$, $n^3$ se mantiene constante dentro de un rango muy reducido en el eje Y, pero para $n^3$ y $n^4$ es una funcion marcadamente decreciente, con lo cual, llegamos a la conclusion de que la curva es o bien,  cuadr\'atica o c\'ubica. Pero analizando con m\'as detalle notamos que la constante para $n^2$ es positiva y un n\'umero razonable (mayor a 1), mientras que la constante de $n^3$ tiende a cero y se aplasta contra el eje X, lo cual es el resultado de dividir una constante por la variable de experimentaci\'on. Con lo cual, al ser $f(x)/x$ creciente,  $f(x)/x^2$ una constante cercana a 10, y $f(x)/x^3$ una curva que tiende a cero, es un buen indicio de que la complejidad te\'orica de $O(n^2)$ es acertada.
 
-
-\subsection{Experimentacion: Variaci\'on evolutiva de mejora en cada iteracion}
-\subsubsection{Rendimiento evolutivo en grafos muy densos}
-Resumen del analisis:
-\begin{itemize}
-	\item Cantidad de tests realizados: 24
-	\item Iteraciones promedio: 5
-	\item Minima cantidad de iteraciones: 2
-	\item Maxima cantidad de iteraciones: 16
-\end{itemize}
-
-\begin{center}
-	\textbf{Ejemplo de la evoluci\'on en la mejora de la solucion durante las iteraciones de la busqueda local}\\
-	\textbf{$y = f(x)$, para cada x=numero de iteracion, f(x) expresa la mejora obtenida en $w_2$ en dicha iteracion}\\
-	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_evolucion_iteraciones_cliques/test-results/bqlocal/instancia_120_7130_in_iters.png}
-\end{center}
-
-En general, todas las funciones son estrictamente decrecientes, salvo excepciones donde en ciertos puntos crece muy poco y vuelve a decrecer mas fuertemente. Esto nos da la pauta de que el grado de mejora en cada iteracion durante la vida del ciclo de la busqueda local decrece a medida que hacemos mas iteraciones, para finalmente estancarse en cero y llegar al criterio de terminaci\'on.
-
-\subsubsection{Rendimiento evolutivo en grafos con densidad lineal de aristas}
-
-Resumen del analisis:
-\begin{itemize}
-	\item Cantidad de tests realizados: 282
-	\item Iteraciones promedio: 2
-	\item Minima cantidad de iteraciones: 1
-	\item Maxima cantidad de iteraciones: 9
-\end{itemize}
-
-Observamos que para grafos menos densos, disminuye la cantidad promedio de iteraciones, esto tambien podr\'ia indicar que hay algun tipo de relacion entre la cantidad de aristas y el cardinal de la vecindad $N$, lo cual tiene sentido, porque a mayor cantidad de aristas en el grafo, mas modificaci\'ones locales pueden hacerse al camino inicial.
-
-\subsection{Experimentacion: Variaci\'on absoluta de w2 en busqueda local}
-Otra forma de ponderar el rendimiento de busqueda local es una variaci\'on del analisis realizado en la seccion anterior. Consiste en que, en cada iteracion de busqueda local se almacenen los costos $w_1$ y $w_2$ del camino actual obtenido para luego ser graficado como una funcion donde el eje X consiste en la cantidad de iteraciones y el eje Y denota el valor absoluto del costo. Si realizamos ademas una resta entre el valor inicial y el valor final del eje Y, tendremos cual fue la mejora total del camino. Si realizamos un promedio y una desviacion estandar sobre este ultimo dato, podremos observar para diferentes sets de grafos como es el rendimiento de la busqueda local.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \subsection{Experimentacion: Distintas soluciones iniciales factibles}
 Como mencionamos antes, se utiliza Dijkstra sobre $w_1$ para obtener la solucion inicial factible, para comenzar las iteraciones de b\'usqueda local. En esta secci\'on decidimos variar esto y establecer la solucion inicial de busqueda local con la heuristica golosa. Para ciertos grafos preestablecidos que pueden encontrarse en la carpeta \texttt{grafos especiales} las soluciones finales de busqueda local con los 2 modos de solucion inicial son iguales, lo que vari\'o de forma notable fue la cantidad de iteraciones de busqueda local necesarias para llegar a dicha solucion final, debajo se muestra una tabla indicando esto:
 \begin{center}
@@ -418,6 +370,105 @@ Como mencionamos antes, se utiliza Dijkstra sobre $w_1$ para obtener la solucion
 	  \hline
 	\end{tabular}
 \end{center}
+Asumimos que esto se debe a la calidad de la soluci\'on provista por el algoritmo goloso.\\
+\textbf{Nota:} Estos grafos se encuentran en la carpeta \texttt{codigo/heuristicas/grafos\_especiales}.
 
-Asumimos que esto se debe a la calidad de la soluci\'on provista por el algoritmo goloso.
+\subsection{Experimentacion: Variaci\'on evolutiva de mejora en cada iteracion y Variaci\'on absoluta de w2 en busqueda local}
+En esta seccion se realizaron dos tipos de analisis, el primero corresponde a las variaciones entre cada iteracion del costo a minimizar, el segundo corresponde a la variaci\'on absoluta del costo a minimizar.\\
 
+Las mediciones consisten en que, en cada iteracion de busqueda local se almacenen los costos $w_1$ y $w_2$ del camino actual obtenido y los saltos de costo $w_2$ entre iteraciones.\\
+
+Luego se realizan dos graficos, el primero, referido a la variacion entre cada iteracion, indica en el eje X el numero de la iteracion y en el eje Y la mejora realizada en dicha iteracion a la solucion previa. El segundo, referido a la variacion absoluta del costo a minimizar, indica en el eje X la cantidad de iteraciones y en el eje Y el valor absoluto del costo de la solucion.Si realizamos rudimentario analisis estadistico, un promedio y una desviacion estandar sobre este ultimo dato, nos podr\'an dar idea para diferentes sets de grafos como es el rendimiento de la busqueda local.
+
+\subsubsection{Rendimiento evolutivo y absoluto en grafos con alta densidad de aristas}
+
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Cantidad minima de nodos: 50
+	\item Cantidad maxima de nodos: 220
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_1$: [0..400]
+	\item Cota de $w_1$: 400
+	\item Cantidad minima de aristas: $\frac{n * (n-1)}{3}$
+	\item Cantidad maxima de aristas: $\frac{n * (n-1)}{2}$
+\end{itemize}  
+
+\vspace{1cm}
+
+\begin{center}
+	\textbf{Ejemplo de la evoluci\'on en la mejora de la solucion durante las iteraciones de la busqueda local}\\
+	\textbf{$y = f(x)$, para cada x=numero de iteracion, f(x) expresa la mejora obtenida en $w_2$ en dicha iteracion}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_evolutivo_absoluto_cliques/bqlocal/instancia_190_11970_in_iters_w2_differential.png}
+\end{center}
+
+\begin{center}
+	\textbf{Ejemplo de funcion costo target a minimizar durante las iteraciones de la busqueda local}\\
+	\textbf{$y = f(x)$, para cada x=numero de iteracion, f(x) expresa el costo $w_2$ en dicha iteracion}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_evolutivo_absoluto_cliques/bqlocal/instancia_190_11970_in_iters_w2_absolute_value.png}
+\end{center}
+
+\vspace{1cm}
+
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 34	
+	Iteraciones promedio: 5	
+	Iteraciones stddev: 2.99726	
+	Minima cantidad de iteraciones: 2	
+	Maxima cantidad de iteraciones: 15	
+	Mejora promedio del costo w2: 934	
+	Mejora stddev del costo w2: 523.031	
+	Minima mejora en w2 registrada: 201 en 2 iteraciones	
+	Maxima mejora en w2 registrada: 3006 en 15 iteraciones	
+\end{lstlisting}
+
+\subsubsection{Rendimiento evolutivo en grafos con densidad lineal de aristas}
+
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Cantidad minima de nodos: 100
+	\item Cantidad maxima de nodos: 2000
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_1$: [0..400]
+	\item Cota de $w_1$: 400
+	\item Cantidad minima de aristas: $n-1$
+	\item Cantidad maxima de aristas: $10*n$
+\end{itemize}  
+
+\vspace{1cm}
+
+\begin{center}
+	\textbf{Ejemplo de la evoluci\'on en la mejora de la solucion durante las iteraciones de la busqueda local}\\
+	\textbf{$y = f(x)$, para cada x=numero de iteracion, f(x) expresa la mejora obtenida en $w_2$ en dicha iteracion}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_evolutivo_absoluto_lineal/bqlocal/instancia_500_4999_in_iters_w2_differential.png}
+\end{center}
+
+\begin{center}
+	\textbf{Ejemplo de funcion costo target a minimizar durante las iteraciones de la busqueda local}\\
+	\textbf{$y = f(x)$, para cada x=numero de iteracion, f(x) expresa el costo $w_2$ en dicha iteracion}\\
+	\includegraphics[scale=0.7]{experimentos/bqlocal/rendimiento_evolutivo_absoluto_lineal/bqlocal/instancia_500_4999_in_iters_w2_absolute_value.png}
+\end{center}
+
+\vspace{1cm}
+
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 54
+	Iteraciones promedio: 0
+	Iteraciones stddev: 0.526955
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 3
+	Mejora promedio del costo w2: 45
+	Mejora stddev del costo w2: 135.415
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 481 en 2 iteraciones
+\end{lstlisting}
+
+\subsubsection{Conclusion de experimentos - Relacion entre cantidad de aristas y efectividad de busqueda local}
+Podemos observar que para grafos con menor densidad de aristas disminuye drasticamente la mejora tanto en cantidad de iteraciones como en valor absoluto promedio de mejora, con medidas de dispersion similares en cada caso(respecto a los maximos minimos y promedios correspondientes).\\
+ Veamos que por ejemplo, para grafos con poca densidad de aristas, la mejora es muy baja, y la cantidad de iteraciones promedio es 0, lo cual es un numero contundente. Esto indica que hay una relacion entre la densidad de aristas del grafo y la efectividad de la heuristica.\\
+ Creemos que se debe a una relacion directamente proporcional entre la densidad del grafo y el cardinal de la vecindad $N$, lo cual tiene sentido, porque a mayor cantidad de aristas en el grafo, mas modificaci\'ones locales pueden hacerse al camino inicial a nivel local.\\
+Teniendo en cuenta la cantidad promedio de iteraciones y mejora promedio para grafos de baja densidad y los mismos resultados para grafos de alta densidad, notemos que aunque la cantidad de nodos aumente mucho mas en los grafos poco densos, los indicadores estadisticos siguen siendo baj\'isimos. Vamos a basarnos en estos resultados para deducir que una familia mala de grafos para la busqueda local ser\'an aquellos con poca densidad de aristas, lo cual produce un cardinal bajo en la vecindad, dando lugar a muy pocas o nulas mejoras locales de la solucion inicial.
+
+\subsection{Variaci\'on de efectividad de busqueda local sobre conjunto fijo de grafos cambiando vecindades}
+densos, lineales, correr las 3 y sin graficos mostrar como varia pero vamos a usar solo la mejor(esperemos que sea la combinada) para grasp.
