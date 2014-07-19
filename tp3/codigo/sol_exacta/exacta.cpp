@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string.h>
+#include <math.h>
 #include "grafo.h"
 #include "parser.h"
 #include "timing.h"
@@ -92,6 +93,87 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 	return solucionado;
 }
 
+void dijkstra(Grafo<peso> *g, int nodo, float **_distancia_w1, float **_distancia_w2)
+{
+	int cantidad_nodos, nodo_minimo, cantidad_adyacentes, *adyacentes, cantidad_vistos;
+	int i;
+	float *distancia_w1, *distancia_w2;
+	float peso_minimo;
+	bool *nodos_vistos;
+
+	if(g == NULL || _distancia_w1 == NULL || _distancia_w2 == NULL)
+		return;
+
+	cantidad_nodos = g->CantidadNodos();
+	if(nodo < 1 || nodo > cantidad_nodos)
+		return;
+
+	nodos_vistos = new bool[cantidad_nodos + 1];
+	*_distancia_w1 = new float[cantidad_nodos + 1];
+	*_distancia_w2 = new float[cantidad_nodos + 1];
+	distancia_w1 = *_distancia_w1;
+	distancia_w2 = *_distancia_w2;
+	
+	for(i = 1; i <= cantidad_nodos; i++){
+		distancia_w1[i] = INFINITY;
+		distancia_w2[i] = INFINITY;
+		nodos_vistos[i] = false;
+	}
+	distancia_w1[nodo] = 0;
+	distancia_w2[nodo] = 0;
+	nodos_vistos[nodo] = true;
+	cantidad_vistos = 1;
+
+	while(cantidad_vistos < cantidad_nodos){
+		peso_minimo = INFINITY;
+		nodo_minimo = 1;
+		for(i = 1; i <= cantidad_nodos; i++){
+			if(!nodos_vistos[i] && distancia_w1[i] < peso_minimo){
+				nodo_minimo = i;
+				peso_minimo = distancia_w1[i];
+			}
+		}
+		nodos_vistos[nodo_minimo] = true;
+		cantidad_vistos++;
+		adyacentes = g->Adyacentes(nodo_minimo, &cantidad_adyacentes);
+		for(i = 0; i < cantidad_adyacentes; i++){
+			if(!nodos_vistos[adyacentes[i]] && distancia_w1[adyacentes[i]] > distancia_w1[nodo_minimo] + g->Peso(nodo_minimo, adyacentes[i])->w1){
+				distancia_w1[adyacentes[i]] = distancia_w1[nodo_minimo] + g->Peso(nodo_minimo, adyacentes[i])->w1;
+			}
+		}
+		free(adyacentes);
+	}
+
+	for(i = 1; i <= cantidad_nodos; i++){
+		nodos_vistos[i] = false;
+	}
+	nodos_vistos[nodo] = true;
+	cantidad_vistos = 1;
+
+	while(cantidad_vistos < cantidad_nodos){
+		peso_minimo = INFINITY;
+		nodo_minimo = 1;
+		for(i = 1; i <= cantidad_nodos; i++){
+			if(!nodos_vistos[i] && distancia_w2[i] < peso_minimo){
+				nodo_minimo = i;
+				peso_minimo = distancia_w2[i];
+			}
+		}
+		nodos_vistos[nodo_minimo] = true;
+		cantidad_vistos++;
+		adyacentes = g->Adyacentes(nodo_minimo, &cantidad_adyacentes);
+		for(i = 0; i < cantidad_adyacentes; i++){
+			if(!nodos_vistos[adyacentes[i]] && distancia_w2[adyacentes[i]] > distancia_w2[nodo_minimo] + g->Peso(nodo_minimo, adyacentes[i])->w2){
+				distancia_w2[adyacentes[i]] = distancia_w2[nodo_minimo] + g->Peso(nodo_minimo, adyacentes[i])->w2;
+			}
+		}
+		free(adyacentes);
+	}
+
+	delete [] nodos_vistos;
+
+}
+
 int main(int argc, char **argv)
 {
 	int medir_tiempo = 0;
@@ -101,7 +183,7 @@ int main(int argc, char **argv)
 	Solucion solucion;
 
 	//if(argc != 1)
-	medir_tiempo = 1;
+	medir_tiempo = 0;
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
 		if(medir_tiempo){
@@ -128,11 +210,15 @@ int main(int argc, char **argv)
 			cerr << nodos << " " << aristas << " " << CANT_ITERS_MEDICION << " " << promedio_medicion;
 		}
 		else{
+			float *distancia_w1;
+			float *distancia_w2;
 			solucion.W1 = 0;
 			solucion.W2 = 0;
 			solucion.k = 1;
 			solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 			solucion.v[0] = u;
+			dijkstra(grafo, u, &distancia_w1, &distancia_w2);
+			printf("%0.0f %0.0f\n", distancia_w1[v], distancia_w2[v]);
 			if(resolver(*grafo, u, v, K, &solucion)){
 				printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
 				for(i = 0; i < solucion.k; i++){
@@ -144,6 +230,8 @@ int main(int argc, char **argv)
 				printf("no");
 			}
 			free(solucion.v);
+			delete [] distancia_w1;
+			delete [] distancia_w2;
 		}
 		int i;
 		for(i = 0; i < aristas; i++){
