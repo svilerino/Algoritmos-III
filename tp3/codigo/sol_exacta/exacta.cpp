@@ -121,8 +121,7 @@ void dijkstra(Grafo<peso> *g, int nodo, float **_distancia_w1, float **_distanci
 	}
 	distancia_w1[nodo] = 0;
 	distancia_w2[nodo] = 0;
-	nodos_vistos[nodo] = true;
-	cantidad_vistos = 1;
+	cantidad_vistos = 0;
 
 	while(cantidad_vistos < cantidad_nodos){
 		peso_minimo = INFINITY;
@@ -147,8 +146,7 @@ void dijkstra(Grafo<peso> *g, int nodo, float **_distancia_w1, float **_distanci
 	for(i = 1; i <= cantidad_nodos; i++){
 		nodos_vistos[i] = false;
 	}
-	nodos_vistos[nodo] = true;
-	cantidad_vistos = 1;
+	cantidad_vistos = 0;
 
 	while(cantidad_vistos < cantidad_nodos){
 		peso_minimo = INFINITY;
