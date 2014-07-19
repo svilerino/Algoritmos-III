@@ -178,6 +178,8 @@ public:
 	nodo_t obtener_nodo_origen();
 	nodo_t obtener_nodo_destino();
 	costo_t obtener_limite_w1();
+	costo_t obtener_costo_actual_w1_solucion();
+	costo_t obtener_costo_actual_w2_solucion();
 	Camino obtener_camino_solucion();
 	void establecer_camino_solucion(Camino c);
 

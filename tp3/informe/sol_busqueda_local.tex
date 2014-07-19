@@ -384,6 +384,23 @@ Resumen del analisis:
 
 Observamos que para grafos menos densos, disminuye la cantidad promedio de iteraciones, esto tambien podr\'ia indicar que hay algun tipo de relacion entre la cantidad de aristas y el cardinal de la vecindad $N$, lo cual tiene sentido, porque a mayor cantidad de aristas en el grafo, mas modificaci\'ones locales pueden hacerse al camino inicial.
 
+\subsection{Experimentacion: Variaci\'on absoluta de w2 en busqueda local}
+Otra forma de ponderar el rendimiento de busqueda local es una variaci\'on del analisis realizado en la seccion anterior. Consiste en que, en cada iteracion de busqueda local se almacenen los costos $w_1$ y $w_2$ del camino actual obtenido para luego ser graficado como una funcion donde el eje X consiste en la cantidad de iteraciones y el eje Y denota el valor absoluto del costo. Si realizamos ademas una resta entre el valor inicial y el valor final del eje Y, tendremos cual fue la mejora total del camino. Si realizamos un promedio y una desviacion estandar sobre este ultimo dato, podremos observar para diferentes sets de grafos como es el rendimiento de la busqueda local.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Experimentacion: Distintas soluciones iniciales factibles}
 Como mencionamos antes, se utiliza Dijkstra sobre $w_1$ para obtener la solucion inicial factible, para comenzar las iteraciones de b\'usqueda local. En esta secci\'on decidimos variar esto y establecer la solucion inicial de busqueda local con la heuristica golosa. Para ciertos grafos preestablecidos que pueden encontrarse en la carpeta \texttt{grafos especiales} las soluciones finales de busqueda local con los 2 modos de solucion inicial son iguales, lo que vari\'o de forma notable fue la cantidad de iteraciones de busqueda local necesarias para llegar a dicha solucion final, debajo se muestra una tabla indicando esto:
 \begin{center}
@@ -403,3 +420,4 @@ Como mencionamos antes, se utiliza Dijkstra sobre $w_1$ para obtener la solucion
 \end{center}
 
 Asumimos que esto se debe a la calidad de la soluci\'on provista por el algoritmo goloso.
+

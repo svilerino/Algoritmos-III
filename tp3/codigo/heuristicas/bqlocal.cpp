@@ -2,6 +2,8 @@
 #include "timing.h"
 #include <fstream>
 #define FILE_ITERS_MEJORA "evolucion_iteraciones.txt"
+#define FILE_ITERS_COSTOS_ABSOLUTOS "costos_absolutos_iteraciones_bqlocal.txt"
+#define FILE_ITERS_COSTOS_ABSOLUTOS_STATISTICS "costos_absolutos_iteraciones_bqlocal_analisis.txt"
 
 void ejecutar_busqueda_local(Grafo &g);
 
@@ -72,18 +74,29 @@ void ejecutar_busqueda_local(Grafo &g){
         tipo_ejecucion_bqlocal_t tipo_ejecucion = BQL_COMBINAR;
 
         //hago iteraciones de busqueda local hasta que no haya mejora(la funcion devuelve true si hubo mejora, false sino)
-        int mejora_current_iteration = 0;
         uint64_t cant_iters = 0;
         double promedio_parcial = 0;
         double promedio = 0;
+        int mejora_current_iteration = 0;
         vector<costo_t> mejora_en_iteraciones;
+        vector<pair<costo_t,costo_t> > costo_camino_en_iteraciones;//costos w1, w2
+        costo_t costo_w1_current_iteration = c.obtener_costo_total_w1_camino();
+        costo_t costo_w2_current_iteration = c.obtener_costo_total_w2_camino();
+        
+        //ponemos el costo inicial de la iteracino 0 del camino
+        mejora_en_iteraciones.push_back(0);//mejora 0 en iteracion 0
+        costo_camino_en_iteraciones.push_back(make_pair(costo_w1_current_iteration, costo_w2_current_iteration));
         do{
             promedio_parcial = 0;
             MEDIR_TIEMPO_PROMEDIO(
                 mejora_current_iteration = g.busqueda_local(tipo_ejecucion);
                 , 1, &promedio_parcial);
             cant_iters++;
-            promedio += promedio_parcial;            
+            promedio += promedio_parcial;         
+            costo_w1_current_iteration = g.obtener_costo_actual_w1_solucion();
+            costo_w2_current_iteration = g.obtener_costo_actual_w2_solucion();
+            costo_camino_en_iteraciones.push_back(make_pair(costo_w1_current_iteration, costo_w2_current_iteration));
+
             mejora_en_iteraciones.push_back(mejora_current_iteration);
         }while(mejora_current_iteration > 0);
         promedio = promedio /(double) cant_iters;
@@ -113,6 +126,21 @@ void ejecutar_busqueda_local(Grafo &g){
         for(uint i=1;i<=mejora_en_iteraciones.size();i++){
             evolucion_iteraciones << i << " " << mejora_en_iteraciones[i-1] << endl;
         }
+        evolucion_iteraciones.close();
+        
+        evolucion_iteraciones.open(FILE_ITERS_COSTOS_ABSOLUTOS);        
+        for(uint i=1;i<=costo_camino_en_iteraciones.size();i++){
+            //imprimr <iteracion> <costo_w2> <costo_w1>
+            evolucion_iteraciones << i << " " << costo_camino_en_iteraciones[i-1].second << " " << costo_camino_en_iteraciones[i-1].first << endl;
+        }
+        evolucion_iteraciones.close();
+
+        costo_t costo_w2_inicial = costo_camino_en_iteraciones.front().second;
+        costo_t costo_w2_final = costo_camino_en_iteraciones.back().second;
+        costo_t mejora_total_costo_w2 = costo_w2_inicial - costo_w2_final;
+
+        evolucion_iteraciones.open(FILE_ITERS_COSTOS_ABSOLUTOS_STATISTICS);
+            evolucion_iteraciones << costo_w2_inicial << " " << costo_w2_final << " " << mejora_total_costo_w2;
         evolucion_iteraciones.close();
     }
 

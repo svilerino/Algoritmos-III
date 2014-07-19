@@ -1445,6 +1445,14 @@ set<pair<costo_t, nodo_t> >::iterator Grafo::obtener_candidato_randomizado(tipo_
 	return retorno;
 }
 
+costo_t Grafo::obtener_costo_actual_w1_solucion(){
+	return this->camino_obtenido.obtener_costo_total_w1_camino();
+}
+
+costo_t Grafo::obtener_costo_actual_w2_solucion(){
+	return this->camino_obtenido.obtener_costo_total_w2_camino();
+}
+
 //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
 Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_ejecucion, double parametro_beta){
 	int n = this->cantidad_nodos;

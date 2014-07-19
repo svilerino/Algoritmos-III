@@ -14,7 +14,7 @@ NC='\e[0m' # No Color
 #cant_nodos_min=10
 #cant_nodos_max=60
 cant_nodos_min=100
-cant_nodos_max=700
+cant_nodos_max=500
 peso_maximo_w1=250
 peso_maximo_w2=400
 limit_w1=200
@@ -35,7 +35,7 @@ do
 	echo "Generando grafos de $n nodos con cantidad de aristas aleatorias en el rango [$aristas_minimas .. $aristas_maximas]"
 	echo "Los pesos W1 de las aristas van a estar en un rango preestablecido aleatorio entre [1..$peso_maximo_w1]"
 	echo "Los pesos W2 de las aristas van a estar en un rango preestablecido aleatorio entre [1..$peso_maximo_w2]"
-	for (( a=$aristas_minimas; a<=$aristas_maximas; a+=1000 ))
+	for (( a=$aristas_minimas; a<=$aristas_maximas; a+=4500 ))
 	#for (( a=$aristas_minimas; a<=$aristas_maximas; a+=4500 ))
 	do
 		echo -n "Generando grafo de $n nodos y $a aristas aleatorio..."
