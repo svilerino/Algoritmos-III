@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 	Solucion solucion;
 
 	//if(argc != 1)
-	medir_tiempo = 0;
+	medir_tiempo = 1;//dejalo asi, lo necesito para los scripts, idem la cantidad de iteraciones(necesito que imprima la salida una sola vez). Firma: Silvio.
 	grafo = new GrafoAdyacencia<peso>(0);
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
 		if(medir_tiempo){

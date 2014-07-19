@@ -33,8 +33,12 @@ if ls test-cases/*.in &> /dev/null; then
 					continue
 				fi
 			fi			
+			limitw1=$(head -1 "$file" | awk -F' ' '{print $5}')
+			nodosrc=$(head -1 "$file" | awk -F' ' '{print $3}')
+			nododst=$(head -1 "$file" | awk -F' ' '{print $4}')
 			echo -n "Corriendo $heuristica con archivo de input $file..."
-			limitw1=$(cat "$file" | awk -F' ' '{print $5}')
+			#head -1 instancia_100.582.in  | awk -F' ' '{print $2}'
+
 			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
 
 		    DIFF=$(diff "../$TESTS_OUTPUT/$heuristica/$file.out" "../no.txt") 
@@ -56,12 +60,13 @@ if ls test-cases/*.in &> /dev/null; then
 					echo -e -n "${NC}"
 				else
 				    echo "$cantNodos $cantAristas $pesow2 $heuristica " >> ../"comparacion_optimalidad_$heuristica".tmpplot
-			    	echo -e "${green}Ok! Camino obtenido con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
+			    	echo -e "${green}Ok! Camino obtenido entre ($nodosrc) y ($nododst) con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
 			    	#cat "../$TESTS_OUTPUT/$heuristica/$file.out"
-			    	#echo ""
+			    	#echo ""			    	
 				fi
 			fi
 		done
+		echo "-------------------------------------------------------------------------------------------------------------------------"
 	done
 	#estos archivos se crean en las ejecuciones de grasp y bqlocal. los borro
 	rm -rf evolucion_iteraciones.txt
