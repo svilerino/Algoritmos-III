@@ -186,13 +186,19 @@ int main(int argc, char **argv)
 	while(Parsear<peso>(*grafo, stdin, &pesos, setW1, setW2, &u, &v, &K, &nodos, &aristas)){
 		if(medir_tiempo){
 			double promedio_medicion = 0.0;
-			MEDIR_TIEMPO_PROMEDIO(				
+			MEDIR_TIEMPO_PROMEDIO(
+				float *distancia_w1;
+				float *distancia_w2;
 				solucion.W1 = 0;
 				solucion.W2 = 0;
 				solucion.k = 1;
 				solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 				solucion.v[0] = u;
-				if(resolver(*grafo, u, v, K, &solucion)){
+				dijkstra(grafo, u, &distancia_w1, &distancia_w2);
+				if(distancia_w1[v] > K){
+					printf("no");
+				}
+				else if(resolver(*grafo, u, v, K, &solucion)){
 					printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
 					for(i = 0; i < solucion.k; i++){
 						printf(" %d", solucion.v[i]);
@@ -203,6 +209,8 @@ int main(int argc, char **argv)
 					printf("no");
 				}
 				free(solucion.v);
+				delete [] distancia_w1;
+				delete [] distancia_w2;
 			, CANT_ITERS_MEDICION, &promedio_medicion);
 			//cerr << promedio << " " << nodos << " " << aristas << endl;
 			cerr << nodos << " " << aristas << " " << CANT_ITERS_MEDICION << " " << promedio_medicion;
@@ -216,8 +224,10 @@ int main(int argc, char **argv)
 			solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 			solucion.v[0] = u;
 			dijkstra(grafo, u, &distancia_w1, &distancia_w2);
-			printf("%0.0f %0.0f\n", distancia_w1[v], distancia_w2[v]);
-			if(resolver(*grafo, u, v, K, &solucion)){
+			if(distancia_w1[v] > K){
+				printf("no");
+			}
+			else if(resolver(*grafo, u, v, K, &solucion)){
 				printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
 				for(i = 0; i < solucion.k; i++){
 					printf(" %d", solucion.v[i]);
