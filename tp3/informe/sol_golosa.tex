@@ -45,6 +45,10 @@ Este dibujo representa la ejecuci\'on de la inicializaci\'on de la heur\'stica, 
 
 El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra sobre los costos $w_2$. El agregado al algoritmo es la estrategia previamente explicada, teniendo la informaci\'on que nos brindan $CostosW1$ y $CostoRecorrido$, cuando sacamos un nodo $v$ de la cola y procedemos a actualizar sus vecinos $x$, s\'olo vamos a considerar actualizar los valores $CostosW2$ y $precedesor$ para aquellos que sean factibles, es decir, aquellos para los cuales el costo $w_1$ del camino recorrido potencial recorrido hasta $v$ + el costo de la arista entre los nodos $(v,x)$ +  el costo $w_1$ del camino m\'inimo de $x$ a la llegada es menor o igual a K, dicho en t\'erminos del algoritmo: $costoRecorrido[v]+costo(v,x)+CostosW1[x]\leq K$. Esto nos asegura que el camino de un nodo nunca va a ser actualizado por un camino no factible.
 
+\vspace{2mm}
+
+La componente golosa del algoritmo, al igual que en el algoritmo de Dijkstra, es la elecci\'on en cada iteraci\'on del m\'inimo nodo de la cola de nodos.
+
 \subsubsection{Pseudoc\'odigo}
 
 
@@ -244,9 +248,11 @@ En la secci\'on de anal\'isis de complejidad del algoritmo concluimos acotando l
 \end{center}
 
 
-\begin{center}
+\begin{center}	
 	\textbf{$y = f(x)/x^4$}\\
 	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_med_over_n_fourth}.png}
 \end{center}
+
+Concluimos en que
 
 \subsection{Experimentaci\'on de optimalidad}
