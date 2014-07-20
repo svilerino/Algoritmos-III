@@ -131,7 +131,7 @@ A continuaci\'on, vamos a demostrar que en caso de haber alg\'un camino factible
 
 \vspace{2mm}
 
-Consideremos el camino $C$, de costo $w_1$ m\'inimo del nodo de salida $u$ al nodo de llegada $v$. Supongamos que este existe y adem\'as su costo total es menor a la cota $K$. Supongamos que el algoritmo no puede encontrar un camino factible, y lleguemos a un absurdo. Tomemos a $x$, como el \'ultimo nodo $\in C$ para el cual el algoritmo puede actualizar sus valores, es decir, el \'ultimo nodo para el cual tuvo algu\'un vecino $y$ tal que $costoRecorrido[y] + costow_1Arista(y,x) + costosw_1(x)  \leq K $ y el algoritmo actualiz\'o valores. 
+Consideremos el camino $C$, de costo $w_1$ m\'inimo del nodo de salida $u$ al nodo de llegada $v$. Supongamos que este existe y adem\'as su costo total es menor a la cota $K$. Supongamos que el algoritmo no puede encontrar un camino factible, y lleguemos a un absurdo. Tomemos a $x$, como el \'ultimo nodo $\in C$ para el cual el algoritmo puede actualizar sus valores, es decir, el \'ultimo nodo para el cual tuvo algu\'un vecino $a$ tal que $costoRecorrido[a] + costow_1Arista(a,x) + costosw_1(x)  \leq K $ y el algoritmo actualiz\'o valores. 
 
 \vspace{2mm}
 
@@ -139,3 +139,4 @@ Sabemos que este nodo existe ya que existe $C$ un camino factible de costo m\'in
 
 \vspace{2mm}
 
+Ahora consideremos el nodo siguiente del camino, llam\'emosle $y$. $y$ es el primer nodo del camino $C$ para el cual el algoritmo no encuentra un vecino factible. Pero sabemos que $x$ es adyacente a $y$, y sabemos que para $x$, por haber sido actualizado por el algoritmo vale $costoRecorrido[x] + costosw_1(x) \leq K $
