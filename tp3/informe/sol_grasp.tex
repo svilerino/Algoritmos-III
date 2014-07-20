@@ -10,8 +10,7 @@ Durante el ciclo del algoritmo goloso, recordemos que la primera instrucci\'on d
 
 \vspace{2mm}
 
-El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos.
-
+El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos. Esto claramente repercute en la complejidad del ciclo goloso agreg\'andole un recorrido a la cola en lugar de una simple obtenci\'on del m\'inimo.
 \vspace{2mm}
 
 El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta$ nodos de valor m\'inimo. Luego se elige uno al azar. Como la cola est\'a ordenada, cumple la condici\'on de RCL por cantidad, con lo que basta tomar un n\'umero aleatorio $i$ entre $0$ y  $min\{cola.size(), parametro\_beta\} -1$ y devolver el $i$-\'esimo elemento de la cola.
@@ -49,7 +48,6 @@ No fue necesario realizar modificaciones a la heur\'istica de b\'usqueda local.
 \subsection{Critero de terminaci\'on}
 
 Fijada ya la heur\'istica golosa aleatorizada, y la heur\'istica de b\'usqueda local, queda definir por el criterio de terminaci\'on.
-
 
 \vspace{2mm}
 
@@ -153,13 +151,13 @@ Nota: la entrada $criterios$ se refiere a las variables:
 	    	    	\Comment{$sol\_valida\_rgreedy = false$}
 	    	    	\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible++$
 	    	    	\If{$cant\_iters\_sin\_sol\_greedy\_rand\_factible\geq bad\_rgreedy\_its$}
-	    	    		\If{$tipo\_golosa == por\_valor$}
+	    	    		\If{$tipo\_golosa == por\_cantidad$}
 	    	    		\Comment Maximo de its de greedy sin solucion
 	    	    	            \If{$parametro\_beta\geq2$}
 	    	    	            	\Comment Ajustamos parametros de GRASP
 	    	    	                \State $parametro\_beta--$
 	    	    	            \EndIf
-	    	    	    \ElsIf{$tipo\_golosa == por\_cantidad$}
+	    	    	    \ElsIf{$tipo\_golosa == por\_valor$}
 	
 	        	    	\State $parametro_beta = 0$
 	        		\EndIf
@@ -183,3 +181,7 @@ Nota: la entrada $criterios$ se refiere a las variables:
 
 \EndProcedure
 \end{algorithmic}
+
+
+\subsection{An\'alisis de complejidad}
+
