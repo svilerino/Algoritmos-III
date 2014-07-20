@@ -22,8 +22,10 @@ detecta que no puede mejorar una soluci\'on que ya tenga almacenada como candida
 El algoritmo ser\'a una funci\'on recursiva, pas\'andole como argumentos el grafo, los nodos de origen ($u$ el cual en la primer llamada va a ser $v$,
 el nodo origen del problema) y destino ($w$), el limite K, y un camino encontrado hasta el momento, que va desde el nodo de origen del problema ($v$), al nodo de orgen pasado a la funci\'on ($u$).
 
-En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y por cada uno (nombremoslo $z$) llama recursivamente quitando el v\'ertice $(u,z)$ al grafo,
+En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y por cada uno (nombremoslo $z$) llama recursivamente quitando el eje $(u,z)$ al grafo,
 ,indic\'andole como nodo de origen a $z$, y agregando al camino encontrado hasta el momento el nodo $z$. Luego se queda con el mejor camino que encontr\'o entre cada uno de los adyacentes.
+
+A su vez, antes de comenzar con todas las llamadas recursivas, se ejecuta \emph{Dijkstra} desde el nodo $u$ sobre los pesos $\omega_1$. Si la peso $\omega_1$ del camino m\'inimo desde $u$ a $w$ tiene un valor mayor a $K$, entonces se retorna que no hay soluci\'on sin comenzar con la recursi\'on, ya que los caminos que hubiesenn, va a tener un peso $\omega_1$ mayor a $K$ (ya que el m\'inimo es mayor a $K$)
 
 \subsubsection{Algoritmo}
 
@@ -40,6 +42,15 @@ En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y po
 	\Ensure Retorna $verdarero$ si encontr\'o un camino de $u$ a $w$, $falso$ si no encontr\'o camino.
 	\Statex
 	\Procedure{cacm\_exacto}{$Grafo$: grafo, $Nodo$: u, $Nodo$: w, $Real$: K, $Camino$: solucion}{$\to$ $bool$}
+		\State distancias $\gets$ \Call{Dijsktra\_en\_w1}{grafo, u}
+		\If{distancias[w] $>$ K}
+			\State return $falso$
+		\Else
+			\State return $\gets$ \Call{cacm\_exacto\_recursivo}{grafo, u, w, K, solucion}
+		\EndIf
+	\EndProcedure
+	\Statex
+	\Procedure{cacm\_exacto\_recursivo}{$Grafo$: grafo, $Nodo$: u, $Nodo$: w, $Real$: K, $Camino$: solucion}{$\to$ $bool$}
 		\If{u $=$ w}
 			\State return $verdadero$
 		\EndIf
@@ -55,7 +66,7 @@ En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y po
 			\If{$peso1 < K$ $\land$ (mejor\_solcion $=$ $[]$ $\lor$ $peso2 < \omega_2(solucion\_mejor))$}
 				\State \Call{quitar\_arista}{grafo, u, z}
 				\State solucion\_nueva $gets$ $[z]$
-				\State encontre $\gets$ \Call{cacm\_exacto}{grafo, z, w, K $-$ $peso1$, solucion\_nueva}
+				\State encontre $\gets$ \Call{cacm\_exacto\_recursivo}{grafo, z, w, K $-$ $peso1$, solucion\_nueva}
 				\If{encontre $\land$ (mejor\_solucion $=$ $[]$ $\lor$ $\omega_2(solucion\_nueva) < \omega_2(solucion\_mejor)$)}
 					\State mejor\_solucion $\gets$ solucion\_nueva
 				\EndIf
