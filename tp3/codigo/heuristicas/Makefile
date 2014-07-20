@@ -29,8 +29,8 @@ tests: generador codigo
 	./create_tests.sh
 
 graphics: tests
-	./run_performance_tests.sh bqlocal
-	#./run_performance_tests.sh golosa
+	#./run_performance_tests.sh bqlocal
+	./run_performance_tests.sh golosa
 	#./run_performance_tests.sh grasp
 	#./run_performance_tests.sh exacta
 	#./run_optimality_tests.sh --use-exacta
