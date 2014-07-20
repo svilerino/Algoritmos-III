@@ -6,41 +6,40 @@ Dado que la heur\'istica GRASP es una combinaci\'on entre una heur\'istica golos
 
 \vspace{2mm}
 
-Durante el ciclo del algoritmo goloso, recordemos que la primera instrucci\'on era pedir la lista de incidentes del nodo actual. En lugar de esto, ahora armamos su lista restringida de canditatos, o RCL. El algoritmo ahora dos par\'ametros, $tipo\_ejecucion$ que indica tres tipos de ejecuci\'on: determin\'istico, por valor y por cantidad, y un par\'ametro $\beta$. El tipo determin\'istico es an\'alogo a la heur\'istica golosa antes descripta, y el par\'ametro $\beta$ es ignorado.
+Durante el ciclo del algoritmo goloso, recordemos que la primera instrucci\'on del ciclo principal, al igual que el algoritmo de Dijkstra, es obtener el m\'inimo nodo de la cola segu\'un $w_2$. En lugar de esto, ahora armamos una lista restringida de canditatos, o RCL. El algoritmo ahora tiene dos par\'ametros, $tipo\_ejecucion$ que indica tres tipos de ejecuci\'on: determin\'istico, por valor y por cantidad, y un par\'ametro $\beta$. El tipo determin\'istico es an\'alogo a la heur\'istica golosa antes descripta, simplemente tomando el m\'inimo y el par\'ametro $\beta$ es ignorado.
 
 \vspace{2mm}
 
-El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$).
+El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos.
 
 \vspace{2mm}
 
-El tipo de ejecuci\'on por cantidad toma la lista ordenada de candidatos, y toma los $\beta$ mejores candidatos.
+El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta$ nodos de valor m\'inimo. Luego se elige uno al azar. Como la cola est\'a ordenada, cumple la condici\'on de RCL por cantidad, con lo que basta tomar un n\'umero aleatorio $i$ entre $0$ y  $min\{cola.size(), parametro\_beta\} -1$ y devolver el $i$-\'esimo elemento de la cola.
 
 \vspace{2mm}
 
 \begin{algorithmic}
 
-\While{ $ actual != v_2 \: || \: RCL= \emptyset $ }
-	\State $ list<eje> \: RCL = obtenerRCL(v_{actual}, g, tipo\_ejecucion, \beta) $
+\While{ $ !cola=\emptyset$ }
 	\If{$tipo\_ejecucion == deterministico$}
-    		 \State $eje \: minimo = cabeza(RCL)$    
-    		 \ElsIf{$tipo\_ejecucion == por\_valor || tipo_ejecucion == por\_cantidad$}
-			\State $int \: random = random(0 - long(RCL))$
-			\State $eje \: minimo = candidatos[random]$
-	\EndIf
-	\State $ Agregar(minimo, camino) $
-	\State $ costoCamino \: += costo1(minimo) $
-	\State $ v_{actual} = v $
-	\State $distanciaLlegada--$
+    	 \State $nodo \: minimo = minimo(cola)$    
+    \ElsIf{$tipo\_ejecucion == por\_cantidad$}
+		\State $int \: random = random(0, min\{cola.size(), parametro\_beta\} -1)$
+		\State $ \: minimo = cola[random]$
+	\ElsIf{$tipo_ejecucion == por\_valor$}
+		\State $lista \: nodo \: candidatos = \emptyset$
+		\State $int \: i = 0$
+		\While{$i<tamano(cola)$}
+			\If{$ cola[i] \leq valor\_limite $}
+				\State $ agregar(cola[i], candidatos) $
+			\EndIf
+		\EndWhile
+		\State $int \: random = random(0, min\{cola.size(), parametro\_beta\} -1)$
+		\State $ \: minimo = candidatos[random]$
+		\EndIf
+		
 \EndWhile
-\State $ return \: camino $
 \end{algorithmic}
-
-La funci\'on $obtenerRCL$ arma lista restringida de candidatos tomando la lista aristas incidentes, eliminando aquellas en las que la distancia en saltos no es menor estricta, eliminando aquellas que no pertenecen a un camino v\'alido de costo $w_1$ menor a $K$, orden\'andola de menor a mayor seg\'un costo $w_2$ y aplicando los filtros anteriormente mencionados.
-
-\vspace{2mm}
-
-Acto seguido, si la ejecuci\'on es determin\'istica, simplemente se toma la cabeza de la RCL, que es el m\'inimo seg\'un costo $w_1$ de las aristas v\'alidas, lo cual es an\'alogo a la heur\'istica golosa sin modificaciones. En caso estar utilizando alg\'un otro tipo de ejecuci\'n, se genera un n\'umero aleatorio entre 0 y la longitud de RCL y se toma un elemento de RCL aleatorio. Aqu\'i se encuentra la aleatorizaci\'on del algoritmo goloso, tomando una arista v\'alida que forma parte de una subsoluci\'on posible, pero no tomando el m\'inimo siempre determin\'isticamente.
 
 \vspace{2mm}
 
