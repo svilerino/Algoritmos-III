@@ -176,8 +176,6 @@ void comenzar(Grafo<peso> *grafo, int u, int v, int K, int nodos, int aristas)
 {
 	int i;
 	Solucion solucion;
-	float *distancia_w1;
-	float *distancia_w2;
 	float *distancia_w1_v;
 	float *distancia_w2_v;
 
@@ -186,9 +184,8 @@ void comenzar(Grafo<peso> *grafo, int u, int v, int K, int nodos, int aristas)
 	solucion.k = 1;
 	solucion.v = (int *)calloc(2 * aristas, sizeof(int));
 	solucion.v[0] = u;
-	dijkstra(grafo, u, &distancia_w1, &distancia_w2);
 	dijkstra(grafo, v, &distancia_w1_v, &distancia_w2_v);
-	if(distancia_w1[v] > K){
+	if(distancia_w1_v[u] > K){
 		printf("no");
 	}
 	else if(resolver(*grafo, u, v, K, distancia_w1_v, distancia_w2_v, &solucion)){
@@ -202,8 +199,6 @@ void comenzar(Grafo<peso> *grafo, int u, int v, int K, int nodos, int aristas)
 		printf("no");
 	}
 	free(solucion.v);
-	delete [] distancia_w1;
-	delete [] distancia_w2;
 	delete [] distancia_w1_v;
 	delete [] distancia_w2_v;
 
