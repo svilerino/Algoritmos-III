@@ -387,7 +387,7 @@ Luego se realizan dos graficos, el primero, referido a la variacion entre cada i
 	\item Cantidad minima de nodos: 50
 	\item Cantidad maxima de nodos: 220
 	\item Rango peso $w_1$: [0..250]
-	\item Rango peso $w_1$: [0..400]
+	\item Rango peso $w_2$: [0..400]
 	\item Cota de $w_1$: 400
 	\item Cantidad minima de aristas: $\frac{n * (n-1)}{3}$
 	\item Cantidad maxima de aristas: $\frac{n * (n-1)}{2}$
@@ -429,7 +429,7 @@ Luego se realizan dos graficos, el primero, referido a la variacion entre cada i
 	\item Cantidad minima de nodos: 100
 	\item Cantidad maxima de nodos: 2000
 	\item Rango peso $w_1$: [0..250]
-	\item Rango peso $w_1$: [0..400]
+	\item Rango peso $w_2$: [0..400]
 	\item Cota de $w_1$: 400
 	\item Cantidad minima de aristas: $n-1$
 	\item Cantidad maxima de aristas: $10*n$
@@ -471,4 +471,147 @@ Podemos observar que para grafos con menor densidad de aristas disminuye drastic
 Teniendo en cuenta la cantidad promedio de iteraciones y mejora promedio para grafos de baja densidad y los mismos resultados para grafos de alta densidad, notemos que aunque la cantidad de nodos aumente mucho mas en los grafos poco densos, los indicadores estadisticos siguen siendo baj\'isimos. Vamos a basarnos en estos resultados para deducir que una familia mala de grafos para la busqueda local ser\'an aquellos con poca densidad de aristas, lo cual produce un cardinal bajo en la vecindad, dando lugar a muy pocas o nulas mejoras locales de la solucion inicial.
 
 \subsection{Variaci\'on de efectividad de busqueda local sobre conjunto fijo de grafos cambiando vecindades}
-densos, lineales, correr las 3 y sin graficos mostrar como varia pero vamos a usar solo la mejor(esperemos que sea la combinada) para grasp.
+Para evaluar la elecci\'on de la mejor vecindad de busqueda local, se realizaron experimentos sobre 2 densidades de aristas de grafos. Se generaron dos conjuntos de grafos, uno con cada densidad de aristas.\\
+Luego se corrieron los algoritmos de busqueda local con diferentes vecindades para estos dos conjuntos fijos. A continuaci\'on se muestran los resultados obtenidos:
+
+\subsubsection{Experimentaci\'on sobre conjunto de grafos con baja densidad de aristas}
+
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Cantidad minima de nodos: 100
+	\item Cantidad maxima de nodos: 2000
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_2$: [0..400]
+	\item Cota de $w_1$: 400
+	\item Cantidad minima de aristas: $n-1$
+	\item Cantidad maxima de aristas: $10*n$
+\end{itemize}  
+
+\textbf{Vecindad $N_1$}:\\
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 54
+	Iteraciones promedio: 0
+	Iteraciones stddev: 0.580091
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 3
+	Mejora promedio del costo w2: 42
+	Mejora stddev del costo w2: 121.582
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 411 en 3 iteraciones
+\end{lstlisting}
+
+\textbf{Vecindad $N_2$}:\\
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 54
+	Iteraciones promedio: 0
+	Iteraciones stddev: 0.373193
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 3
+	Mejora promedio del costo w2: 12
+	Mejora stddev del costo w2: 83.0652
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 460 en 3 iteraciones
+\end{lstlisting}
+
+\textbf{Vecindad $N_3$}:\\
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 54
+	Iteraciones promedio: 0
+	Iteraciones stddev: 0.373193
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 3
+	Mejora promedio del costo w2: 23
+	Mejora stddev del costo w2: 155.133
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 772 en 3 iteraciones
+\end{lstlisting}
+
+\textbf{Vecindad $N(C): N_1 \cup N_2 \cup N_3$}:\\
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 54
+	Iteraciones promedio: 0
+	Iteraciones stddev: 0.915552
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 5
+	Mejora promedio del costo w2: 78
+	Mejora stddev del costo w2: 243.037
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 1037 en 5 iteraciones
+\end{lstlisting}
+
+\subsubsection{Experimentaci\'on sobre conjunto de grafos con alta densidad de aristas}
+
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Cantidad minima de nodos: 50
+	\item Cantidad maxima de nodos: 220
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_2$: [0..400]
+	\item Cota de $w_1$: 400
+	\item Cantidad minima de aristas: $\frac{n * (n-1)}{3}$
+	\item Cantidad maxima de aristas: $\frac{n * (n-1)}{2}$
+\end{itemize}  
+
+\textbf{Vecindad $N_1$}:\\%BQL_MEJORAR_CONEXION_TRIPLAS
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 34
+	Iteraciones promedio: 3
+	Iteraciones stddev: 2.25399
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 10
+	Mejora promedio del costo w2: 536
+	Mejora stddev del costo w2: 350.713
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 1385 en 8 iteraciones
+\end{lstlisting}
+
+\textbf{Vecindad $N_2$}:\\%BQL_SUBDIVIDIR_PARES
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 34
+	Iteraciones promedio: 2
+	Iteraciones stddev: 1.18854
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 4
+	Mejora promedio del costo w2: 150
+	Mejora stddev del costo w2: 162.863
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 658 en 4 iteraciones
+\end{lstlisting}
+
+\textbf{Vecindad $N_3$}:\\%BQL_CONTRAER_TRIPLAS_A_PARES
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 34
+	Iteraciones promedio: 3
+	Iteraciones stddev: 2.04025
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 10
+	Mejora promedio del costo w2: 751
+	Mejora stddev del costo w2: 545.173
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 2595 en 10 iteraciones
+\end{lstlisting}
+
+\textbf{Vecindad $N(C): N_1 \cup N_2 \cup N_3$}:\\
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]
+	Cantidad de tests realizados: 34
+	Iteraciones promedio: 4
+	Iteraciones stddev: 1.8492
+	Minima cantidad de iteraciones: 1
+	Maxima cantidad de iteraciones: 8
+	Mejora promedio del costo w2: 877
+	Mejora stddev del costo w2: 428.166
+	Minima mejora en w2 registrada: 0 en 1 iteraciones
+	Maxima mejora en w2 registrada: 1631 en 8 iteraciones
+\end{lstlisting}
+
+\vspace{1cm}
+\textbf{Conclusion}:\\
+Podemos observar de los resultados que en general, para grafos de baja densidad es mejor la heuristica con vecindad combinada $N$, pero para grafos densos, no lo es. Lo cual nos lleva a la conclusion de que expandir la vecindad no necesariamente proporciona una mejor solucion final, pues la decision golosa de obtener siempre el camino vecino que mas optimice localmente la funcion target puede pasar por alto el caso donde haber obtenido una solucion peor en este paso, nos dar\'a una mas alta mejora en una iteracion siguiente, produciendo una mejor solucion final.

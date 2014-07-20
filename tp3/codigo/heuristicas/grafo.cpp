@@ -1363,9 +1363,9 @@ Camino Grafo::obtener_solucion_golosa(){
 			}
 		}
 
-		//if(se_encontro_sol?) suponiendo que si hay sol factible el algoritmo encuentra una solucion, esto no hace falta
+		//
 		//{
-			//como podes saber aca si lo que encontro greedy es valido? tal vez deberiamos validar esto		
+			//
 			//armar camino encontrado por la greedy
 			nodo_t nodo = destino;
 			//cout <<"Nodos" << endl;
@@ -1484,7 +1484,7 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 		//Estructuras del greedy
 		vector<costo_t> costosw2(n, costo_infinito);
 		// contiene el costo w1 del camino recorrido hasta cada nodo
-		vector<costo_t> costoCamino(n, costo_nulo); 
+		vector<costo_t> costoCamino(n, costo_nulo);
 
 		//Comienza el algoritmo
 		//reseteamos los predecesores
@@ -1528,7 +1528,7 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 
 		//if(se_encontro_sol?) suponiendo que si hay sol factible el algoritmo encuentra una solucion, esto no hace falta
 		//{
-			//como podes saber aca si lo que encontro greedy es valido? tal vez deberiamos validar esto		
+			//
 			//armar camino encontrado por la greedy
 			nodo_t nodo = destino;
 			//cout <<"Nodos" << endl;
@@ -1538,7 +1538,13 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 				nodo = predecesores[nodo];
 			}while(nodo != predecesor_nulo);
 
-			assert(c.obtener_costo_total_w1_camino() == costoCamino[destino]);
+			//assert replaced
+			//assert(c.obtener_costo_total_w1_camino() == costoCamino[destino]);
+			if(c.obtener_costo_total_w1_camino() != costoCamino[destino]){
+				//c.imprimir_camino(cout);
+				//cout << "Camino invalido" << endl;
+				this->establecer_se_encontro_solucion(false);//no es sol factible		
+			}
 
 			//cout << endl << "Fin Nodos" << endl;
 			this->establecer_se_encontro_solucion(true);

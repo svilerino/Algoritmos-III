@@ -32,9 +32,9 @@ void ejecutar_grasp(Grafo &g){
     criterio_terminacion_grasp_t criterio_terminacion = CRT_K_ITERS_SIN_MEJORA;
     //este parametro denota la cantidad de iteraciones maxima, dependiendo del tipo de criterio, de cantidad fija de iteraciones o cantidad de iters
     //consecutivas sin mejora
-    uint64_t ITERS_LIMIT = 2;
+    uint64_t ITERS_LIMIT = 10;
     //consecutivas sin que greedy rand me de una solucion factible
-    uint64_t RAND_GREEDY_BAD_ITERS_LIMIT = 3;
+    uint64_t RAND_GREEDY_BAD_ITERS_LIMIT = 10;
     //este parametro denota el valor aceptable de la funcion objetivo w2 a partir del cual, dejamos de mejorar la solucion y consideramos que es lo suficientemente buena
 
 //----- Configuracion de los modos de la busqueda local y golosa -----
@@ -42,13 +42,13 @@ void ejecutar_grasp(Grafo &g){
     //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS, BQL_COMBINAR} tipo_ejecucion_bqlocal_t;
     tipo_ejecucion_bqlocal_t modo_busqueda_local = BQL_COMBINAR;
     //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
-    tipo_ejecucion_golosa_t modo_golosa = RCL_POR_VALOR;
+    tipo_ejecucion_golosa_t modo_golosa = RCL_POR_CANTIDAD;
     //si el tipo de golosa es RCL_POR_VALOR, este parametro indica el porcentaje de alejamiento del minimo de los candidatos de la lista
     //mas formalmente filtra todos los candidatos factibles locales que no cumplan candidato->costo_w2 <= valor_limite
     //donde valor limite es  (parametro_beta + 1) * minimo.second.obtener_costo_w2();
     //si el tipo de golosa es RCL_POR_CANTIDAD, este parametro indica la cantidad min{cant_candidatos, parametro_beta} de soluciones a considerar en la lista
     //si el tipo es RCL_DETERMINISTICO, este parametro es ignorado por el metodo.    
-    double parametro_beta = 0.66;
+    double parametro_beta = 10;
 
     //-------------------------------------------------------
 
@@ -130,7 +130,22 @@ void ejecutar_grasp(Grafo &g){
             cant_iters++;
         }else{
             //cerr << "[Grasp] Golosa no encontro solucion.Haciendole break al while de GRASP!" << endl;            
-            cant_iters_sin_sol_greedy_rand_factible++;            
+            cant_iters_sin_sol_greedy_rand_factible++;
+
+            //si ya no tengo mas chanches, modifico los parametros de la metaheuristica
+            if(cant_iters_sin_sol_greedy_rand_factible < RAND_GREEDY_BAD_ITERS_LIMIT){
+                //si es rcl por cantidad bajo el parametro beta
+                if(modo_golosa == RCL_POR_VALOR){
+                    if(parametro_beta>=2){
+                        parametro_beta--;
+                    }
+                }else if(modo_golosa == RCL_POR_CANTIDAD){
+                    //si es rcl por valor, seteo greedy deterministica
+                    //es muy delicado ajustar el porcentaje adaptativamente!
+                    modo_golosa = RCL_DETERMINISTICO;
+                }
+                cant_iters_sin_sol_greedy_rand_factible = 0;
+            }
         }
 
         if(criterio_terminacion == CRT_K_ITERS_LIMIT_REACHED){
@@ -138,7 +153,7 @@ void ejecutar_grasp(Grafo &g){
         }else if(criterio_terminacion == CRT_K_ITERS_SIN_MEJORA){
             condicion_terminacion = (cant_iters_sin_mejora < ITERS_LIMIT);
         }
-        condicion_terminacion = condicion_terminacion && (cant_iters_sin_sol_greedy_rand_factible < RAND_GREEDY_BAD_ITERS_LIMIT);
+        condicion_terminacion = condicion_terminacion;
     }while(condicion_terminacion);
     promedio = promedio / (double) cant_iters;
 

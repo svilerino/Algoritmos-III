@@ -11,21 +11,21 @@ red='\e[0;31m'
 green='\e[0;32m'
 NC='\e[0m' # No Color
 
-cant_nodos_min=100
-cant_nodos_max=2000
+cant_nodos_min=50
+cant_nodos_max=220
 peso_maximo_w1=250
 peso_maximo_w2=400
 limit_w1=400
 
-for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=100 ))
+for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=10 ))
 #for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=50 ))
 do 
 	#seleccionar aca abajo una combinacion de aristas... para establecer un valor fijo hay que poner max y min iguales.
-	#aristas_minimas=$((n * (n-1)/3))
-	#aristas_maximas=$((n * (n-1)/2))
+	aristas_minimas=$((n * (n-1)/3))
+	aristas_maximas=$((n * (n-1)/2))
 	
-	aristas_minimas=$((n-1))
-	aristas_maximas=$((10*n))
+	#aristas_minimas=$((n-1))
+	#aristas_maximas=$((10*n))
 	
 	#aristas_minimas=$((n * (n-1)/17))
 	#aristas_maximas=$((n * (n-1)/14))
@@ -33,7 +33,8 @@ do
 	echo "Generando grafos de $n nodos con cantidad de aristas aleatorias en el rango [$aristas_minimas .. $aristas_maximas]"
 	echo "Los pesos W1 de las aristas van a estar en un rango preestablecido aleatorio entre [1..$peso_maximo_w1]"
 	echo "Los pesos W2 de las aristas van a estar en un rango preestablecido aleatorio entre [1..$peso_maximo_w2]"
-	for (( a=$aristas_minimas; a<=$aristas_maximas; a+=4500 ))
+	for (( a=$aristas_minimas; a<=$aristas_maximas; a+=2500 ))
+	#for (( a=$aristas_minimas; a<=$aristas_maximas; a+=4500 ))
 	do
 		echo -n "Generando grafo de $n nodos y $a aristas aleatorio..."
 		#../generar_grafos/generar_grafos cantidad_nodos cantidad_aristas maximo_random_w1 maximo_random_w2
