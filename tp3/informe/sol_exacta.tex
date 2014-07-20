@@ -27,6 +27,9 @@ En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y po
 
 A su vez, antes de comenzar con todas las llamadas recursivas, se ejecuta \emph{Dijkstra} desde el nodo $u$ sobre los pesos $\omega_1$. Si la peso $\omega_1$ del camino m\'inimo desde $u$ a $w$ tiene un valor mayor a $K$, entonces se retorna que no hay soluci\'on sin comenzar con la recursi\'on, ya que los caminos que hubiesenn, va a tener un peso $\omega_1$ mayor a $K$ (ya que el m\'inimo es mayor a $K$)
 
+Se agrega tambi\'en antes de comenzar con la recursi\'on, se obtienen los caminos m\'inimos (tanto de $\omega_1$ como de $\omega_2$) desde el nodo de destino $w$ al resto del grafo.
+Estando dentro de las llamadas recursivas, s\'olo avanza al siguiente nodo si el camino m\'inimo desde dicho nodo hacia $w$ cumple con la cota de $K$ en $\omega_1$ y que sea mejor en peso $\omega_2$ que el mejor camino ya calculado (como no son dirigidos los grafos, es igual al camino desde $w$ a ese nodo).
+
 \subsubsection{Algoritmo}
 
 \begin{algorithm}[!h]
