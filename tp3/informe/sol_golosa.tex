@@ -11,11 +11,11 @@ En la etapa de inicializaci\'on se declaran cuatro vectores a utilizar:
 
 \item CostosW2
 \item Predecesores
-\item CostoCamino
+\item CostoRecorrido
 \item CostosW1
 \end{enumerate}
 
-CostosW2, es an\'alogo al vector distancias del algoritmo de Dijkstra, siendo $w_2$ la distancia a minimizar, guarda el costo del camino provisorio que va armando el algoritmo. Predecesores es an\'alogo al vector predecesores de dicho algoritmo, indicando para cada nodo cu\'al es su predecesor en dicho camino, mientras que CostoCamino almacena su costo $w_1$.
+CostosW2, es an\'alogo al vector distancias del algoritmo de Dijkstra, siendo $w_2$ la distancia a minimizar, guarda el costo $w_2$ del camino provisorio para cada nodo que va armando el algoritmo. Predecesores es an\'alogo al vector predecesores de dicho algoritmo, indicando para cada nodo cu\'al es su predecesor en su camino, mientras que CostoRecorrido almacena el costo $w_1$ del camino recorrido.
 
 \vspace{2mm}
 
@@ -31,10 +31,8 @@ Una vez obtenidos los caminos m\'inimos de cada nodo a la llegada en cuanto a co
 
 \begin{enumerate}
 \item Al iniciar el algoritmo, aquellos nodos para las cuales no existe un camino de longitud $w_1 \leq K$ hasta el nodo llegada, los cuales nuestro algoritmo va a ignorar.
-\item En medio de la ejecuci\'on del algoritmo, desde un nodo $v$ podemos saber si el nodo $x$ de la pro\'oxima arista $(v,x$) a considerar tiene al menos un camino $c$ hasta el nodo llegada tal que, el costo del camino formado por la uni\'on de $c$ ($costoW1(x)$) y el recorrido hasta ahora ($costoCamino(v)$) es $\leq K$. En caso de no tenerlo, desde ese nodo no hay un camino v\'alido hasta la llegada, por lo tanto nuestro algoritmo va a descartar esta arista y elegir alguna que tenga al menos un camino posible hasta la llegada. Esto lo podemos conocer, ya que la ejecuci\'on de Dijkstra inicial nos brinda el costo $w_1$ del camino m\'inimo desde el nodo $x$ hasta la llegada, por lo tanto  si $costoCamino(v)$ + $costo(v,x)$ + $Costosw_1(x)$ $\leq$ $K$ sabemos que existe al menos este camino v\'alido, caso contrario descartamos la arista.
+\item En medio de la ejecuci\'on del algoritmo, desde un nodo $v$ podemos saber si el nodo $x$ de la pro\'oxima arista $(v,x$ a considerar tiene al menos un camino $c$ hasta el nodo llegada tal que, el costo del camino formado por la uni\'on de $c$ ($costoW1(x)$) y el recorrido hasta ahora ($costoRecorrido(v)$) es $\leq K$. En caso de no tenerlo, desde ese nodo no hay un camino v\'alido hasta la llegada, por lo tanto nuestro algoritmo va a descartar esta arista por otra que tenga al menos un camino posible hasta la llegada. Esto lo podemos conocer, ya que la ejecuci\'on de Dijkstra inicial nos brinda el costo $w_1$ del camino m\'inimo desde el nodo $x$ hasta la llegada, por lo tanto  si $costoRecorrido(v)$ + $costo(v,x)$ + $Costosw_1(x)$ $\leq$ $K$ sabemos que existe al menos este camino v\'alido, caso contrario descartamos la arista.
 \end{enumerate}
-
-
 
 \begin{center}
 \includegraphics[scale=0.58]{img/inicializacion.png}
@@ -45,42 +43,33 @@ Este dibujo representa la ejecuci\'on de la inicializaci\'on de la heur\'stica, 
 
 \subsubsection{Heur\'istica golosa}
 
-El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra, utilizando costos $w_2$. El agregado al algoritmo es la estrategia previamente explicada, teniendo la informaci\'on que nos brindan $CostosW1$ y $CostoCamino$, cuando sacamos un nodo $v$ de la cola y procedemos a actualizar sus vecinos $x$, s\'olo vamos a considerar actualizar los valores $CostosW2$ y $precedesor$ para aquellos que sean factibles, es decir, aquellos para los cuales el costo $w_1$ del camino m\'inimo $x$ - llegada + el costo de la arista entre los nodos $(v,x)$ + el costo $w_1$ del camino recorrido potencial recorrido hasta $v$ es menor o igual a K, dicho en t\'erminos del algoritmo: $CostosW1[x]+costo(v,x)+costoCamino[v]\leq K$. Esto nos asegura que el camino de un nodo nunca va a ser actualizado por un camino no factible.
+El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra sobre los costos $w_2$. El agregado al algoritmo es la estrategia previamente explicada, teniendo la informaci\'on que nos brindan $CostosW1$ y $CostoRecorrido$, cuando sacamos un nodo $v$ de la cola y procedemos a actualizar sus vecinos $x$, s\'olo vamos a considerar actualizar los valores $CostosW2$ y $precedesor$ para aquellos que sean factibles, es decir, aquellos para los cuales el costo $w_1$ del camino recorrido potencial recorrido hasta $v$ + el costo de la arista entre los nodos $(v,x)$ +  el costo $w_1$ del camino m\'inimo de $x$ a la llegada es menor o igual a K, dicho en t\'erminos del algoritmo: $costoRecorrido[v]+costo(v,x)+CostosW1[x]\leq K$. Esto nos asegura que el camino de un nodo nunca va a ser actualizado por un camino no factible.
 
 \subsubsection{Pseudoc\'odigo}
 
-\begin{algorithm}
-	\caption{Heur\'istica Golosa}
+
 \begin{algorithmic}[1]
 \Statex
 
 \Procedure{Heur\'istica Golosa}{grafo g, nodo u, nodo v, cota K}{ -$>$ camino}
 
 \State $ vector<int> \: costosw_1[n] $
-\Comment $O(n)$
 \State $vector<int> costosw_2[n]$
-\Comment $O(n)$
 \State $vector<int> predecesores[n]$
-\Comment $O(n)$
-\State $ vector<int> \: costoCamino[n] $
-\Comment $O(n)$
+\State $ vector<int> \: costoRecorrido[n] $
 \State $camino \: c \gets [] $
-\Comment $O(n^2)$
 \State $colaPrioridad \: cola \gets []$
-\Comment $O(1)$
 
 \Statex
 
 \State $ Dijkstra(g, v, costosw_1) $
-\Comment $O(n^2)$
 
 \Statex
 
 \For{$i\: from \: 0 \: to \: n-1$}
-\Comment $ O(n)$
 	\State $ costosw_2[i] \gets \infty $
 	\State $ predecesores[i] \gets NULL $
-	\State $ costoCamino[i] \gets 0 $	
+	\State $ costoRecorrido[i] \gets 0 $	
 \EndFor
 
 \State $ costosw_2[u] \gets 0 $
@@ -88,21 +77,17 @@ El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra,
 \State $ cola.push(costosw_2, u) $
 
 \While{$cola != []$}
-	\Comment $ O(n)$
 	\State $ par<costow_2, nodo> actual \gets cola.pop $
-	\Comment $O(logn)$
 	\For{$ w \: : \: adyacentes(actual_2) $}
 		\Comment $ O(n)$
-		\If{ $costoCamino[actual_2] + costosw_1(w) + costow_1Arista(actual_2,w) \leq K ORDENARR $ }
+		\If{ $costoRecorrido[actual_2] + costow_1Arista(actual_2,w) + costosw_1(w)  \leq K $ }
 		
 
 			\If{$ costosw_2[w] > costosw_2[actual_2] + costow_2Arista(actual,w) $}
-			\Comment $O(logn)$
 			\State $ costosw_2[w] \gets costosw_2[actual_2] + costow_2Arista(actual,w) $
-			\State $ costoCamino[w] \gets costoCamino[actual_2] + costow_1Arista(actual_2,w) $
+			\State $ costoRecorrido[w] \gets costoRecorrido[actual_2] + costow_1Arista(actual_2,w) $
 			\State $ predecesor[w] = actual $
 			\State $cola.push(costow_2(w), w)$
-			\Comment $O(logn)$
 
 
 			\EndIf
@@ -117,7 +102,40 @@ El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra,
 
 \EndProcedure
 \end{algorithmic}
-\end{algorithm}
 
 
-s
+\subsubsection{Complejidad}
+
+El algoritmo comienza declarando vectores de longitud de tamano $n$, un camino de tamano $n^2$ y una cola de prioridad, en total tiempo $O(n^2)$. Acto seguido ejecuta el algoritmo de Dijkstra desde nodo llegada a todos los dem\'as, en tiempo $O((m+n)log n)$. Se ejecuta un ciclo que deja preparados los vectores a utilizar por el ciclo goloso, en $O(n)$ y dos asignaciones de tiempo constante.
+
+\vspace{2mm}
+
+El ciclo while va a iterar a lo sumo $n$ veces, ya que hay nodos no factibles que no ser\'an anadidos, y aquellos que si lo sos, son anadidos a lo sumo una \'unica vez (por la demostraci\'on de Dijkstra, al elegir el nodo con costo m\'inimo de la cola nos aseguramos que ese va a ser su costo m\'inimo y no va a ser necesario actualizarlo nuevamente). En cada iteraci\'on se obtiene y elimina el m\'inimo elemento de la cola en $O(logn)$. Nos queda analizar el ciclo $for$ interior, que para cada nodo itera sobre su lista de adyacentes. Como cada nodo es agregado una vez, entonces cada arista en la lista de cada nodo es examinada una vez durante el transcurso del algoritmo, por lo cual este ciclo for itera $m$ veces durante el transcurso del algoritmo. Dentro de este ciclo se realizan operaciones de tiempo constante excepto la operaci\'on $push$,la cual ejecuta en tiempo $O(logn)$, con lo cual el ciclo $for$ posee complejidad $O(mlogn)$.
+
+\vspace{2mm}
+
+Esto nos deja con una complejidad de: $O(n^2) + O((m+n)log n) + O(n log n) + O(n log m) = O(n^2 + m log n)$.
+
+\vspace{2mm}
+
+Usamos el tipo $set$ de la librer\'ia STL de c++, la cual nos asegura estas complejidades:
+\begin{enumerate}
+\item http://www.cplusplus.com/reference/set/set/
+\item http://www.cplusplus.com/reference/set/set/begin/
+\item http://www.cplusplus.com/reference/set/set/erase/
+\end{enumerate}
+
+\subsubsection{Soluci\'on Factible}
+
+A continuaci\'on, vamos a demostrar que en caso de haber alg\'un camino factible desde la salida a la llegada (de costo $w_1$ total $\leq K$), la heur\'istica siempre va a encontrar un camino factible y por lo tanto, devolver una soluci\'on.
+
+\vspace{2mm}
+
+Consideremos el camino $C$, de costo $w_1$ m\'inimo del nodo de salida $u$ al nodo de llegada $v$. Supongamos que este existe y adem\'as su costo total es menor a la cota $K$. Supongamos que el algoritmo no puede encontrar un camino factible, y lleguemos a un absurdo. Tomemos a $x$, como el \'ultimo nodo $\in C$ para el cual el algoritmo puede actualizar sus valores, es decir, el \'ultimo nodo para el cual tuvo algu\'un vecino $y$ tal que $costoRecorrido[y] + costow_1Arista(y,x) + costosw_1(x)  \leq K $ y el algoritmo actualiz\'o valores. 
+
+\vspace{2mm}
+
+Sabemos que este nodo existe ya que existe $C$ un camino factible de costo m\'inimo $w_1$ $\leq K$ de $u$ a $v$, por lo tanto este nodo es al menos el segundo nodo de $C$, ya que sabemos que $costoRecorrido[u] + costow_1Arista(u,segundo) + costosw_1(segundo) \leq K $, al ser $costoRecorrido[u]=0$ y $costow_1Arista(u,segundo) + costosw_1(segundo)\leq K$ necesariamente ya que es un subcamino de $C$, y que el problema de camino m\'ino cumple el principio de optimalidad de Bellman, y el camino m\'inimo de $u$ a $v$ puede ser descompuesto como dos caminos $u-segundo$ y $segundo-v$ que a su vez son m\'inimos.
+
+\vspace{2mm}
+
