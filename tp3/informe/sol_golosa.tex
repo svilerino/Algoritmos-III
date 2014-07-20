@@ -79,7 +79,6 @@ El algoritmo goloso en s\'i comparte su estructura con el algoritmo de Dijkstra 
 \While{$cola != []$}
 	\State $ par<costow_2, nodo> actual \gets cola.pop $
 	\For{$ w \: : \: adyacentes(actual_2) $}
-		\Comment $ O(n)$
 		\If{ $costoRecorrido[actual_2] + costow_1Arista(actual_2,w) + costosw_1(w)  \leq K $ }
 		
 
@@ -131,7 +130,7 @@ A continuaci\'on, vamos a demostrar que en caso de haber alg\'un camino factible
 
 \vspace{2mm}
 
-Consideremos el camino $C$, de costo $w_1$ m\'inimo del nodo de salida $u$ al nodo de llegada $v$. Supongamos que este existe y adem\'as su costo total es menor a la cota $K$. Supongamos que el algoritmo no puede encontrar un camino factible, y lleguemos a un absurdo. Tomemos a $x$, como el \'ultimo nodo $\in C$ para el cual el algoritmo puede actualizar sus valores, es decir, el \'ultimo nodo para el cual tuvo algu\'un vecino $a$ tal que $costoRecorrido[a] + costow_1Arista(a,x) + costosw_1(x)  \leq K $ y el algoritmo actualiz\'o valores. 
+Consideremos el camino $C$, de costo $w_1$ m\'inimo del nodo de salida $u$ al nodo de llegada $v$. Supongamos que este existe y adem\'as su costo total es menor a la cota $K$. Supongamos que el algoritmo no puede encontrar un camino factible, y lleguemos a un absurdo. Tomemos a $x$, como el \'ultimo nodo $\in C$ para el cual el algoritmo puede actualizar sus valores, es decir, el \'ultimo nodo para el cual tuvo algu\'n vecino $a$ tal que $costoRecorrido[a] + costow_1Arista(a,x) + costosw_1(x)  \leq K $ y el algoritmo actualiz\'o valores. 
 
 \vspace{2mm}
 
@@ -139,4 +138,11 @@ Sabemos que este nodo existe ya que existe $C$ un camino factible de costo m\'in
 
 \vspace{2mm}
 
-Ahora consideremos el nodo siguiente del camino, llam\'emosle $y$. $y$ es el primer nodo del camino $C$ para el cual el algoritmo no encuentra un vecino factible. Pero sabemos que $x$ es adyacente a $y$, y sabemos que para $x$, por haber sido actualizado por el algoritmo vale $costoRecorrido[x] + costosw_1(x) \leq K $
+\includegraphics[scale=0.6]{img/caminoC.png}
+
+Ahora consideremos el nodo siguiente del camino, llam\'emosle $y$. $y$ es el primer nodo del camino $C$ para el cual el algoritmo no puede actualizarlo ni insertarlo en la cola. Pero sabemos que $x$ es adyacente a $y$, y sabemos que para $x$, por haber sido actualizado por el algoritmo vale $costoRecorrido[x] + costosw_1(x) \leq K$. Y por no haber podido ser actualizado $y$ desde $x$, vale $costoRecorrido[x] + costow_1Arista(x,y) + costosw_1(y)  > K$. Pero esto nos deja en un absurdo, ya que $costosw_1(x)=  costow_1Arista(x,y) + costosw_1(y)$ exactamente, ya que ambos nodos forman parte de $C$, y por principio de optimalidad al sere $C$ el camino m\'inimo,  el camino m\'nimo de $x$ a la llegada va a ser el subcamino de $C$ de $x$ a la llegada, del cual forma parte $y$ y la arista entre $x$ e $y$.	
+
+\vspace{2mm}
+
+Llegamos a un absurdo al suponer que existe el camino $C$, y que el algoritmo en alg\'un punto para un nodo de $C$ no puede actualizarlo formando un camino factible. LLegamos a la conclusi\'on de que, o bien no existe ningu\'un camino factible en el grafo, o existe al menos uno y el algoritmo lo devuelve.
+
