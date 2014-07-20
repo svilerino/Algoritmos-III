@@ -146,3 +146,107 @@ Ahora consideremos el nodo siguiente del camino, llam\'emosle $y$. $y$ es el pri
 
 Llegamos a un absurdo al suponer que existe el camino $C$, y que el algoritmo en alg\'un punto para un nodo de $C$ no puede actualizarlo formando un camino factible. LLegamos a la conclusi\'on de que, o bien no existe ningu\'un camino factible en el grafo, o existe al menos uno y el algoritmo lo devuelve.
 
+\subsection{Nivel de optimalidad de las soluciones}
+
+\subsection{Experimentacion: Mediciones de Performance}
+En esta secci\'on se mostrar\'an resultados de complejidad temporal emp\'irica, veremos que los resultados coinciden razonablemente con el an\'alisis de complejidad te\'orica..
+Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas sobre grafos aleatorios de distintos tama\~nos(en cantidad de nodos), y por cada cantidad $n$ de nodos, variamos las densidades de aristas dentro de cierto rango alrededor de una funcion de $n$, las densidades elegidas fueron:
+\begin{itemize}
+	\item m = $a*n + b$. Es decir una cantidad lineal de aristas en base a los nodos. $a \in \mathbb{N}_{>1}$
+	\item m = $\frac{n*(n-1)}{2}$. Es decir grafos cercanos o iguales a cliques de n nodos.
+\end{itemize}
+
+
+\textbf{Nota: } Como mencionamos anteriormente, las funciones son variadas en un rango, es decir, por ejemplo, para el caso de cliques, los grafos generados tienen entre $\frac{n*(n-1)}{5}$ y $\frac{n*(n-1)}{2}$ aristas para aleatorizar mas la generacion de grafos densos.\\
+
+\textbf{Nota: } Los graficos que contienen puntos rojos y una curva verde, indican, para cada valor del eje X(cantidad de nodos), los puntos rojos son los tiempos de ejecucion para los diferentes valores de aristas en el rango de la familia, asimismo, la curva verde indica el promedio de estos puntos para cada X. \\
+\textbf{Nota: }Para verificar que se trata de una curva cuadratica dividimos las funciones por $n^1$, $n^2$, $n^3$, $n^4$ y como en los trabajos practicos anteriores concluimos de que curva se trata.\\
+
+\subsubsection{Consideraciones acerca de la complejidad te\'orica}
+
+En la secci\'on de anal\'isis de complejidad del algoritmo concluimos acotando la complejidad en $O(n^2 + m log n)$. Sin embargo, como informamos en la secci\'on anterior, nos vamos a limitar a dividir las funciones por potencias de $n$ de $1$ a $4$. Esto se debe a, adem\'as de una mayor simplicidad, a que en el caso de prueba con $m = a*n+b$, $m$ es lineal en cuanto a $n$, por lo tanto la complejidad se aproximar\'ia a $n^2 + nlogn$, con lo cual quedar\'a en el orden cuadr\'atico, y consideramos que va a bastar con considerarlo de este orden para realizar el an\'alisis de las divisiones. Por otro lado en el caso $m=n*(n-1)/a$, $m$ es cuadr\'atico en cuanto a $n$, y la complejidad se aproximar\'a a $n^2+n^2log n$, lo cual es del orden $O(n^2log n)$. Pero, considerando que como m\'aximo en nuestra experimentaci\'on usamos $n=2000$, $log(2000) \approx 11$, lo cual es casi despreciable, por lo cual tambi\'en consideraremos al algoritmo en el orden cuadr\'atico para realizar el an\'alisis.
+
+
+
+\subsubsection{Rendimiento para grafos con densidad lineal de aristas}
+\begin{itemize}
+	\item cant nodos min = $50$
+	\item cant nodos max = $2000$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item step nodos = $200 NO ESTOY SEGURO DE ESTO$
+	\item step aristas = $2500$
+	\item aristas minimas = $n-1$
+	\item aristas maximas = $10*n$
+\end{itemize}
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_lineal/{golosa.tmpplot_complexity_variation}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_lineal/{golosa.tmpplot_complexity_med_over_n}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_lineal/{golosa.tmpplot_complexity_med_over_n_square}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_lineal/{golosa.tmpplot_complexity_med_over_n_cube}.png}
+\end{center}
+
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_lineal/{golosa.tmpplot_complexity_med_over_n_fourth}.png}
+\end{center}
+
+
+\subsubsection{Rendimiento para grafos con densidad cuadratica de aristas}
+\begin{itemize}
+	\item cant nodos min = $5$
+	\item cant nodos max = $500$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item step nodos = $200$
+	\item step aristas = $2500$
+	\item aristas minimas = $\frac{n*(n-1)}{9}$
+	\item aristas maximas = $\frac{n*(n-1)}{7}$
+\end{itemize}								
+
+
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_variation}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_med_over_n}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_med_over_n_square}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_med_over_n_cube}.png}
+\end{center}
+
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_med_over_n_fourth}.png}
+\end{center}
+
+\subsection{Experimentaci\'on de optimalidad}
