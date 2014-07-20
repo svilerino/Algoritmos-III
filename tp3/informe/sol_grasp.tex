@@ -106,66 +106,70 @@ Nota: la entrada $criterios$ se refiere a las variables:
     	\Comment{Obtenemos solucion greedy}
 
     	\Statex
-
-    	\If{$sol\_valida\_rgreedy$}
-    	\Comment{Validamos si es factible}
-
-    		\State $cant\_iters\_sin\_sol\_rgreedy\_factible = 0$
-
-    		\State $int\: mejora\_iteracion\_actual\: = 0$
-            \State $int\: cant\_iters\_bqlocal\: = 0$
-
-            \Statex
-
-    		\While{$mejora\_iteracion\_actual > 0$}
-    				\Comment{Aplicamos Busqueda Local}
-    				\State $mejora\_iteracion\_actual=busqueda\_local(g, tipo\_bq, camino)$
-    				\State $cant\_iters\_bqlocal++$
-
-    		\EndWhile
-
-    		\State $ int \:  costo\_sol\_actual \: = \: costo\_w_2(camino)$
-
-    		\Statex
-
-			\If{$costo\_sol\_actual < costo\_mejor\_solucion$}
-			\Comment{Reemplazamos si es mejor solucion}
-
-				\If{$cant\_iters>0$}
-					\State $ agregar(mejora\_iters\_grasp, par<cant\_iters, costo\_mejor\_solucion - costo\_solucion\_actual>) $
-				\EndIf
-            	\State $costo\_mejor\_solucion = costo\_sol\_actual$
-            	\State $mejor\_solucion = camino$
-            
-           	    \State $cant\_iters\_sin\_mejora = 0$
-        	\Else
-        		\If{$cant\_iters>0$}
-        			\State $ agregar(mejora\_iters\_grasp, par<cant\_iters, 0)>) $
-                \EndIf
-                \State $cant\_iters\_sin\_mejora++$
-            
-            	
-        \EndIf
-
-        \State $cant\_iters++$
-    
-        \Else
-        \Comment{$sol\_valida\_rgreedy = false$}
-        \State $cant\_iters\_sin\_sol\_greedy\_rand\_factible++$
-        \If{$cant\_iters\_sin\_sol\_greedy\_rand\_factible\geq bad\_rgreedy\_its$}
-        	\If{$tipo\_golosa == por\_valor$}
-        	\Comment Maximo de its de greedy sin solucion
-                    \If{$parametro\_beta\geq2$}
-                    	\Comment Ajustamos parametros de GRASP
-                        \State $parametro\_beta--$
-                    \EndIf
-            \ElsIf{$tipo\_golosa == por\_cantidad$}
-
-            	\State $parametro_beta = 0$
+    	\If{$hay solucion$}
+    		\If{$sol\_valida\_rgreedy$}
+    		\Comment{Validamos si es factible}
+	
+	    			\State $cant\_iters\_sin\_sol\_rgreedy\_factible = 0$
+	
+	    			\State $int\: mejora\_iteracion\_actual\: = 0$
+	        	    \State $int\: cant\_iters\_bqlocal\: = 0$
+	
+	        	    \Statex
+	
+	    			\While{$mejora\_iteracion\_actual > 0$}
+	    					\Comment{Aplicamos Busqueda Local}
+	    					\State $mejora\_iteracion\_actual=busqueda\_local(g, tipo\_bq, camino)$
+	    					\State $cant\_iters\_bqlocal++$
+	
+	    			\EndWhile
+	
+	    			\State $ int \:  costo\_sol\_actual \: = \: costo\_w_2(camino)$
+	
+	    			\Statex
+	
+					\If{$costo\_sol\_actual < costo\_mejor\_solucion$}
+					\Comment{Reemplazamos si es mejor solucion}
+	
+						\If{$cant\_iters>0$}
+							\State $ agregar(mejora\_iters\_grasp, par<cant\_iters, costo\_mejor\_solucion - costo\_solucion\_actual>) $
+						\EndIf
+	        	    	\State $costo\_mejor\_solucion = costo\_sol\_actual$
+	        	    	\State $mejor\_solucion = camino$
+	        	    
+	        	   	    \State $cant\_iters\_sin\_mejora = 0$
+	        		\Else
+	        			\If{$cant\_iters>0$}
+	        				\State $ agregar(mejora\_iters\_grasp, par<cant\_iters, 0)>) $
+	        	        \EndIf
+	        	        \State $cant\_iters\_sin\_mejora++$
+	        	    
+	        	    	
+	        	\EndIf
+	
+	        	\State $cant\_iters++$
+	    	
+	    	    	\Else
+	    	    	\Comment{$sol\_valida\_rgreedy = false$}
+	    	    	\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible++$
+	    	    	\If{$cant\_iters\_sin\_sol\_greedy\_rand\_factible\geq bad\_rgreedy\_its$}
+	    	    		\If{$tipo\_golosa == por\_valor$}
+	    	    		\Comment Maximo de its de greedy sin solucion
+	    	    	            \If{$parametro\_beta\geq2$}
+	    	    	            	\Comment Ajustamos parametros de GRASP
+	    	    	                \State $parametro\_beta--$
+	    	    	            \EndIf
+	    	    	    \ElsIf{$tipo\_golosa == por\_cantidad$}
+	
+	        	    	\State $parametro_beta = 0$
+	        		\EndIf
+	        		\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible = 0$
+	        	\EndIf
         	\EndIf
-        	\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible = 0$
-        \EndIf
-        \EndIf
+        \Else
+        \Comment No hay Solucion
+        	\State $break$
+        \EndIf	
     \If{$criterio\_terminacion == 1$}
     \Comment{Si se cumple el criterio de terminacion}
            \State $condicion\_terminacion = (cant\_iters < max\_its)$            
@@ -179,5 +183,3 @@ Nota: la entrada $criterios$ se refiere a las variables:
 
 \EndProcedure
 \end{algorithmic}
-
-Arreglar el if turbio de sol_greedy_valida
