@@ -193,6 +193,12 @@ if ls test-cases/*.in &> /dev/null; then
 			    	
 			    	promedio_mejora=$(($promedio_mejora + $costo_w2_diferencia))
 
+			    	if [ $costo_w2_diferencia -ne 0 ] 
+			    	then
+			    		echo "$file mejora con grasp en $costo_w2_diferencia" >> instancias_grasp_mejoran.txt
+			    		echo -e "${purple} Hubo mejora en GRASP!!${NC}"
+			    	fi
+
 			    	if [ $min_iteraciones -gt $cantIters ]
 					then
 						min_iteraciones=$cantIters					
