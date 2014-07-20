@@ -142,7 +142,8 @@ void ejecutar_grasp(Grafo &g){
                 }else if(modo_golosa == RCL_POR_CANTIDAD){
                     //si es rcl por valor, seteo greedy deterministica
                     //es muy delicado ajustar el porcentaje adaptativamente!
-                    modo_golosa = RCL_DETERMINISTICO;
+                    //modo_golosa = RCL_DETERMINISTICO;
+                    parametro_beta = 0; //es lo mismo que poner golosa deterministico!
                 }
                 cant_iters_sin_sol_greedy_rand_factible = 0;
             }
