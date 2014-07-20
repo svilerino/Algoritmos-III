@@ -46,11 +46,13 @@ A su vez, antes de comenzar con todas las llamadas recursivas, se ejecuta \emph{
 		\If{distancias[w] $>$ K}
 			\State return $falso$
 		\Else
-			\State return $\gets$ \Call{cacm\_exacto\_recursivo}{grafo, u, w, K, solucion}
+			\State distancias\_w1 $\gets$ \Call{Dijsktra\_en\_w1}{grafo, w}
+			\State distancias\_w2 $\gets$ \Call{Dijsktra\_en\_w2}{grafo, w}
+			\State return $\gets$ \Call{cacm\_exacto\_recursivo}{grafo, u, w, K, distancias\_w1, distancias\_w2, solucion}
 		\EndIf
 	\EndProcedure
 	\Statex
-	\Procedure{cacm\_exacto\_recursivo}{$Grafo$: grafo, $Nodo$: u, $Nodo$: w, $Real$: K, $Camino$: solucion}{$\to$ $bool$}
+	\Procedure{cacm\_exacto\_recursivo}{$Grafo$: grafo, $Nodo$: u, $Nodo$: w, $Real$: K, $Real$: distancias\_w1[], $Real$: distancias\_w2, $Camino$: solucion}{$\to$ $bool$}
 		\If{u $=$ w}
 			\State return $verdadero$
 		\EndIf
@@ -63,7 +65,7 @@ A su vez, antes de comenzar con todas las llamadas recursivas, se ejecuta \emph{
 		\If{$\neg$ \Call{EstaVisitado}{grafo, z}}
 			\State peso1 $\gets$ $\omega_1({u, z})$
 			\State peso2 $\gets$ $\omega_2({u, z})$
-			\If{$peso1 < K$ $\land$ (mejor\_solcion $=$ $[]$ $\lor$ $peso2 < \omega_2(solucion\_mejor))$}
+			\If{distancias\_w1[z] $+$ peso1 $<=$ $K$ $\land$ $(solucion\_mejor = [] \lor distancias\_w2[z] + peso2 < \omega_2(solucion\_mejor)$}
 				\State \Call{quitar\_arista}{grafo, u, z}
 				\State solucion\_nueva $gets$ $[z]$
 				\State encontre $\gets$ \Call{cacm\_exacto\_recursivo}{grafo, z, w, K $-$ $peso1$, solucion\_nueva}
