@@ -152,6 +152,19 @@ Llegamos a un absurdo al suponer que existe el camino $C$, y que el algoritmo en
 
 \subsection{Nivel de optimalidad de las soluciones}
 
+\begin{center}
+	\includegraphics[scale=0.7]{img/{grafoBasicoMaloGreedy}.png}
+\end{center}
+
+La salida de nuestro algoritmo nos devuelve el camino $1->2->3$ (para un $K$ no restrictivo), ya que la desici\'on golosa toma el m\'inimo de la cola en cada iteraci\'on y actualiza el nodo $3$ con el nodo $2$ ya que el camino $1->2$ (en rojo) tiene menos costo $w_2$ que la arista $(1,3)$ (en verde). Pero en este caso particular puede notarse como prima la desici\'on golosa en el algoritmo, sin tener en cuenta que este camino es mucho m\'as costoso en cuanto a $w_1$ que la arista. Si el grafo tuviese m\'as nodos adyacentes al nodo $3$, el haber elegido el camino va a restringir los caminos que va a poder tomar el algoritmo en las siguientes iteraciones. Por ejemplo, si el grafo fuese:
+
+
+\begin{center}
+	\includegraphics[scale=0.6]{img/{casoMaloGreedy}.png}
+\end{center}
+
+Tenemos en color rojo la salida del algoritmo y en color verde el camino \'optimo. Vemos como la desici\'on golosa inicial restringi\'o claramente la elecci\'on de caminos posterior, forzando a tomar el camino mucho m\'as pesado que le permite llegar a destino sin superar la cota, el cual podemos hacerlo arbitrariamente m\'as costoso en cuanto a $w_2$ y alejar la soluci\'on de nuestro algoritmo de la \'optima tanto como queramos.
+
 \subsection{Experimentacion: Mediciones de Performance}
 En esta secci\'on se mostrar\'an resultados de complejidad temporal emp\'irica, veremos que los resultados coinciden razonablemente con el an\'alisis de complejidad te\'orica..
 Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas sobre grafos aleatorios de distintos tama\~nos(en cantidad de nodos), y por cada cantidad $n$ de nodos, variamos las densidades de aristas dentro de cierto rango alrededor de una funcion de $n$, las densidades elegidas fueron:
