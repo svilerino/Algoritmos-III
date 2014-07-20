@@ -32,7 +32,7 @@ void setW2(void *p, float w)
 	((peso *)p)->w2 = w;
 }
 
-bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
+bool resolver(Grafo<peso> &g, int u, int w, int K, float *distancia_w1, float *distancia_w2, Solucion *solucion)
 {
 	Solucion solucion_mejor, solucion_nueva;
 	int cantidad_aristas, *adyacentes, i;
@@ -61,13 +61,13 @@ bool resolver(Grafo<peso> &g, int u, int w, int K, Solucion *solucion)
 			p = g.Peso(u, adyacentes[i]);
 			w1 = p->w1;
 			w2 = p->w2;
-			if(w1 <= K && (solucion_mejor.k == 0 || w2 < solucion_mejor.W2)){
+			if(distancia_w1[adyacentes[i]] + w1 <= K && (solucion_mejor.k == 0 || distancia_w2[adyacentes[i]] + w2 < solucion_mejor.W2)){
 				g.QuitarArista(u, adyacentes[i]);
 				solucion_nueva.W1 = w1;
 				solucion_nueva.W2 = w2;
 				solucion_nueva.v[0] = adyacentes[i];
 				solucion_nueva.k = 1;
-				if(resolver(g, adyacentes[i], w, K - w1, &solucion_nueva)){
+				if(resolver(g, adyacentes[i], w, K - w1, distancia_w1, distancia_w2, &solucion_nueva)){
 					if(solucion_mejor.W1 < 0 || solucion_mejor.W2 > solucion_nueva.W2){
 						solucionado = true;
 						solucion_mejor.W1 = solucion_nueva.W1;
@@ -172,13 +172,49 @@ void dijkstra(Grafo<peso> *g, int nodo, float **_distancia_w1, float **_distanci
 
 }
 
+void comenzar(Grafo<peso> *grafo, int u, int v, int K, int nodos, int aristas)
+{
+	int i;
+	Solucion solucion;
+	float *distancia_w1;
+	float *distancia_w2;
+	float *distancia_w1_v;
+	float *distancia_w2_v;
+
+	solucion.W1 = 0;
+	solucion.W2 = 0;
+	solucion.k = 1;
+	solucion.v = (int *)calloc(2 * aristas, sizeof(int));
+	solucion.v[0] = u;
+	dijkstra(grafo, u, &distancia_w1, &distancia_w2);
+	dijkstra(grafo, v, &distancia_w1_v, &distancia_w2_v);
+	if(distancia_w1[v] > K){
+		printf("no");
+	}
+	else if(resolver(*grafo, u, v, K, distancia_w1_v, distancia_w2_v, &solucion)){
+		printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
+		for(i = 0; i < solucion.k; i++){
+			printf(" %d", solucion.v[i]);
+		}
+		printf("\n");
+	}
+	else{
+		printf("no");
+	}
+	free(solucion.v);
+	delete [] distancia_w1;
+	delete [] distancia_w2;
+	delete [] distancia_w1_v;
+	delete [] distancia_w2_v;
+
+}
+
 int main(int argc, char **argv)
 {
 	int medir_tiempo = 0;
 	GrafoAdyacencia<peso> *grafo;
 	peso **pesos;
-	int u, v, K, nodos, aristas, i;
-	Solucion solucion;
+	int u, v, K, nodos, aristas;
 
 	//if(argc != 1)
 	medir_tiempo = 1;//dejalo asi, lo necesito para los scripts, idem la cantidad de iteraciones(necesito que imprima la salida una sola vez). Firma: Silvio.
@@ -187,59 +223,13 @@ int main(int argc, char **argv)
 		if(medir_tiempo){
 			double promedio_medicion = 0.0;
 			MEDIR_TIEMPO_PROMEDIO(
-				float *distancia_w1;
-				float *distancia_w2;
-				solucion.W1 = 0;
-				solucion.W2 = 0;
-				solucion.k = 1;
-				solucion.v = (int *)calloc(2 * aristas, sizeof(int));
-				solucion.v[0] = u;
-				dijkstra(grafo, u, &distancia_w1, &distancia_w2);
-				if(distancia_w1[v] > K){
-					printf("no");
-				}
-				else if(resolver(*grafo, u, v, K, &solucion)){
-					printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
-					for(i = 0; i < solucion.k; i++){
-						printf(" %d", solucion.v[i]);
-					}
-					printf("\n");
-				}
-				else{
-					printf("no");
-				}
-				free(solucion.v);
-				delete [] distancia_w1;
-				delete [] distancia_w2;
+				comenzar(grafo, u, v, K, nodos, aristas);
 			, CANT_ITERS_MEDICION, &promedio_medicion);
 			//cerr << promedio << " " << nodos << " " << aristas << endl;
 			cerr << nodos << " " << aristas << " " << CANT_ITERS_MEDICION << " " << promedio_medicion;
 		}
 		else{
-			float *distancia_w1;
-			float *distancia_w2;
-			solucion.W1 = 0;
-			solucion.W2 = 0;
-			solucion.k = 1;
-			solucion.v = (int *)calloc(2 * aristas, sizeof(int));
-			solucion.v[0] = u;
-			dijkstra(grafo, u, &distancia_w1, &distancia_w2);
-			if(distancia_w1[v] > K){
-				printf("no");
-			}
-			else if(resolver(*grafo, u, v, K, &solucion)){
-				printf("%.0f %.0f %d", solucion.W1, solucion.W2, solucion.k);
-				for(i = 0; i < solucion.k; i++){
-					printf(" %d", solucion.v[i]);
-				}
-				printf("\n");
-			}
-			else{
-				printf("no");
-			}
-			free(solucion.v);
-			delete [] distancia_w1;
-			delete [] distancia_w2;
+			comenzar(grafo, u, v, K, nodos, aristas);
 		}
 		int i;
 		for(i = 0; i < aristas; i++){
