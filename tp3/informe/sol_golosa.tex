@@ -226,6 +226,7 @@ En la secci\'on de anal\'isis de complejidad del algoritmo concluimos acotando l
 
 
 
+
 \begin{center}
 	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
 	\textbf{$y = f(x)$}\\
@@ -253,6 +254,12 @@ En la secci\'on de anal\'isis de complejidad del algoritmo concluimos acotando l
 	\includegraphics[scale=0.7]{experimentos/golosa/golosa_clique/{golosa.tmpplot_complexity_med_over_n_fourth}.png}
 \end{center}
 
-Concluimos en que
+\subsubsection{Conclusi\'on}
+
+Como podemos ver en ambos casos, $f(x)$ es una funci\'on creciente, $f(x)/x$ tambi\'en es creciente, asemej\'andose a una curva lineal, y $f(x)/x^2$ deja de ser creciente para asemejarse a una constante en un intervalo entre $0.04 - 0.01$ en ambos casos. $f(x)/x^3$ y $f(x)/x^4$ dan como resultado valores muy cercanos al $0$, lo cual es el resultado de dividir una constante por la variable de experimentaci\'on (tiende a $0$).
+
+\vspace{2mm}
+
+Los experimentos nos dan indicios de complejidad cuadr\'atica, y esto se condice con la complejidad te\'orica $ O(n^2 + m log n) $ planteada acotada a grafos con $m$ lineal ($O(n^2)$) y cuadr\'atica ($O(n^2*logn)$ con $log(n)\approx 11$ como m\'aximo para $n=2000$).
 
 \subsection{Experimentaci\'on de optimalidad}
