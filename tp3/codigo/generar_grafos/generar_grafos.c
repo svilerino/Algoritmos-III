@@ -31,6 +31,8 @@ int main(int argc, char **argv)
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> dis(0, cantidad_nodos-1);
+	uniform_int_distribution<> disrw1(0, maximo_random_w1);
+	uniform_int_distribution<> disrw2(0, maximo_random_w2);
 	//dis(gen) genera el numerito
 
 	v = dis(gen);
@@ -74,17 +76,7 @@ int main(int argc, char **argv)
 		aristas[i][j] = 1;
 		aristas[j][i] = 1;
 
-		//uniform_int_distribution<> disrw2(0, maximo_random_w2);
-		//uniform_int_distribution<> disrw1(0, maximo_random_w1);
-		uniform_int_distribution<> disrw2(0, maximo_random_w1);
-		uniform_int_distribution<> disrw1(maximo_random_w1, maximo_random_w2);
-		
-		uniform_int_distribution<> dice(0, 1);
-		if(dice(gen) == 0){
-			printf("%d %d %ld.0 %ld.0\n", i, j, disrw1(gen), disrw2(gen));	
-		}else{
-			printf("%d %d %ld.0 %ld.0\n", i, j, disrw2(gen), disrw1(gen));			
-		}
+		printf("%d %d %ld.0 %ld.0\n", i, j, disrw1(gen), disrw2(gen));	
 
 		cantidad_aristas--;
 	}

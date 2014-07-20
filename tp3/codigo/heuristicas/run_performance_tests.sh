@@ -54,7 +54,7 @@ if ls test-cases/*.in &> /dev/null; then
 			    	echo -e "${green}Ok! ${purple}Mejora total en w2 de $costo_w2_diferencia ${green}with $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
 	
 					linenumber=$((cant_test_files+1)) 
-					echo "$linenumber $costo_w2_diferencia" >> tmp.stddev.mejora.txt
+					echo "$linenumber $costo_w2_diferencia $cantIters" >> tmp.stddev.mejora.txt
 					echo "$linenumber $cantIters" >> tmp.stddev.iters.txt
 			    	
 			    	promedio_mejora=$(($promedio_mejora + $costo_w2_diferencia))
@@ -80,8 +80,10 @@ if ls test-cases/*.in &> /dev/null; then
 			stddev_mejora=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' tmp.stddev.mejora.txt)
 			stddev_iters=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' tmp.stddev.iters.txt)
 
-			min_mejora=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max = $2} $2 <= min {min = $2} END { print min }' tmp.stddev.mejora.txt)
-			max_mejora=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max = $2} $2 <= min {min = $2} END { print max }' tmp.stddev.mejora.txt)
+			min_mejora=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print min }' tmp.stddev.mejora.txt)
+			max_mejora=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print max }' tmp.stddev.mejora.txt)
+			min_mejora_iters=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print min_iters }' tmp.stddev.mejora.txt)
+			max_mejora_iters=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print max_iters }' tmp.stddev.mejora.txt)
 
 
 			rm -rf ../resumen_busqueda_local.txt
@@ -93,8 +95,8 @@ if ls test-cases/*.in &> /dev/null; then
 			echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_busqueda_local.txt
 			echo "Mejora promedio del costo w2: $promedio_mejora" >> ../resumen_busqueda_local.txt
 			echo "Mejora stddev del costo w2: $stddev_mejora" >> ../resumen_busqueda_local.txt
-			echo "Minima mejora en w2 registrada: $min_mejora" >> ../resumen_busqueda_local.txt
-			echo "Maxima mejora en w2 registrada: $max_mejora" >> ../resumen_busqueda_local.txt
+			echo "Minima mejora en w2 registrada: $min_mejora en $min_mejora_iters iteraciones" >> ../resumen_busqueda_local.txt
+			echo "Maxima mejora en w2 registrada: $max_mejora en $max_mejora_iters iteraciones" >> ../resumen_busqueda_local.txt
 			
 			#imprimimos resultados
 			echo -e "${purple}"			
