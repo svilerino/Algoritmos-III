@@ -22,7 +22,7 @@ detecta que no puede mejorar una soluci\'on que ya tenga almacenada como candida
 El algoritmo ser\'a una funci\'on recursiva, pas\'andole como argumentos el grafo, los nodos de origen ($u$ el cual en la primer llamada va a ser $v$,
 el nodo origen del problema) y destino ($w$), el limite K, y un camino encontrado hasta el momento, que va desde el nodo de origen del problema ($v$), al nodo de orgen pasado a la funci\'on ($u$).
 
-En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y por cada uno (nombremoslo $z$) llama recursivamente quitando el v\'ertice $(u,z)$ al grafo,
+En cada llamada recursiva, la funci\'on recorre todos los adyacentes a $u$, y por cada uno (nombremoslo $z$) llama recursivamente quitando el eje $(u,z)$ al grafo,
 ,indic\'andole como nodo de origen a $z$, y agregando al camino encontrado hasta el momento el nodo $z$. Luego se queda con el mejor camino que encontr\'o entre cada uno de los adyacentes.
 
 \subsubsection{Algoritmo}
