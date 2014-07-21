@@ -158,6 +158,8 @@ if ls test-cases/*.in &> /dev/null; then
 			max_iteraciones=0
 			promedio_iters=0
 			cant_test_files=0
+			rm -rf tmp.stddev.mejora.txt				
+			rm -rf tmp.stddev.iters.txt	
 			for file in *.in; do
 				heuristica="grasp"
 				echo -n "Corriendo $heuristica con archivo de input $file..."
@@ -169,37 +171,80 @@ if ls test-cases/*.in &> /dev/null; then
 					echo -e "${red}No existia solucion! Descripcion de la salida:"
 					cat "../$TIMING_OUTPUT/$heuristica/$file.out"
 					echo -e -n "${NC}"
-				else   
+				else    		    
 					cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
 					cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
 					cantIters=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')
 				    timeElapsed=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $4}')
+	
 				    echo "$cantNodos $cantAristas $timeElapsed " >> ../"$heuristica".tmpplot
-			    	echo -e "${green}Ok! $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
+
+			    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters_w2_differential.png "evolucion_iteraciones_grasp.txt" 5
+			    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters_w2_absolute_value.png "costos_absolutos_iteraciones_grasp.txt" 5
+			    	costo_w2_inicial=$(cat costos_absolutos_iteraciones_grasp_analisis.txt | awk -F' ' '{print $1}')
+			    	costo_w2_final=$(cat costos_absolutos_iteraciones_grasp_analisis.txt | awk -F' ' '{print $2}')
+			    	costo_w2_diferencia=$(cat costos_absolutos_iteraciones_grasp_analisis.txt | awk -F' ' '{print $3}')
+			    	
+			    	echo -e "${green}Ok! ${purple}Mejora total en w2 de $costo_w2_diferencia ${green}with $cantIters iterations in aprox. $timeElapsed micro-seconds per iteration ${NC}"
 	
-			    	python ../plotter.py ../"$TESTS_OUTPUT"/"$heuristica"/"$file"_iters.png "evolucion_iteraciones_grasp.txt" 5
-	
+					linenumber=$((cant_test_files+1)) 
+					echo "$linenumber $costo_w2_diferencia $cantIters" >> tmp.stddev.mejora.txt
+					echo "$linenumber $cantIters" >> tmp.stddev.iters.txt
+			    	
+			    	promedio_mejora=$(($promedio_mejora + $costo_w2_diferencia))
+
+			    	if [ $costo_w2_diferencia -ne 0 ] 
+			    	then
+			    		echo "$file mejora con grasp en $costo_w2_diferencia" >> instancias_grasp_mejoran.txt
+			    		echo -e "${purple} Hubo mejora en GRASP!!${NC}"
+			    	fi
+
 			    	if [ $min_iteraciones -gt $cantIters ]
 					then
-						min_iteraciones=$cantIters
+						min_iteraciones=$cantIters					
 					fi
 	
 					if [ $max_iteraciones -lt $cantIters ]
 					then
-						max_iteraciones=$cantIters					
+						max_iteraciones=$cantIters
 					fi
 					promedio_iters=$(($promedio_iters + $cantIters))
 				fi
 				rm -rf evolucion_iteraciones_grasp.txt
+				rm -rf costos_absolutos_iteraciones_grasp.txt
+				rm -rf costos_absolutos_iteraciones_grasp_analisis.txt
 				cant_test_files=$((cant_test_files+1))
 			done
 			promedio_iters=$((promedio_iters / cant_test_files))
+			promedio_mejora=$((promedio_mejora / cant_test_files))
+			stddev_mejora=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' tmp.stddev.mejora.txt)
+			stddev_iters=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' tmp.stddev.iters.txt)
+
+			min_mejora=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print min }' tmp.stddev.mejora.txt)
+			max_mejora=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print max }' tmp.stddev.mejora.txt)
+			min_mejora_iters=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print min_iters }' tmp.stddev.mejora.txt)
+			max_mejora_iters=$(awk 'NR == 1 {max=$2 ; max_iters=$3 ; min=$2 ; min_iters=$3} $2 >= max {max=$2 ; max_iters=$3} $2 <= min {min=$2 ; min_iters=$3} END { print max_iters }' tmp.stddev.mejora.txt)
+
+
 			rm -rf ../resumen_grasp.txt
+			echo "  ---- Resultados de los experimentos (Grasp)----" >> ../resumen_grasp.txt
 			echo "Cantidad de tests realizados: $cant_test_files" >> ../resumen_grasp.txt
 			echo "Iteraciones promedio: $promedio_iters" >> ../resumen_grasp.txt
+			echo "Iteraciones stddev: $stddev_iters" >> ../resumen_grasp.txt
 			echo "Minima cantidad de iteraciones: $min_iteraciones" >> ../resumen_grasp.txt
 			echo "Maxima cantidad de iteraciones: $max_iteraciones" >> ../resumen_grasp.txt
+			echo "Mejora promedio del costo w2: $promedio_mejora" >> ../resumen_grasp.txt
+			echo "Mejora stddev del costo w2: $stddev_mejora" >> ../resumen_grasp.txt
+			echo "Minima mejora en w2 registrada: $min_mejora en $min_mejora_iters iteraciones" >> ../resumen_grasp.txt
+			echo "Maxima mejora en w2 registrada: $max_mejora en $max_mejora_iters iteraciones" >> ../resumen_grasp.txt
+			
+			#imprimimos resultados
+			echo -e "${purple}"			
+			cat ../resumen_grasp.txt
+			echo -e "${NC}"
+			
 			popd
+
 			#curve fit para heuristica
 			fitType=2
 			echo "$heuristica -> fitType=$fitType"
@@ -208,7 +253,7 @@ if ls test-cases/*.in &> /dev/null; then
 			./plot.sh "$heuristica".tmpplot 1
 			./plot.sh "$heuristica".tmpplot 2
 			./plot.sh "$heuristica".tmpplot 3
-			./plot.sh "$heuristica".tmpplot 4		
+			./plot.sh "$heuristica".tmpplot 4	
 		#------------------------------------------------------------------------------------------------------------	
 	elif [ "${1}" == "exacta" ]
 	then 

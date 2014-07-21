@@ -2,7 +2,7 @@
 
 Dado que la heur\'istica GRASP es una combinaci\'on entre una heur\'istica golosa aleatorizada y una b\'usqueda local, decidimos utilizar nuestras heur\'isticas previamente mencionadas, con algunas modificaciones.
 
-\subsubsection{Modificaci\'on a la heur\'istica golosa}
+\subsection{Modificaci\'on a la heur\'istica golosa}
 
 \vspace{2mm}
 
@@ -10,13 +10,13 @@ Durante el ciclo del algoritmo goloso, recordemos que la primera instrucci\'on d
 
 \vspace{2mm}
 
-El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos.
-
+El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos. Esto claramente repercute en la complejidad del ciclo goloso agreg\'andole un recorrido a la cola en lugar de una simple obtenci\'on del m\'inimo.
 \vspace{2mm}
 
 El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta$ nodos de valor m\'inimo. Luego se elige uno al azar. Como la cola est\'a ordenada, cumple la condici\'on de RCL por cantidad, con lo que basta tomar un n\'umero aleatorio $i$ entre $0$ y  $min\{cola.size(), parametro\_beta\} -1$ y devolver el $i$-\'esimo elemento de la cola.
 
 \vspace{2mm}
+
 
 \begin{algorithmic}
 
@@ -49,24 +49,23 @@ No fue necesario realizar modificaciones a la heur\'istica de b\'usqueda local.
 
 Fijada ya la heur\'istica golosa aleatorizada, y la heur\'istica de b\'usqueda local, queda definir por el criterio de terminaci\'on.
 
-
 \vspace{2mm}
 
-Hay tres criterios implementados:
+Hay dos criterios implementados:
 
 \begin{enumerate}
 \item Cantidad de iteraciones l\'imite (fijo o variable)
 \item Cantidad de iteraciones sin mejora
-\item Soluci\'on suficientemente buena
 \end{enumerate}
 
 Cantidad de iteraciones l\'imite, como su nombre lo indica itera hasta un l\'imite dado, ya sea una constante, o una variable del problema, por ejemplo la cantidad de nodos del grafo. Cantidad iteraciones sin mejora corta la iteraci\'on cuando se haya alcanzado una cantidad de iteraciones m\'inimas sin que haya habido alguna mejora en el camino.
 
 \vspace{2mm}
 
-Soluci\'on suficientemente buena corta la iteraci\'on cuando considere que la soluci\'on obtenida por la \'ultima iteraci\'on, si bien puede o no ser la \'optima, alcanza para los requerimientos del problema. Generalmente s\'olo tiene sentido si puede conocerse alguna cota de optimalidad para la instancia, de forma de poder comparar la soluci\'on parcial con ella y poder determinar su calidad. No vamos a utilizarla en nuestro caso ya que nuestra heur\'istica no posee forma de conocer esto, fue implementada por cuestiones de experimentaci\'on.
+\subsection{Consideraciones}
 
-\vspace{2mm}
+Dada la naturaleza aleatoria de la heur\'istica greedy aleatorizada, en una cantidad de casos despreciable en cuanto al total de experimentos (pero aun as\'i, ocurrieron), la heur\'istica, a\'un habiendo un camino factible en el grafo, no pudo proporcionar una soluci\'on. Por esto, decidimos validar la soluci\'on obtenida del algoritmo goloso, y en caso de que no sea v\'alida, ejecutarlo nuevamente hasta llegar a un tope de iteraciones fijo. Superado este tope de iteraciones, ajustamos el par\'ametro $\beta$ de GRASP, en el caso de que la b\'usqueda golosa sea por cantidad, lo decrementamos en $1$, en el caso por valor, simplemente lo fijamos en $0$ lo cual equivale a la b\'uqueda golosa determin\'istica, ya que consideramos delicado y que escapa al objetivo del trabajo buscar una estrategia para refinar los porcentajes.
+
 
 \subsection{Pseudoc\'odigo}
 
@@ -79,10 +78,10 @@ Nota: la entrada $criterios$ se refiere a las variables:
 \item $citerio\_terminacion$ : el criterio de terminaci\'on de GRASP.
 \item $max\_its$ : la cantidad de iteraciones l\'mite del primer criterio de terminaci\'on.
 \item $max\_its\_sin\ _mejora$ : la cantidad de iteraciones en la cual el segundo criterio debe cortar el algoritmo sin obtener mejora.
-\item $ valor\_suficiente $: el valor que sirve como criterio para determinar si una soluci\'on parcial es lo suficientemente buena para terminar el algoritmo (tercer criterio).
+\item $bad\_rgreedy\_its$ : la cantidad de iteraciones consecutivas para las cuales corremos la heur\'istica golosa aleatorizada hasta que de una soluci\'on factible.
 \end{enumerate}
 
-\begin{algorithmic}
+\begin{algorithmic}[1]
 
 \Procedure{$Sol\_GRASP$}{$Grafo\: g, \:vertice\: v_1,\: vertice \: v_2, \: int \: k, criterios$}{$\rightarrow lista<eje>\: camino$}
 
@@ -93,36 +92,87 @@ Nota: la entrada $criterios$ se refiere a las variables:
     \State $lista<eje> \:camino\: = \emptyset$
     \State $int\: cant\_iters \:= \:0$
     \State $int\: cant\_iters\_sin\_mejora \:= 0$
+    \State $int\: cant\_iters\_sin\_sol\_rgreedy\_factible = 0$
+    \State $ bool\: sol\_valida\_rgreedy\: =\: false $
+    \State $vector<pair<int, costo> > \: mejora\_iters\_grasp$
+    \Statex 
 
     \While{$!condicion\_terminacion$}
 
-    	\State $camino\: =\: solucion\_golosa(g, tipo\_golosa, \beta)$
-    	\While{$se \: puede \: mejorar \: camino$}
-    			\State $camino = busqueda\_local(g, tipo\_bq)$
-    	\EndWhile
+    	\State $camino\: =\: solucion\_golosa(g, v_1,v_2, tipo\_golosa, \beta)$
+    	\State $ sol\_valida\_rgreedy= validar\_solucion(camino)$
+    	\Comment{Obtenemos solucion greedy}
 
-    	\State $ int \:  costo\_sol\_actual \: = \: costo\_w_2(camino)$
-
-		\If{$costo\_sol\_actual < costo\_mejor\_solucion$}
-
-            \State $costo\_mejor\_solucion = costo\_sol\_actual$
-            \State $mejor\_solucion = camino$
-            
-            \State $cant\_iters\_sin\_mejora = 0$
+    	\Statex
+    	\If{$hay solucion$}
+    		\If{$sol\_valida\_rgreedy$}
+    		\Comment{Validamos si es factible}
+	
+	    			\State $cant\_iters\_sin\_sol\_rgreedy\_factible = 0$
+	
+	    			\State $int\: mejora\_iteracion\_actual\: = 0$
+	        	    \State $int\: cant\_iters\_bqlocal\: = 0$
+	
+	        	    \Statex
+	
+	    			\While{$mejora\_iteracion\_actual > 0$}
+	    					\Comment{Aplicamos Busqueda Local}
+	    					\State $mejora\_iteracion\_actual=busqueda\_local(g, tipo\_bq, camino)$
+	    					\State $cant\_iters\_bqlocal++$
+	
+	    			\EndWhile
+	
+	    			\State $ int \:  costo\_sol\_actual \: = \: costo\_w_2(camino)$
+	
+	    			\Statex
+	
+					\If{$costo\_sol\_actual < costo\_mejor\_solucion$}
+					\Comment{Reemplazamos si es mejor solucion}
+	
+						\If{$cant\_iters>0$}
+							\State $ agregar(mejora\_iters\_grasp, par<cant\_iters, costo\_mejor\_solucion - costo\_solucion\_actual>) $
+						\EndIf
+	        	    	\State $costo\_mejor\_solucion = costo\_sol\_actual$
+	        	    	\State $mejor\_solucion = camino$
+	        	    
+	        	   	    \State $cant\_iters\_sin\_mejora = 0$
+	        		\Else
+	        			\If{$cant\_iters>0$}
+	        				\State $ agregar(mejora\_iters\_grasp, par<cant\_iters, 0)>) $
+	        	        \EndIf
+	        	        \State $cant\_iters\_sin\_mejora++$
+	        	    
+	        	    	
+	        	\EndIf
+	
+	        	\State $cant\_iters++$
+	    	
+	    	    	\Else
+	    	    	\Comment{$sol\_valida\_rgreedy = false$}
+	    	    	\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible++$
+	    	    	\If{$cant\_iters\_sin\_sol\_greedy\_rand\_factible\geq bad\_rgreedy\_its$}
+	    	    		\If{$tipo\_golosa == por\_cantidad$}
+	    	    		\Comment Maximo de its de greedy sin solucion
+	    	    	            \If{$parametro\_beta\geq2$}
+	    	    	            	\Comment Ajustamos parametros de GRASP
+	    	    	                \State $parametro\_beta--$
+	    	    	            \EndIf
+	    	    	    \ElsIf{$tipo\_golosa == por\_valor$}
+	
+	        	    	\State $parametro_beta = 0$
+	        		\EndIf
+	        		\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible = 0$
+	        	\EndIf
+        	\EndIf
         \Else
-            
-            \State $cant\_iters\_sin\_mejora++$
-        \EndIf
-
-        \State $cant\_iters++$
-    
-
+        \Comment No hay Solucion
+        	\State $break$
+        \EndIf	
     \If{$criterio\_terminacion == 1$}
+    \Comment{Si se cumple el criterio de terminacion}
            \State $condicion\_terminacion = (cant\_iters < max\_its)$            
         \ElsIf{$criterio\_terminacion == 2$}
             \State $condicion_terminacion = (cant\_iters\_sin\_mejora < max\_its\_sin\ _mejora)$
-        \ElsIf{$criterio\_terminacion == 3$}
-            \State $condicion\_terminacion = (costo\_mejor\_solucion < valor\_suficiente)$
         \EndIf
 
        \EndWhile
@@ -131,3 +181,7 @@ Nota: la entrada $criterios$ se refiere a las variables:
 
 \EndProcedure
 \end{algorithmic}
+
+
+\subsection{An\'alisis de complejidad}
+

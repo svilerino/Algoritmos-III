@@ -1412,9 +1412,14 @@ set<pair<costo_t, nodo_t> >::iterator Grafo::obtener_candidato_randomizado(tipo_
 		//sabemos que  esta en rango del iterador pues rcl_target_top <= cola.size() -1 y tomamos begin() que es el primero, es decir 0
 		retorno = cola.begin();
 		uint avance = 0;
+		assert(avance >= 0);
+		assert(avance < cola.size());
 		while(avance < rcl_target_random){
 			retorno ++;
 			avance++;
+		}
+		if(avance == 0){
+			assert(retorno == cola.begin());
 		}
 	}else if (tipo_ejecucion == RCL_POR_VALOR){
 		//itero sobre toda la cola, filtrando los elementos que esten dentro del porcentaje del parametro
