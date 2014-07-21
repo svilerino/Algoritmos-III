@@ -165,8 +165,6 @@ Salida golosa:
 
 La salida de nuestro algoritmo nos devuelve el camino $1->2->3$ (para un $K$ no restrictivo), ya que la desici\'on golosa toma el m\'inimo de la cola en cada iteraci\'on y actualiza el nodo $3$ con el nodo $2$ ya que el camino $1->2$ (en rojo) tiene menos costo $w_2$ que la arista $(1,3)$ (en verde). Pero en este caso particular puede notarse como prima la desici\'on golosa en el algoritmo, sin tener en cuenta que este camino es mucho m\'as costoso en cuanto a $w_1$ que la arista. Si el grafo tuviese m\'as nodos adyacentes al nodo $3$, el haber elegido el camino va a restringir los caminos que va a poder tomar el algoritmo en las siguientes iteraciones. Por ejemplo, si el grafo fuese: $Origen=1, \:Destino = 6, \: K = 10$.
 
-
-
 \begin{center}
 	\includegraphics[scale=0.55]{img/{casoMaloGreedy}.png}
 \end{center}
@@ -201,16 +199,14 @@ Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas s
 
 En la secci\'on de anal\'isis de complejidad del algoritmo concluimos acotando la complejidad en $O(n^2 + m log n)$. Sin embargo, como informamos en la secci\'on anterior, nos vamos a limitar a dividir las funciones por potencias de $n$ de $1$ a $4$. Esto se debe a, adem\'as de una mayor simplicidad, a que en el caso de prueba con $m = a*n+b$, $m$ es lineal en cuanto a $n$, por lo tanto la complejidad se aproximar\'ia a $n^2 + nlogn$, con lo cual quedar\'a en el orden cuadr\'atico, y consideramos que va a bastar con considerarlo de este orden para realizar el an\'alisis de las divisiones. Por otro lado en el caso $m=n*(n-1)/a$, $m$ es cuadr\'atico en cuanto a $n$, y la complejidad se aproximar\'a a $n^2+n^2log n$, lo cual es del orden $O(n^2log n)$. Pero, considerando que como m\'aximo en nuestra experimentaci\'on usamos $n=2000$, $log(2000) \approx 11$, lo cual es casi despreciable, por lo cual tambi\'en consideraremos al algoritmo en el orden cuadr\'atico para realizar el an\'alisis.
 
-
-
 \subsubsection{Rendimiento para grafos con densidad lineal de aristas}
 \begin{itemize}
 	\item cant nodos min = $50$
 	\item cant nodos max = $2000$
 	\item peso maximo w1 = $250$
 	\item peso maximo w2 = $400$
-	\item step nodos = $200 NO ESTOY SEGURO DE ESTO$
-	\item step aristas = $2500$
+	\item step nodos = $75$
+	\item step aristas = $4500$
 	\item aristas minimas = $n-1$
 	\item aristas maximas = $10*n$
 \end{itemize}
@@ -249,8 +245,8 @@ En la secci\'on de anal\'isis de complejidad del algoritmo concluimos acotando l
 	\item cant nodos max = $500$
 	\item peso maximo w1 = $250$
 	\item peso maximo w2 = $400$
-	\item step nodos = $200$
-	\item step aristas = $2500$
+	\item step nodos = $75$
+	\item step aristas = $4500$
 	\item aristas minimas = $\frac{n*(n-1)}{9}$
 	\item aristas maximas = $\frac{n*(n-1)}{7}$
 \end{itemize}								
