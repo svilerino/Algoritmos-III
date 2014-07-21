@@ -26,6 +26,7 @@ if ls test-cases/*.in &> /dev/null; then
 	#------------------------------------------------------------------------------------------------------------
 	#seleccionar aca abajo en el for heuristica que heuristicas se quieren comparar entre si
 	diffnumber=0
+	testsnumber=0
 	diff_exacto_golosa=0
 	diff_exacto_bqlocal=0
 	diff_exacto_grasp=0
@@ -77,7 +78,7 @@ if ls test-cases/*.in &> /dev/null; then
 					hay_solucion="no"
 				else
 				    echo "$cantNodos $cantAristas $pesow2 $heuristica " >> ../"comparacion_optimalidad_$heuristica".tmpplot
-			    	echo -e "${green}Ok! Camino obtenido entre ($nodosrc) y ($nododst) de longuitud $longuitudCaminoOutput con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
+			    	echo -e "${green}Ok! Camino obtenido entre ($nodosrc) y ($nododst) de longuitud ${blue}$longuitudCaminoOutput${green} con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
 			    	#cat "../$TESTS_OUTPUT/$heuristica/$file.out"
 			    	#echo ""			    	
 			    	echo "$pesow2" > tmp."$heuristica".optimalidad.actual.txt
@@ -98,39 +99,46 @@ if ls test-cases/*.in &> /dev/null; then
 				diff_actual_exacto_golosa=$(echo "scale=3; 100 * (($ultimo_peso_w2_golosa/$ultimo_peso_w2_exacta) - 1)" | bc -l )				
 				diff_actual_exacto_bqlocal=$(echo "scale=3; 100 * (($ultimo_peso_w2_bqlocal/$ultimo_peso_w2_exacta) - 1)" | bc -l )				
 				diff_actual_exacto_grasp=$(echo "scale=3; 100 * (($ultimo_peso_w2_grasp/$ultimo_peso_w2_exacta) - 1)" | bc -l )				
-
-				echo "$diffnumber $diff_actual_exacto_golosa" >> stddev.tmp.golosa.txt
-				echo "$diffnumber $diff_actual_exacto_bqlocal" >> stddev.tmp.bqlocal.txt
-				echo "$diffnumber $diff_actual_exacto_grasp" >> stddev.tmp.grasp.txt
-				
-				diff_exacto_golosa=$(echo "scale=3; $diff_exacto_golosa + $diff_actual_exacto_golosa" | bc -l )				
-				diff_exacto_bqlocal=$(echo "scale=3; $diff_exacto_bqlocal + $diff_actual_exacto_bqlocal" | bc -l )				
-				diff_exacto_grasp=$(echo "scale=3; $diff_exacto_grasp + $diff_actual_exacto_grasp" | bc -l )			
-
-				if [ "$diff_actual_exacto_golosa" -eq "0" ]
-				then
-					exacta_golosa_match_number=$(($exacta_golosa_match_number + 1))
-				fi
-
-				if [ "$diff_actual_exacto_bqlocal" -eq "0" ]
-				then
-					exacta_bqlocal_match_number=$(($exacta_bqlocal_match_number + 1))
-				fi
-
-				if [ "$diff_actual_exacto_grasp" -eq "0" ]
-				then
-					exacta_grasp_match_number=$(($exacta_grasp_match_number + 1))
-				fi
 				diffnumber=$(($diffnumber+1))
-
+			else
+				diff_actual_exacto_golosa=$(echo "scale=3; 100 * $ultimo_peso_w2_golosa" | bc -l )
+				diff_actual_exacto_bqlocal=$(echo "scale=3; 100 * $ultimo_peso_w2_bqlocal" | bc -l )
+				diff_actual_exacto_grasp=$(echo "scale=3; 100 * $ultimo_peso_w2_grasp" | bc -l )
 			fi
+			
+			echo "$diffnumber $diff_actual_exacto_golosa" >> stddev.tmp.golosa.txt
+			echo "$diffnumber $diff_actual_exacto_bqlocal" >> stddev.tmp.bqlocal.txt
+			echo "$diffnumber $diff_actual_exacto_grasp" >> stddev.tmp.grasp.txt
+			
+			diff_exacto_golosa=$(echo "scale=3; $diff_exacto_golosa + $diff_actual_exacto_golosa" | bc -l )				
+			diff_exacto_bqlocal=$(echo "scale=3; $diff_exacto_bqlocal + $diff_actual_exacto_bqlocal" | bc -l )				
+			diff_exacto_grasp=$(echo "scale=3; $diff_exacto_grasp + $diff_actual_exacto_grasp" | bc -l )			
+
+			res=$(echo $diff_actual_exacto_golosa'=='0 | bc -l)
+			if [ $res -eq 1 ]
+			then
+				exacta_golosa_match_number=$(($exacta_golosa_match_number + 1))
+			fi
+
+			res=$(echo $diff_actual_exacto_bqlocal'=='0 | bc -l)
+			if [ $res -eq 1 ]
+			then					
+				exacta_bqlocal_match_number=$(($exacta_bqlocal_match_number + 1))
+			fi
+
+			res=$(echo $diff_actual_exacto_grasp'=='0 | bc -l)
+			if [ $res -eq 1 ]
+			then
+				exacta_grasp_match_number=$(($exacta_grasp_match_number + 1))
+			fi
+			testsnumber=$(($testsnumber+1))			
 		fi
 		echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 	done
 
-	exacta_golosa_match_number=$(echo "scale=3; 100*$exacta_golosa_match_number/$diffnumber" | bc -l )
-	exacta_bqlocal_match_number=$(echo "scale=3; 100*$exacta_bqlocal_match_number/$diffnumber" | bc -l )
-	exacta_grasp_match_number=$(echo "scale=3; 100*$exacta_grasp_match_number/$diffnumber" | bc -l )
+	exacta_golosa_match_number=$(echo "scale=3; 100*$exacta_golosa_match_number/$testsnumber" | bc -l )
+	exacta_bqlocal_match_number=$(echo "scale=3; 100*$exacta_bqlocal_match_number/$testsnumber" | bc -l )
+	exacta_grasp_match_number=$(echo "scale=3; 100*$exacta_grasp_match_number/$testsnumber" | bc -l )
 
 	diff_exacto_golosa=$(echo "scale=3; $diff_exacto_golosa/$diffnumber" | bc -l )
 	diff_exacto_bqlocal=$(echo "scale=3; $diff_exacto_bqlocal/$diffnumber" | bc -l )
