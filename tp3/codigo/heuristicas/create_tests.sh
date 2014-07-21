@@ -11,17 +11,17 @@ red='\e[0;31m'
 green='\e[0;32m'
 NC='\e[0m' # No Color
 
-cant_nodos_min=50
-cant_nodos_max=60
+cant_nodos_min=100
+cant_nodos_max=2000
 peso_maximo_w1=250
 peso_maximo_w2=400
 limit_w1=400
 
-for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=10 ))
+for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=50 ))
 do 
 	#seleccionar aca abajo una combinacion de aristas... para establecer un valor fijo hay que poner max y min iguales.
-	#aristas_minimas=$((n * (n-1)/9))
-	#aristas_maximas=$((n * (n-1)/7))
+	#aristas_minimas=$((n * (n-1)/3))
+	#aristas_maximas=$((n * (n-1)/2))
 	
 	aristas_minimas=$((n-1))
 	aristas_maximas=$((10*n))

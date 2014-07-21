@@ -51,13 +51,16 @@ void ejecutar_busqueda_local(Grafo &g){
         g.establecer_se_encontro_solucion(false);
     }else{
         //armar camino entre origen y destino y lo establezco como sol inicial
-        Camino c = g.obtener_camino_vacio();
-        nodo_t nodo = nodo_dst;
-        do{
-            //cout << nodo << " " ;
-            c.agregar_nodo_adelante(nodo);
-            nodo = predecesor[nodo];
-        }while(nodo != predecesor_nulo);
+        //Camino c = g.obtener_camino_vacio();
+        //nodo_t nodo = nodo_dst;
+        //do{
+        //    //cout << nodo << " " ;
+        //    c.agregar_nodo_adelante(nodo);
+        //    nodo = predecesor[nodo];
+        //}while(nodo != predecesor_nulo);
+        //g.establecer_camino_solucion(c);
+
+        Camino c = g.obtener_solucion_golosa();
         g.establecer_camino_solucion(c);
 
         //imprimo sol inicial.
