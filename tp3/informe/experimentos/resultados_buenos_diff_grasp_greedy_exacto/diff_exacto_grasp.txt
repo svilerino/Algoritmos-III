@@ -1,0 +1,4 @@
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 0
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 0
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 0

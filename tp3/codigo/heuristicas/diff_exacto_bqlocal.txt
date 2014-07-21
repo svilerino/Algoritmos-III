@@ -1,0 +1,4 @@
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 157.894
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 273.988
+Minimo alejamiento porcentual entre bqlocal y exacta: 0
+Maximo alejamiento porcentual entre bqlocal y exacta: 1000

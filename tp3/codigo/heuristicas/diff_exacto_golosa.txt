@@ -1,0 +1,4 @@
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 5.263
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 22.3297
+Minimo alejamiento porcentual entre golosa y exacta: 0
+Maximo alejamiento porcentual entre golosa y exacta: 100

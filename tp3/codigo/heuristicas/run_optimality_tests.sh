@@ -26,6 +26,9 @@ if ls test-cases/*.in &> /dev/null; then
 	#------------------------------------------------------------------------------------------------------------
 	#seleccionar aca abajo en el for heuristica que heuristicas se quieren comparar entre si
 	diffnumber=0
+	rm -rf stddev.tmp.golosa.txt
+	rm -rf stddev.tmp.bqlocal.txt
+	rm -rf stddev.tmp.grasp.txt
 	for file in *.in; do
 		for heuristica in "bqlocal" "golosa" "grasp" "exacta"; do
 			if [ "$heuristica" == "exacta" ]
@@ -82,23 +85,59 @@ if ls test-cases/*.in &> /dev/null; then
 			
 			if [ $ultimo_peso_w2_exacta != 0 ]
 			then
-				diff_exacto_golosa=$(($diff_exacto_golosa + 100*($ultimo_peso_w2_golosa/$ultimo_peso_w2_exacta - 1) ))
-				diff_exacto_bqlocal=$(($diff_exacto_bqlocal + 100*($ultimo_peso_w2_bqlocal/$ultimo_peso_w2_exacta - 1) ))
-				diff_exacto_grasp=$(($diff_exacto_grasp + 100*($ultimo_peso_w2_grasp/$ultimo_peso_w2_exacta - 1) ))
+										
+				diff_actual_exacto_golosa=$((100 * ($ultimo_peso_w2_golosa/$ultimo_peso_w2_exacta - 1)))
+				diff_actual_exacto_bqlocal=$((100 * ($ultimo_peso_w2_bqlocal/$ultimo_peso_w2_exacta - 1)))
+				diff_actual_exacto_grasp=$((100 * ($ultimo_peso_w2_grasp/$ultimo_peso_w2_exacta - 1)))
+
+				echo "$diffnumber $diff_actual_exacto_golosa" >> stddev.tmp.golosa.txt
+				echo "$diffnumber $diff_actual_exacto_bqlocal" >> stddev.tmp.bqlocal.txt
+				echo "$diffnumber $diff_actual_exacto_grasp" >> stddev.tmp.grasp.txt
+
+				diff_exacto_golosa=$(($diff_exacto_golosa + $diff_actual_exacto_golosa ))
+				diff_exacto_bqlocal=$(($diff_exacto_bqlocal + $diff_actual_exacto_bqlocal ))
+				diff_exacto_grasp=$(($diff_exacto_grasp + $diff_actual_exacto_grasp ))
 				diffnumber=$(($diffnumber+1))
+
 			fi
 		fi
 		echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 	done
 
-	diff_exacto_golosa=$(($diff_exacto_golosa/$diffnumber))
-	diff_exacto_bqlocal=$(($diff_exacto_bqlocal/$diffnumber))
-	diff_exacto_grasp=$(($diff_exacto_grasp/$diffnumber))
+	diff_exacto_golosa=$(echo "scale=3; $diff_exacto_golosa/$diffnumber" | bc -l )
+	diff_exacto_bqlocal=$(echo "scale=3; $diff_exacto_bqlocal/$diffnumber" | bc -l )
+	diff_exacto_grasp=$(echo "scale=3; $diff_exacto_grasp/$diffnumber" | bc -l )
+
+	stddev_diff_exacto_golosa=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' stddev.tmp.golosa.txt)
+	stddev_diff_exacto_bqlocal=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' stddev.tmp.bqlocal.txt)
+	stddev_diff_exacto_grasp=$(awk '{sum+=$2; array[NR]=$2} END {for(x=1;x<=NR;x++){sumsq+=((array[x]-(sum/NR))^2);}print sqrt(sumsq/NR)}' stddev.tmp.grasp.txt)
+	
+	min_alejamiento_exacto_golosa=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print min }' stddev.tmp.golosa.txt)
+	max_alejamiento_exacto_golosa=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print max }' stddev.tmp.golosa.txt)
+
+	min_alejamiento_exacto_bqlocal=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print min }' stddev.tmp.bqlocal.txt)
+	max_alejamiento_exacto_bqlocal=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print max }' stddev.tmp.bqlocal.txt)
+
+	min_alejamiento_exacto_grasp=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print min }' stddev.tmp.grasp.txt)
+	max_alejamiento_exacto_grasp=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print max }' stddev.tmp.grasp.txt)
 
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
+	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $stddev_diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
+	echo "Minimo alejamiento porcentual entre golosa y exacta: $min_alejamiento_exacto_golosa" >> ../diff_exacto_golosa.txt
+	echo "Maximo alejamiento porcentual entre golosa y exacta: $max_alejamiento_exacto_golosa" >> ../diff_exacto_golosa.txt
+
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
+	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $stddev_diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
+	echo "Minimo alejamiento porcentual entre bqlocal y exacta: $min_alejamiento_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt
+	echo "Maximo alejamiento porcentual entre bqlocal y exacta: $max_alejamiento_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt
+	
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
-	echo -e "${purple}"			
+	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $stddev_diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
+	echo "Minimo alejamiento porcentual entre grasp y exacta: $min_alejamiento_exacto_grasp" >> ../diff_exacto_grasp.txt
+	echo "Maximo alejamiento porcentual entre grasp y exacta: $max_alejamiento_exacto_grasp" >> ../diff_exacto_grasp.txt
+	
+	echo -e "${green}"		
+	echo "Resultados:"	
 	cat ../diff_exacto_golosa.txt	
 	cat ../diff_exacto_bqlocal.txt	
 	cat ../diff_exacto_grasp.txt	
