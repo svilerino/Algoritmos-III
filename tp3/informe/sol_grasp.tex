@@ -64,8 +64,7 @@ Cantidad de iteraciones l\'imite, como su nombre lo indica itera hasta un l\'imi
 
 \subsection{Consideraciones}
 
-Dada la naturaleza aleatoria de la heur\'istica greedy aleatorizada, en una cantidad de casos despreciable en cuanto al total de experimentos (pero aun as\'i, ocurrieron), la heur\'istica, a\'un habiendo un camino factible en el grafo, no pudo proporcionar una soluci\'on. Por esto, decidimos validar la soluci\'on obtenida del algoritmo goloso, y en caso de que no sea v\'alida, ejecutarlo nuevamente hasta llegar a un tope de iteraciones fijo. Superado este tope de iteraciones, ajustamos el par\'ametro $\beta$ de GRASP, en el caso de que la b\'usqueda golosa sea por cantidad, lo decrementamos en $1$, en el caso por valor, simplemente lo fijamos en $0$ lo cual equivale a la b\'uqueda golosa determin\'istica, ya que consideramos delicado y que escapa al objetivo del trabajo buscar una estrategia para refinar los porcentajes.
-
+Dada la naturaleza aleatoria de la heur\'istica greedy aleatorizada, en una cantidad de casos despreciable en cuanto al total de experimentos (pero aun as\'i, ocurrieron), la heur\'istica, a\'un habiendo un camino factible en el grafo, no pudo proporcionar una soluci\'on. Por esto, decidimos validar la soluci\'on obtenida del algoritmo goloso, y en caso de que no sea v\'alida, ejecutarlo nuevamente hasta llegar a un tope de iteraciones fijo. Superado este tope de iteraciones, ajustamos el par\'ametro $\beta$ de GRASP, en el caso de que la b\'usqueda golosa sea por cantidad, lo decrementamos en $1$, en el caso por valor, simplemente lo fijamos en $0$ lo cual equivale a la b\'uqueda golosa determin\'istica.
 
 \subsection{Pseudoc\'odigo}
 
@@ -152,7 +151,7 @@ Nota: la entrada $criterios$ se refiere a las variables:
 	    	    	\State $cant\_iters\_sin\_sol\_greedy\_rand\_factible++$
 	    	    	\If{$cant\_iters\_sin\_sol\_greedy\_rand\_factible\geq bad\_rgreedy\_its$}
 	    	    		\If{$tipo\_golosa == por\_cantidad$}
-	    	    		\Comment Maximo de its de greedy sin solucion
+	    	    		\Comment Maximo de its de greedy sin Solucion
 	    	    	            \If{$parametro\_beta\geq2$}
 	    	    	            	\Comment Ajustamos parametros de GRASP
 	    	    	                \State $parametro\_beta--$
