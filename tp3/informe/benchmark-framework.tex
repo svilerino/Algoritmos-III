@@ -51,20 +51,3 @@ Dada la complejidad del algoritmo, fueron pocos los tama\~nos de entrada que se 
 Se puede ver que si bien tiende a crecer el tiempo de ejecucion, muchas veces distintos grafos de un mismo $n$ tuvieron tiempos muy diferentes de ejecuci\'on, not\'andose claramente en el $K_{16}$, donde 3 grafos tardaron menos de 5 segundos, pero otros 2 grafos tardaron 20 segundos o m\'as. \'Esto se puede deber a las distintas condiciones y podas del algoritmo para quedarse s\'olo con caminos v\'alidos y que no se pasen de la cota $K$ ni que superen una posible soluci\'on ya encontrada.
 
 \subsubsection{Heur\'istica golosa}
-
-En la experimentaci\'on de perfomance de la heur\'istica golosa utilizamos un generador de grafos aleatorios, hacemos variar la cantidad de nodos, con una cantidad de aristas fija. Sea $n$ la cantidad de nodos, es nuestra variable y probamos con $m = (n^2)/2$, es decir grafos completos, y luego con grafos densamente promedio, un n\'umero de aristas promedio entre $n-1$ (\'arbos) y un grafo completo ($ m = (n - 1 + (n^2)/2) /2 $)
-
-\begin{center}
-\includegraphics[scale=0.45]{img/golosa_fx.png}
-\end{center}
-\vspace{2mm}
-
-Se puede apreciar una curva creciente con concavidad positiva. La curva de mayor valor que corta en 600 representa los valores de los grafos completos, que tuvimos que detener por razones de tiempo de c\'omputo. Vamos a dividir los resultados por $n^2$ y verificar que el resultado sea una curva constante.
-
-
-\begin{center}
-\includegraphics[scale=0.450]{img/golosa_fx2.png}
-\end{center}
-\vspace{2mm}
-
-Puede apreciarse efectivamente una curva constante.
