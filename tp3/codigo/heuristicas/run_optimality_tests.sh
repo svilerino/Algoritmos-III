@@ -19,9 +19,13 @@ if ls test-cases/*.in &> /dev/null; then
 	rm -rf comparacion_optimalidad_bqlocal.tmpplot
 	rm -rf comparacion_optimalidad_golosa.tmpplot
 	rm -rf comparacion_optimalidad_grasp.tmpplot
+	rm -rf diff_exacto_golosa.txt
+	rm -rf diff_exacto_bqlocal.txt
+	rm -rf diff_exacto_grasp.txt
 	pushd test-cases
 	#------------------------------------------------------------------------------------------------------------
 	#seleccionar aca abajo en el for heuristica que heuristicas se quieren comparar entre si
+	diffnumber=0
 	for file in *.in; do
 		for heuristica in "bqlocal" "golosa" "grasp" "exacta"; do
 			if [ "$heuristica" == "exacta" ]
@@ -58,19 +62,55 @@ if ls test-cases/*.in &> /dev/null; then
 				then
 					echo -e "${purple}Camino obtenido con peso $pesow1 pero excede el limite $limitw1."
 					echo -e -n "${NC}"
+					hay_solucion="no"
 				else
 				    echo "$cantNodos $cantAristas $pesow2 $heuristica " >> ../"comparacion_optimalidad_$heuristica".tmpplot
 			    	echo -e "${green}Ok! Camino obtenido entre ($nodosrc) y ($nododst) con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
 			    	#cat "../$TESTS_OUTPUT/$heuristica/$file.out"
 			    	#echo ""			    	
+			    	echo "$pesow2" > tmp."$heuristica".optimalidad.actual.txt
+			    	hay_solucion="si"
 				fi
 			fi
 		done
+		if [ "${1}" == "--use-exacta" ] && [ $hay_solucion == "si" ]
+		then
+			ultimo_peso_w2_exacta=$(head -1 tmp.exacta.optimalidad.actual.txt | awk -F' ' '{print $1}')
+			ultimo_peso_w2_golosa=$(head -1 tmp.golosa.optimalidad.actual.txt | awk -F' ' '{print $1}')
+			ultimo_peso_w2_bqlocal=$(head -1 tmp.bqlocal.optimalidad.actual.txt | awk -F' ' '{print $1}')
+			ultimo_peso_w2_grasp=$(head -1 tmp.grasp.optimalidad.actual.txt | awk -F' ' '{print $1}')
+			
+			if [ $ultimo_peso_w2_exacta != 0 ]
+			then
+				diff_exacto_golosa=$(($diff_exacto_golosa + 100*($ultimo_peso_w2_golosa/$ultimo_peso_w2_exacta - 1) ))
+				diff_exacto_bqlocal=$(($diff_exacto_bqlocal + 100*($ultimo_peso_w2_bqlocal/$ultimo_peso_w2_exacta - 1) ))
+				diff_exacto_grasp=$(($diff_exacto_grasp + 100*($ultimo_peso_w2_grasp/$ultimo_peso_w2_exacta - 1) ))
+				diffnumber=$(($diffnumber+1))
+			fi
+		fi
 		echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 	done
+
+	diff_exacto_golosa=$(($diff_exacto_golosa/$diffnumber))
+	diff_exacto_bqlocal=$(($diff_exacto_bqlocal/$diffnumber))
+	diff_exacto_grasp=$(($diff_exacto_grasp/$diffnumber))
+
+	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
+	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
+	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
+	echo -e "${purple}"			
+	cat ../diff_exacto_golosa.txt	
+	cat ../diff_exacto_bqlocal.txt	
+	cat ../diff_exacto_grasp.txt	
+	echo -e "${NC}"
+
 	#estos archivos se crean en las ejecuciones de grasp y bqlocal. los borro
 	rm -rf evolucion_iteraciones.txt
 	rm -rf evolucion_iteraciones_grasp.txt
+	rm -rf tmp.grasp.optimalidad.actual.txt
+	rm -rf tmp.golosa.optimalidad.actual.txt
+	rm -rf tmp.bqlocal.optimalidad.actual.txt
+	rm -rf tmp.exacta.optimalidad.actual.txt
 	popd
 	if [ "${1}" != "--use-exacta" ]
 	then

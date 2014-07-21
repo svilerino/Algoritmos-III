@@ -60,6 +60,9 @@ void ejecutar_busqueda_local(Grafo &g){
         }while(nodo != predecesor_nulo);
         g.establecer_camino_solucion(c);
 
+        //Camino c = g.obtener_solucion_golosa();
+        //g.establecer_camino_solucion(c);
+
         //imprimo sol inicial.
         #ifdef DEBUG_MESSAGES_ON
             cout << ". Costo minimo obtenido: " << c.obtener_costo_total_w1_camino();

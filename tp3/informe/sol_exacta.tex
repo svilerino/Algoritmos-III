@@ -44,6 +44,8 @@ Estando dentro de las llamadas recursivas, s\'olo avanza al siguiente nodo si el
 	\Statex
 	\Ensure Retorna $verdarero$ si encontr\'o un camino de $u$ a $w$, $falso$ si no encontr\'o camino.
 	\Statex
+	\State solucion\_mejor $\gets$ $[]$
+	\Statex
 	\Procedure{cacm\_exacto}{$Grafo$: grafo, $Nodo$: u, $Nodo$: w, $Real$: K, $Camino$: solucion}{$\to$ $bool$}
 		\State distancias $\gets$ \Call{Dijsktra\_en\_w1}{grafo, u}
 		\If{distancias[w] $>$ K}
@@ -57,33 +59,38 @@ Estando dentro de las llamadas recursivas, s\'olo avanza al siguiente nodo si el
 	\Statex
 	\Procedure{cacm\_exacto\_recursivo}{$Grafo$: grafo, $Nodo$: u, $Nodo$: w, $Real$: K, $Real$: distancias\_w1[], $Real$: distancias\_w2, $Camino$: solucion}{$\to$ $bool$}
 		\If{u $=$ w}
-			\State return $verdadero$
+			\If{mejor\_solucion $=$ $[]$ $\lor$ $\omega_2(solucion) < \omega_2(solucion\_mejor)$}
+				\State mejor\_solucion $\gets$ solucion\_nueva
+				\State return $verdadero$
+			\Else
+				\State return $falso$
+			\EndIf
 		\EndIf
 		
 		\State solucion\_nueva $\gets$ $[]$
-		\State solucion\_mejor $\gets$ $[]$
+		\State solucionado $\gets$ false
 
 		\State \Call{MarcarVisitado}{grafo, u, true}
 		\For{z $\gets$ \Call{adyacentes}{grafo, u}}
 		\If{$\neg$ \Call{EstaVisitado}{grafo, z}}
 			\State peso1 $\gets$ $\omega_1({u, z})$
 			\State peso2 $\gets$ $\omega_2({u, z})$
-			\If{distancias\_w1[z] $+$ peso1 $<=$ $K$ $\land$ $(solucion\_mejor = [] \lor distancias\_w2[z] + peso2 < \omega_2(solucion\_mejor)$}
+			\If{distancias\_w1[z] $+$ peso1 $<=$ $K$ $\land$ $(solucion\_mejor = [] \lor distancias\_w2[z] + peso2 + \omega_2(solucion) < \omega_2(solucion\_mejor)$}
 				\State \Call{quitar\_arista}{grafo, u, z}
-				\State solucion\_nueva $gets$ $[z]$
+				\State solucion\_nueva $gets$ solucion $+ [z]$
 				\State encontre $\gets$ \Call{cacm\_exacto\_recursivo}{grafo, z, w, K $-$ $peso1$, solucion\_nueva}
-				\If{encontre $\land$ (mejor\_solucion $=$ $[]$ $\lor$ $\omega_2(solucion\_nueva) < \omega_2(solucion\_mejor)$)}
-					\State mejor\_solucion $\gets$ solucion\_nueva
+				\If{encontre }
+					\State solucionado $\gets$ true
 				\EndIf
 				\State \Call{agregar\_arista}{grafo, u, z, peso1, peso2}
 			\EndIf
 		\EndIf
 		\EndFor
 		\State \Call{MarcarVisitado}{grafo, u, false}
-		\If{solucion\_mejor $\neq$ $[]$}
-			\State solucion $\gets$ solucion $+$ solucion\_mejor
+		\If{solucionado}
+			\State solucion $\gets$ solucion\_mejor
 		\EndIf
-		\State return solucion\_mejor $\neq$ $[]$
+		\State return solucionado
 	\EndProcedure
 \end{algorithmic}
 
