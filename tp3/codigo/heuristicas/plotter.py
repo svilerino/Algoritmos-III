@@ -141,9 +141,9 @@ else:
 			graphic_fx.append(mejora_parcial)			
 
 		plt.plot(graphic_x, graphic_fx, 'g-', graphic_x, graphic_fx, 'go', label="")	
-		plt.xlabel('x = Numero de iteracion', fontsize=14)
-		plt.ylabel('\nMejora en dicha iteracion', fontsize=14)
-		plt.title("Rendimiento evolutivo de busqueda local")
+		#plt.xlabel('x = Numero de iteracion', fontsize=14)
+		#plt.ylabel('\nMejora en dicha iteracion', fontsize=14)
+		#plt.title("Rendimiento evolutivo de busqueda local")
 		#plt.yscale('log')
 		plt.grid()
 		#plt.show()
