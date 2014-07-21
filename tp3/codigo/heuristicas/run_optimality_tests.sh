@@ -157,18 +157,21 @@ if ls test-cases/*.in &> /dev/null; then
 	min_alejamiento_exacto_grasp=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print min }' stddev.tmp.grasp.txt)
 	max_alejamiento_exacto_grasp=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print max }' stddev.tmp.grasp.txt)
 
+	echo "Cantidad de tests realizados: $testsnumber" >> ../diff_exacto_golosa.txt
 	echo "Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): $exacta_golosa_match_number" >> ../diff_exacto_golosa.txt
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
 	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $stddev_diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
 	echo "Minimo alejamiento porcentual entre golosa y exacta: $min_alejamiento_exacto_golosa" >> ../diff_exacto_golosa.txt
 	echo "Maximo alejamiento porcentual entre golosa y exacta: $max_alejamiento_exacto_golosa" >> ../diff_exacto_golosa.txt
 
+	echo "Cantidad de tests realizados: $testsnumber" >> ../diff_exacto_bqlocal.txt
 	echo "Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): $exacta_bqlocal_match_number" >> ../diff_exacto_bqlocal.txt
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
 	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $stddev_diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
 	echo "Minimo alejamiento porcentual entre bqlocal y exacta: $min_alejamiento_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt
 	echo "Maximo alejamiento porcentual entre bqlocal y exacta: $max_alejamiento_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt
 	
+	echo "Cantidad de tests realizados: $testsnumber" >> ../diff_exacto_grasp.txt
 	echo "Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): $exacta_grasp_match_number" >> ../diff_exacto_grasp.txt
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
 	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $stddev_diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
