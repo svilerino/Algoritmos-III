@@ -26,6 +26,14 @@ if ls test-cases/*.in &> /dev/null; then
 	#------------------------------------------------------------------------------------------------------------
 	#seleccionar aca abajo en el for heuristica que heuristicas se quieren comparar entre si
 	diffnumber=0
+	diff_exacto_golosa=0
+	diff_exacto_bqlocal=0
+	diff_exacto_grasp=0
+
+	exacta_golosa_match_number=0
+	exacta_bqlocal_match_number=0
+	exacta_grasp_match_number=0
+
 	rm -rf stddev.tmp.golosa.txt
 	rm -rf stddev.tmp.bqlocal.txt
 	rm -rf stddev.tmp.grasp.txt
@@ -44,7 +52,6 @@ if ls test-cases/*.in &> /dev/null; then
 			nodosrc=$(head -1 "$file" | awk -F' ' '{print $3}')
 			nododst=$(head -1 "$file" | awk -F' ' '{print $4}')
 			echo -n "Corriendo $heuristica con archivo de input $file..."
-			#head -1 instancia_100.582.in  | awk -F' ' '{print $2}'
 
 			"../$heuristica" < "$file" > "../$TESTS_OUTPUT/$heuristica/$file.out" 2> "../$TIMING_OUTPUT/$heuristica/$file.out"
 
@@ -54,12 +61,14 @@ if ls test-cases/*.in &> /dev/null; then
 				echo -e "${red}No existia solucion! Descripcion de la salida:"
 				cat "../$TIMING_OUTPUT/$heuristica/$file.out"
 				echo -e -n "${NC}"
+				hay_solucion="no"
 			else
 				cantNodos=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
 				cantAristas=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
 				cantIters=$(cat "../$TIMING_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')				    
 				pesow1=$(cat "../$TESTS_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $1}')
 				pesow2=$(cat "../$TESTS_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $2}')
+				longuitudCaminoOutput=$(cat "../$TESTS_OUTPUT/$heuristica/$file.out" | awk -F' ' '{print $3}')
 
 				if [ $pesow1 -gt $limitw1 ]
 				then
@@ -68,7 +77,7 @@ if ls test-cases/*.in &> /dev/null; then
 					hay_solucion="no"
 				else
 				    echo "$cantNodos $cantAristas $pesow2 $heuristica " >> ../"comparacion_optimalidad_$heuristica".tmpplot
-			    	echo -e "${green}Ok! Camino obtenido entre ($nodosrc) y ($nododst) con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
+			    	echo -e "${green}Ok! Camino obtenido entre ($nodosrc) y ($nododst) de longuitud $longuitudCaminoOutput con peso w2: ${blue}$pesow2${green} (${red}peso w1: $pesow1 | limit w1: $limitw1${green}) in $cantIters iterations ${NC}"
 			    	#cat "../$TESTS_OUTPUT/$heuristica/$file.out"
 			    	#echo ""			    	
 			    	echo "$pesow2" > tmp."$heuristica".optimalidad.actual.txt
@@ -85,24 +94,43 @@ if ls test-cases/*.in &> /dev/null; then
 			
 			if [ $ultimo_peso_w2_exacta != 0 ]
 			then
-										
-				diff_actual_exacto_golosa=$((100 * ($ultimo_peso_w2_golosa/$ultimo_peso_w2_exacta - 1)))
-				diff_actual_exacto_bqlocal=$((100 * ($ultimo_peso_w2_bqlocal/$ultimo_peso_w2_exacta - 1)))
-				diff_actual_exacto_grasp=$((100 * ($ultimo_peso_w2_grasp/$ultimo_peso_w2_exacta - 1)))
+								
+				diff_actual_exacto_golosa=$(echo "scale=3; 100 * (($ultimo_peso_w2_golosa/$ultimo_peso_w2_exacta) - 1)" | bc -l )				
+				diff_actual_exacto_bqlocal=$(echo "scale=3; 100 * (($ultimo_peso_w2_bqlocal/$ultimo_peso_w2_exacta) - 1)" | bc -l )				
+				diff_actual_exacto_grasp=$(echo "scale=3; 100 * (($ultimo_peso_w2_grasp/$ultimo_peso_w2_exacta) - 1)" | bc -l )				
 
 				echo "$diffnumber $diff_actual_exacto_golosa" >> stddev.tmp.golosa.txt
 				echo "$diffnumber $diff_actual_exacto_bqlocal" >> stddev.tmp.bqlocal.txt
 				echo "$diffnumber $diff_actual_exacto_grasp" >> stddev.tmp.grasp.txt
+				
+				diff_exacto_golosa=$(echo "scale=3; $diff_exacto_golosa + $diff_actual_exacto_golosa" | bc -l )				
+				diff_exacto_bqlocal=$(echo "scale=3; $diff_exacto_bqlocal + $diff_actual_exacto_bqlocal" | bc -l )				
+				diff_exacto_grasp=$(echo "scale=3; $diff_exacto_grasp + $diff_actual_exacto_grasp" | bc -l )			
 
-				diff_exacto_golosa=$(($diff_exacto_golosa + $diff_actual_exacto_golosa ))
-				diff_exacto_bqlocal=$(($diff_exacto_bqlocal + $diff_actual_exacto_bqlocal ))
-				diff_exacto_grasp=$(($diff_exacto_grasp + $diff_actual_exacto_grasp ))
+				if [ "$diff_actual_exacto_golosa" -eq "0" ]
+				then
+					exacta_golosa_match_number=$(($exacta_golosa_match_number + 1))
+				fi
+
+				if [ "$diff_actual_exacto_bqlocal" -eq "0" ]
+				then
+					exacta_bqlocal_match_number=$(($exacta_bqlocal_match_number + 1))
+				fi
+
+				if [ "$diff_actual_exacto_grasp" -eq "0" ]
+				then
+					exacta_grasp_match_number=$(($exacta_grasp_match_number + 1))
+				fi
 				diffnumber=$(($diffnumber+1))
 
 			fi
 		fi
 		echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
 	done
+
+	exacta_golosa_match_number=$(echo "scale=3; 100*$exacta_golosa_match_number/$diffnumber" | bc -l )
+	exacta_bqlocal_match_number=$(echo "scale=3; 100*$exacta_bqlocal_match_number/$diffnumber" | bc -l )
+	exacta_grasp_match_number=$(echo "scale=3; 100*$exacta_grasp_match_number/$diffnumber" | bc -l )
 
 	diff_exacto_golosa=$(echo "scale=3; $diff_exacto_golosa/$diffnumber" | bc -l )
 	diff_exacto_bqlocal=$(echo "scale=3; $diff_exacto_bqlocal/$diffnumber" | bc -l )
@@ -121,16 +149,19 @@ if ls test-cases/*.in &> /dev/null; then
 	min_alejamiento_exacto_grasp=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print min }' stddev.tmp.grasp.txt)
 	max_alejamiento_exacto_grasp=$(awk 'NR == 1 {max=$2 ; min=$2} $2 >= max {max=$2} $2 <= min {min=$2} END { print max }' stddev.tmp.grasp.txt)
 
+	echo "Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): $exacta_golosa_match_number" >> ../diff_exacto_golosa.txt
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
 	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: $stddev_diff_exacto_golosa" >> ../diff_exacto_golosa.txt	
 	echo "Minimo alejamiento porcentual entre golosa y exacta: $min_alejamiento_exacto_golosa" >> ../diff_exacto_golosa.txt
 	echo "Maximo alejamiento porcentual entre golosa y exacta: $max_alejamiento_exacto_golosa" >> ../diff_exacto_golosa.txt
 
+	echo "Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): $exacta_bqlocal_match_number" >> ../diff_exacto_bqlocal.txt
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
 	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: $stddev_diff_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt	
 	echo "Minimo alejamiento porcentual entre bqlocal y exacta: $min_alejamiento_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt
 	echo "Maximo alejamiento porcentual entre bqlocal y exacta: $max_alejamiento_exacto_bqlocal" >> ../diff_exacto_bqlocal.txt
 	
+	echo "Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): $exacta_grasp_match_number" >> ../diff_exacto_grasp.txt
 	echo "Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
 	echo "Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: $stddev_diff_exacto_grasp" >> ../diff_exacto_grasp.txt	
 	echo "Minimo alejamiento porcentual entre grasp y exacta: $min_alejamiento_exacto_grasp" >> ../diff_exacto_grasp.txt
@@ -138,8 +169,11 @@ if ls test-cases/*.in &> /dev/null; then
 	
 	echo -e "${green}"		
 	echo "Resultados:"	
+	echo "----------------------------------------------------------------------------------------------"
 	cat ../diff_exacto_golosa.txt	
+	echo "----------------------------------------------------------------------------------------------"
 	cat ../diff_exacto_bqlocal.txt	
+	echo "----------------------------------------------------------------------------------------------"
 	cat ../diff_exacto_grasp.txt	
 	echo -e "${NC}"
 
