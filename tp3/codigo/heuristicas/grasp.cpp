@@ -44,13 +44,13 @@ void ejecutar_grasp(Grafo &g){
     //typedef enum tipo_ejecucion_bqlocal_t {BQL_SUBDIVIDIR_PARES, BQL_CONTRAER_TRIPLAS_A_PARES, BQL_MEJORAR_CONEXION_TRIPLAS, BQL_COMBINAR} tipo_ejecucion_bqlocal_t;
     tipo_ejecucion_bqlocal_t modo_busqueda_local = BQL_COMBINAR;
     //typedef enum tipo_ejecucion_golosa_t {RCL_DETERMINISTICO, RCL_POR_VALOR, RCL_POR_CANTIDAD} tipo_ejecucion_golosa_t;
-    tipo_ejecucion_golosa_t modo_golosa = RCL_POR_VALOR;
+    tipo_ejecucion_golosa_t modo_golosa = RCL_POR_CANTIDAD;
     //si el tipo de golosa es RCL_POR_VALOR, este parametro indica el porcentaje de alejamiento del minimo de los candidatos de la lista
     //mas formalmente filtra todos los candidatos factibles locales que no cumplan candidato->costo_w2 <= valor_limite
     //donde valor limite es  (parametro_beta + 1) * minimo.second.obtener_costo_w2();
     //si el tipo de golosa es RCL_POR_CANTIDAD, este parametro indica la cantidad min{cant_candidatos, parametro_beta} de soluciones a considerar en la lista
     //si el tipo es RCL_DETERMINISTICO, este parametro es ignorado por el metodo.    
-    double parametro_beta = 0.90;
+    double parametro_beta = g.obtener_cantidad_nodos()/10;
 
     //-------------------------------------------------------
 
