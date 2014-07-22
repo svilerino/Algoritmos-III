@@ -1,1 +1,27 @@
 \section{Experimentacion General}
+En esta secci\'on analizaremos la calidad de las heuristicas mediante la comparaci\'on y analisis estadistico de las soluciones, asi tambien el tiempo insumido en obtener dichas soluciones, para diferentes grupos de instancias de grafos generados al azar.
+
+\subsection{Generador de grafos aleatorios}
+Explicar como funciona el generador.
+
+\subsection{Scripts de optimalidad y performance - Calculo de puntajes y estadisticas}
+Explicar como funcionan los scripts, y como se hacen los calculos y cual es el puntaje.
+El puntaje es el acercamiento a la sol exacta en \% promedio, tambien se puede desempatar viendo, el promedio y stdev de lejania de las sol obtenidas no optimas a la optima
+
+\subsection{Calidad de las heuristicas vs exacta}
+Se corrieron los scripts de optimalidad con diferentes conjuntos de instancias de grafos aleatorios, y se realizaron los gr\'aficos y el analisis estad\'istico correspondiente, a continuacion se presentan los resultados
+\subsubsection{Comparacion Exacta-Golosa-Busqueda Local}
+
+\subsubsection{Metaheuristica GRASP - Variacion de parametros}
+
+\subsection{Experimentacion pura entre heuristicas}
+En esta secci\'on experimentaremos para varios conjuntos aleatorios de grafos de diferentes densidades con las heur\'isticas implementadas,sin tener en cuenta la soluci\'on exacta, para poder realizar experimentos con una mayor cantidad de nodos y aristas en las instancias. Dados los resultados, analizaremos de las 3 heur\'isticas implementadas cual obtiene en promedio y con que desviacion estandar, las soluciones con peso $w_2$ menor, y de esta forma, mas cercanas a la exacta.\\
+
+Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un contador en la que corresponda si su peso $w_2$ es minimo, al final tendremos, para cada heuristica, cuantas veces dio la minima solucion, y la cantidad total de instancias testeadas, con estos datos podremos realizar los analisis estadisticos.
+
+
+
+3 familias de grafos, variando el beta si corresponde
+
+lineal, cuadratico e intermedio, para el intermedio poner 
+los calculos de porque la cuenta n(n-1)/x y n(n-1)/y es densidad intermedia para los valores de n entre k y j

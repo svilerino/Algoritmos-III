@@ -1,0 +1,8 @@
+Cantidad de tests realizados: 53
+Tiempo promedio microsegundos heuristica: 4569.584
+Tiempo promedio microsegundos exacto: 19571.283
+Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 83.018
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 4.990
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 18.1754
+Minimo alejamiento porcentual entre golosa y exacta: 0
+Maximo alejamiento porcentual entre golosa y exacta: 110.300
