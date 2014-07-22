@@ -1,0 +1,39 @@
+cant_nodos_min=10
+cant_nodos_max=280
+peso_maximo_w1=250
+peso_maximo_w2=400
+limit_w1=200
+aristas_minimas=$((n * (n-1)/3))
+aristas_maximas=$((n * (n-1)/2))
+
+for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=10 ))
+for (( a=$aristas_minimas; a<=$aristas_maximas; a+=3500 ))
+
+Resultados:
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 53
+Tiempo promedio microsegundos heuristica: 3733.037
+Tiempo promedio microsegundos exacto: 14564.660
+Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 90.566
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 2.309
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 8.8727
+Minimo alejamiento porcentual entre golosa y exacta: 0
+Maximo alejamiento porcentual entre golosa y exacta: 48.400
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 53
+Tiempo promedio microsegundos heuristica: 3139.924
+Tiempo promedio microsegundos exacto: 14564.660
+Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): 13.207
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 1070.528
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 1899.98
+Minimo alejamiento porcentual entre bqlocal y exacta: 0
+Maximo alejamiento porcentual entre bqlocal y exacta: 10895.400
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 53
+Tiempo promedio microsegundos heuristica: 4172.399
+Tiempo promedio microsegundos exacto: 14564.660
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 90.566
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 2.309
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 8.8727
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 48.400

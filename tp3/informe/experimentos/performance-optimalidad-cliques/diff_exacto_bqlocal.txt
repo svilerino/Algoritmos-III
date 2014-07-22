@@ -1,0 +1,8 @@
+Cantidad de tests realizados: 53
+Tiempo promedio microsegundos heuristica: 3139.924
+Tiempo promedio microsegundos exacto: 14564.660
+Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): 13.207
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 1070.528
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 1899.98
+Minimo alejamiento porcentual entre bqlocal y exacta: 0
+Maximo alejamiento porcentual entre bqlocal y exacta: 10895.400

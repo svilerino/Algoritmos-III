@@ -287,7 +287,7 @@ else:
 				
 			#------------------------------------------------------------------------------------------------											
 			if(graphictype == 7):
-				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*',  graphic_med_x_file3, graphic_med_y_file3, 'y+', label="")	
+				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*',  graphic_med_x_file4, graphic_med_y_file4, 'y+', label="")	
 				plt.ylabel('\nf(x) = peso w2 / Verde: Golosa\nAzul: Local \nRoja: Grasp\nAmarilla:Exacta', fontsize=14)
 			else:
 				plt.plot(graphic_med_x, graphic_med_y, 'gs', graphic_med_x_file2, graphic_med_y_file2, 'b^', graphic_med_x_file3, graphic_med_y_file3, 'r*', label="")	
