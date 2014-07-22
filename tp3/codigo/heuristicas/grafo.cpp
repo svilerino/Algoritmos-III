@@ -1396,10 +1396,17 @@ set<pair<costo_t, nodo_t> >::iterator Grafo::obtener_candidato_randomizado(tipo_
 		uint rcl_target_top = (uint) std::min((uint)cola.size(), (uint) parametro_beta) - 1;
 
 		//generacion numero random c++11 con distribucion uniforme
-		random_device rd;
-		mt19937 gen(rd());
-		uniform_int_distribution<> dis(0, rcl_target_top);
-		uint rcl_target_random = dis(gen); // generates number in the range 0..rcl_target_top
+		//random_device rd;
+		//mt19937 gen(rd());
+		//uniform_int_distribution<> dis(0, rcl_target_top);
+		//uint rcl_target_random = dis(gen); // generates number in the range 0..rcl_target_top
+
+		//lo cambio por esto de C-legacy porque lo de c++11 me aumenta violentamente el tiempo de ejecucion
+		srand(time(NULL));
+		uint rcl_target_random = 0;
+		if(rcl_target_top != 0){
+			rcl_target_random = (unsigned int) rand() % rcl_target_top;			
+		}
 
 		//cout << "cola size: " << cola.size() << endl;
 		//cout << "parametro_beta: " << parametro_beta << endl;
@@ -1438,10 +1445,19 @@ set<pair<costo_t, nodo_t> >::iterator Grafo::obtener_candidato_randomizado(tipo_
 			it_cola++;
 		}
 		
-		random_device rd;
-		mt19937 gen(rd());
-		uniform_int_distribution<> dis(0, candidatos.size() -1);
-		uint rcl_target_random = dis(gen); // generates number in the range 0..candidatos.size() -1
+		//random_device rd;
+		//mt19937 gen(rd());
+		//uniform_int_distribution<> dis(0, candidatos.size() -1);
+		//uint rcl_target_random = dis(gen); // generates number in the range 0..candidatos.size() -1
+
+		//lo cambio por esto de C-legacy porque lo de c++11 me aumenta violentamente el tiempo de ejecucion
+		uint rcl_target_top = candidatos.size() -1;
+		srand(time(NULL));
+		uint rcl_target_random = 0;
+		if(rcl_target_top > 0){
+			rcl_target_random = (unsigned int) rand() % rcl_target_top;			
+		}
+
 		retorno = candidatos[rcl_target_random];
 	}else{
 		cerr << "[Error] Parametro no soportado de randomizacion de RCL. Asumiendo RCL_DETERMINISTICO " << tipo_ejecucion << endl;
