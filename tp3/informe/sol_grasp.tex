@@ -10,14 +10,14 @@ Durante el ciclo del algoritmo goloso, recordemos que la primera instrucci\'on d
 
 \vspace{2mm}
 
-El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos. Esto claramente repercute en la complejidad del ciclo goloso agreg\'andole un recorrido a la cola en lugar de una simple obtenci\'on del m\'inimo.
+El tipo de ejecuci\'on por valor arma una lista de candidatos filtrados por su valor, seg\'un un porcentaje de alejamiento del valor del m\'inimo, indicado por el par\'ametro $\beta$. Es decir, se toma la cola y se filtran los candidatos factibles cuyo valor sobrepase $(\beta + 1)*valor\_del\_minimo$). Luego se elige al azar uno de los candidatos. 
 \vspace{2mm}
 
 El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta$ nodos de valor m\'inimo. Luego se elige uno al azar. Como la cola est\'a ordenada, cumple la condici\'on de RCL por cantidad, con lo que basta tomar un n\'umero aleatorio $i$ entre $0$ y  $min\{cola.size(), parametro\_beta\} -1$ y devolver el $i$-\'esimo elemento de la cola.
 
 \vspace{2mm}
 
-
+Por otro lado, el invariante de Dijkstra nos asegura que tomando el mínimo en cada iteraci\'on, podemos sacarlo de la cola y estar seguros de que no volverá a ser actualizado (por principio de optimalidad de Bellman aplicado a caminos m\'inimos). El hecho tomar uno aleatorio no nos asegura esto, por lo tanto cada nodo puede ser visitado y encolado más de una vez. En particular cada nodo es encolado tantas veces como pueda ser mejorado por todos sus vecinos, y sin tener alguna tabla de nodos visitados, el algoritmo itera hasta no poder mejorar m\'as ning\'un nodo, momento en el que se vaci\'a la cola y de esa forma llega a la soluci\'on golosa determin\'istica. Notamos esto prematuramente en la experimentaci\'on al obtener resultados id\'enticos entre la heur\'stica golosa normal y aleatorizada en absolutamente todos los casos y decidimos solucionarlo marcando cada vez que un nodo ingresa en la cola de prioridad y restringirlo a una sola vez, mediante un $vector<bool>$. De esta forma nos aseguramos de esto, y una vez implementada esta mejora, comenzamos a obtener soluciones distintas entre ambos algoritmos, y pudimos ver distintos resultados al variar el par\'ametro $\betha$ (mientras m\'as pequeño, m\'as cercano al resultado determin\'stico), que mostraremos en la secci\'on de experimentaci\'on.
 \begin{algorithmic}
 
 \While{ $ !cola=\emptyset$ }
@@ -26,6 +26,7 @@ El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta
     \ElsIf{$tipo\_ejecucion == por\_cantidad$}
 		\State $int \: random = random(0, min\{cola.size(), parametro\_beta\} -1)$
 		\State $ \: minimo = cola[random]$
+		\Comment $O(random)$, no es iterador de acceso aleatorio
 	\ElsIf{$tipo_ejecucion == por\_valor$}
 		\State $lista \: nodo \: candidatos = \emptyset$
 		\State $int \: i = 0$
@@ -36,6 +37,7 @@ El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta
 		\EndWhile
 		\State $int \: random = random(0, min\{cola.size(), parametro\_beta\} -1)$
 		\State $ \: minimo = candidatos[random]$
+		\State $visitados[minimo] = true$
 		\EndIf
 		
 \EndWhile
