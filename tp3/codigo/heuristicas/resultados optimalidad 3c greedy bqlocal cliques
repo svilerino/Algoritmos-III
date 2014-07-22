@@ -1,0 +1,34 @@
+cant_nodos_min=10
+cant_nodos_max=300
+peso_maximo_w1=250
+peso_maximo_w2=400
+limit_w1=200
+	aristas_minimas=$((n * (n-1)/3))
+	aristas_maximas=$((n * (n-1)/2))
+
+for (( n=$cant_nodos_min; n<=$cant_nodos_max; n+=10 ))
+for (( a=$aristas_minimas; a<=$aristas_maximas; a+=5000 ))
+
+
+Resultados:
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 48
+Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 79.166
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 14.622
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 63.0996
+Minimo alejamiento porcentual entre golosa y exacta: 0
+Maximo alejamiento porcentual entre golosa y exacta: 433.300
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 48
+Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): 12.500
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 944.600
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 1578.35
+Minimo alejamiento porcentual entre bqlocal y exacta: 0
+Maximo alejamiento porcentual entre bqlocal y exacta: 9411.100
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 48
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 79.166
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 14.622
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 63.0996
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 433.300
