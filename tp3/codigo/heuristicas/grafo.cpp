@@ -1468,6 +1468,11 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 	//camino a devolver
 	Camino c(this->mat_adyacencia);
 
+	vector<bool> visitados;
+
+	for(int x = 0; x<n;x++)
+		visitados.push_back(false);
+
 	//dijkstra de inicializacion
 	vector<costo_t> costosw1;
 	vector<nodo_t> predecesores;
@@ -1498,6 +1503,8 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 
 		costosw2[origen] = costo_nulo;
 
+		visitados[origen] = true;
+
 		set<pair<costo_t, nodo_t> > cola;
 		cola.insert(make_pair(costosw2[origen], origen));
 
@@ -1506,6 +1513,7 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 			set<pair<costo_t, nodo_t> >::iterator it_candidato = obtener_candidato_randomizado(tipo_ejecucion, cola, parametro_beta);
 
 			pair<costo_t, nodo_t> actual = *it_candidato;
+			visitados[actual.second] = true;
 			cola.erase(it_candidato);
 
 			lista_adyacentes vecinos = this->obtener_lista_vecinos(actual.second);
@@ -1515,7 +1523,7 @@ Camino Grafo::obtener_solucion_golosa_randomizada(tipo_ejecucion_golosa_t tipo_e
 				nodo_t nodoW = w.first;
 				Arista aristaActualW = w.second;
 
-				if (costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k){
+				if ((costoCamino[actual.second] + costosw1[nodoW] + aristaActualW.obtener_costo_w1() <= k) && !(visitados[nodoW])){
 					costo_t costo_tentativo = costosw2[actual.second] + aristaActualW.obtener_costo_w2();
 					if (costosw2[nodoW] > costo_tentativo)
 					{
