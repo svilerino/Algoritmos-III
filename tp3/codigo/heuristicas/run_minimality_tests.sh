@@ -64,42 +64,27 @@ if ls test-cases/*.in &> /dev/null; then
 			bqlocal_w2=$(head -1 tmp.solactual.bqlocal.optimalidad.txt | awk -F' ' '{print $1}')
 			grasp_w2=$(head -1 tmp.solactual.grasp.optimalidad.txt | awk -F' ' '{print $1}')
 
-			#me quedo con el minimo e incremento para esta instancia cual tuvo el minimo
-			if [ $golosa_w2 -lt $bqlocal_w2 ]
-			then 
-				#vale: golosa_w2 < bqlocal_w2
-				if [ $golosa_w2 -lt $grasp_w2 ]
-				then
-					#vale: golosa_w2 < grasp_w2
-					#implica min(golosa_w2, bqlocal_w2, grasp_w2) = golosa_w2 pues  golosa_w2 < bqlocal_w2 && golosa_w2 < grasp_w2					
-					min_match_golosa=$((min_match_golosa+1))
-				else
-					#vale: grasp_w2 <= golosa_w2
-					#implica min(golosa_w2, bqlocal_w2, grasp_w2) = grasp_w2 pues grasp_w2 <= golosa_w2 && golosa_w2 < bqlocal_w2
-					# => grasp_w2 <= golosa_w2 < grasp_w2
-					min_match_grasp=$((min_match_grasp+1))
-				fi
-			else
-				#vale: bqlocal_w2 <= golosa_w2
-				if [ $golosa_w2 -lt $grasp_w2 ]
-				then
-					#vale golosa_w2 < grasp_w2
-					#implica bqlocal_w2 <= golosa_w2 < grasp_w2
-					#implica min(golosa_w2, bqlocal_w2, grasp_w2) = bqlocal_w2
-					min_match_bqlocal=$((min_match_bqlocal+1))
-				else
-					#vale grasp_w2 <= golosa_w2
-					#vale: bqlocal_w2 <= golosa_w2
-					#desempato
-					if [ $grasp_w2 -lt $bqlocal_w2 ]
-					then
-						min_match_grasp=$((min_match_grasp+1))
-					else
-						min_match_bqlocal=$((min_match_bqlocal+1))
-					fi
-				fi
+			minimo=$(../min $golosa_w2 $bqlocal_w2 $grasp_w2)
+			echo "$minimo"
+
+			if [ $minimo -eq $golosa_w2 ]
+			then
+				#incremento golosa
+				min_match_golosa=$((min_match_golosa+1))
 			fi
-			
+
+			if [ $minimo -eq $bqlocal_w2 ]
+			then
+				#incremento bqlocal
+				min_match_bqlocal=$((min_match_bqlocal+1))
+			fi
+
+			if [ $minimo -eq $grasp_w2 ]
+			then
+				#incremento grasp
+				min_match_grasp=$((min_match_grasp+1))
+			fi
+
 			testsnumber=$(($testsnumber+1))
 		fi
 		echo "------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
@@ -108,16 +93,24 @@ if ls test-cases/*.in &> /dev/null; then
 	rm -rf tmp.solactual.golosa.optimalidad.txt
 	rm -rf tmp.solactual.bqlocal.optimalidad.txt
 	popd
-	min_match_golosa=$(echo "scale=3; $min_match_golos/$testsnumber" | bc -l )
-	min_match_bqlocal=$(echo "scale=3; $min_match_bqloca/$testsnumber" | bc -l )
+	
+	min_match_golosa=$(echo "scale=3; $min_match_golosa/$testsnumber" | bc -l )
+	min_match_bqlocal=$(echo "scale=3; $min_match_bqlocal/$testsnumber" | bc -l )
 	min_match_grasp=$(echo "scale=3; $min_match_grasp/$testsnumber" | bc -l )
 
 	echo "Resultados" > resumen_minimalidad.txt
-	echo "Cantidad de instancias ejecutadas: $testsnumber" > resumen_minimalidad.txt
-	echo "Cantidad de instancias donde da el minimo w2:" > resumen_minimalidad.txt
-	echo "Golosa: $min_match_golosa" > resumen_minimalidad.txt
-	echo "Busqueda local: $min_match_bqlocal" > resumen_minimalidad.txt
-	echo "Grasp: $min_match_grasp" > resumen_minimalidad.txt
+	echo "Cantidad de instancias ejecutadas: $testsnumber" >> resumen_minimalidad.txt
+	echo "Cantidad de instancias donde da el minimo w2:" >> resumen_minimalidad.txt
+	echo "        Golosa: $min_match_golosa" >> resumen_minimalidad.txt
+	echo "        Busqueda local: $min_match_bqlocal" >> resumen_minimalidad.txt
+	echo "        Grasp: $min_match_grasp" >> resumen_minimalidad.txt
+
+	echo -e "${green}"		
+	echo "Resultados:"	
+	echo "----------------------------------------------------------------------------------------------"
+	cat resumen_minimalidad.txt	
+	echo "----------------------------------------------------------------------------------------------"
+	echo -e "${NC}"
 	#------------------------------------------------------------------------------------------------------------	
 else
     echo "[WARN] NO existen archivos de testing"

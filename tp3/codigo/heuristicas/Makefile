@@ -8,7 +8,7 @@ RM=rm
 
 all: codigo
 
-codigo: bqlocal golosa grasp exacta
+codigo: bqlocal golosa grasp exacta minprogram
 
 exacta:
 	$(MAKE) -C ../sol_exacta && cp ../sol_exacta/exacta ./exacta
@@ -28,6 +28,9 @@ generador:
 tests: generador codigo
 	./create_tests.sh
 
+minprogram: 
+	g++ -O2 min.cpp -o min
+
 graphics: tests
 	#./run_performance_tests.sh bqlocal
 	#./run_performance_tests.sh golosa
@@ -45,6 +48,8 @@ clean:
 	- $(RM) -rf exacta
 	- $(RM) -rf *.tmpplot
 	- $(RM) -rf *.png
+	- $(RM) -rf min
+	- $(RM) -rf resumen_minimalidad.txt
 	- $(RM) -rf resumen_grasp.txt
 	- $(RM) -rf instancias_grasp_mejoran.txt	
 	- $(RM) -rf resumen_busqueda_local.txt
