@@ -8,7 +8,7 @@ RM=rm
 
 all: codigo
 
-codigo: bqlocal golosa grasp exacta minprogram
+codigo: bqlocal golosa grasp exacta minprogram generador_fisher_gates
 
 exacta:
 	$(MAKE) -C ../sol_exacta && cp ../sol_exacta/exacta ./exacta
@@ -24,6 +24,9 @@ golosa: golosa.o grafo.o
 
 generador:
 	$(MAKE) -C ../generar_grafos	
+
+generador_fisher_gates:
+	g++ -Wall -O2 -ggdb -std=c++0x -pedantic -Werror -Wno-unused-variable generador_fisher_gates.cpp -o generador_fisher_gates
 
 tests: generador codigo
 	./create_tests.sh
@@ -51,6 +54,7 @@ clean:
 	- $(RM) -rf min
 	- $(RM) -rf resumen_minimalidad.txt
 	- $(RM) -rf resumen_grasp.txt
+	- $(RM) -rf generador_fisher_gates
 	- $(RM) -rf instancias_grasp_mejoran.txt	
 	- $(RM) -rf resumen_busqueda_local.txt
 	- $(RM) -rf test-cases/evolucion_iteraciones.txt
