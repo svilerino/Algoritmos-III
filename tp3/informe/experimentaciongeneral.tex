@@ -44,7 +44,14 @@ Podemos considerar una especie de puntuacion asignada a cada heuristica viendo e
 El script de optimalidad tambien realiza un grafico, en el cual puede verse en el eje X la cantidad de nodos de la instancia y en el eje Y, \texttt{un promedio de los pesos $w_2$ de soluciones para la variacion de aristas para esa cantidad de nodos} de cada algoritmo corrido, distintas referencias y colores indican para cada cantidad de nodos, el valor $w_2$ de las soluciones obtenidas, en este grafico podemos apreciar la distribucion de las soluciones sobre el eje Y a medida que var\'ia la cantidad de nodos.\\
 \textbf{Referencias del gr\'afico: } Los triangulos azules representan las soluciones de busqueda local, los signos + amarillos, representan las soluciones del algoritmo exacto, los cuadrados verdes simbolizan las soluciones del algoritmo goloso, y los asteriscos rojos representan las soluciones de GRASP.
 
-\subsection{Calidad de las heuristicas vs exacta}
+\subsubsection{Metaheuristica GRASP - Variacion de parametros}
+
+3 familias de grafos, variando el beta si corresponde
+
+lineal, cuadratico e intermedio, para el intermedio poner 
+los calculos de porque la cuenta n(n-1)/x y n(n-1)/y es densidad intermedia para los valores de n entre k y j
+
+\subsection{Calidad de las heuristicas respecto a la soluci\'on exacta}
 Se corrieron los scripts de optimalidad con diferentes conjuntos de instancias de grafos aleatorios, y se realizaron los gr\'aficos y el analisis estad\'istico correspondiente, a continuacion se presentan los resultados.
 \subsubsection{Comparacion Exacta-Golosa-Busqueda Local}
 Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos con los scripts mencionados anteriormente, a continuacion presentamos los resultados estadisticos, asi tambien como los gr\'aficos.
@@ -186,26 +193,57 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 \end{center}
 
 
-Conclusion: ??
+\textbf{Conclusion: } Ahora analizaremos como se comportan los algoritmos heuristicos(goloso y busqueda local) respecto a los distintos conjuntos de tests y sus resultados.\\
 
+\vspace{0.75cm}
+\textbf{Algoritmo Goloso para grafos de baja densidad:}\\
+Vemos que el algoritmo goloso tiene optimalidad cercana al 100\%, aqui dio 98.6\% y en la secci\'on propia del algoritmo goloso dio 100\% cuando se trata de grafos con densidad lineal de aristas, en caso de no dar el optimo, tiene un 0.261\% con una desviacion estandar del 2\% de lejan\'ia respecto a la soluci\'on \'optima. Como contraparte, el tiempo de ejecuci\'on es sutilmente superior al del algoritmo exacto(con 4 podas), seguramente(como se puede apreciar en la secci\'on de rendimiento del algoritmo exacto) para grafos con mayor cantidad de nodos, el tiempo de ejecuci\'on del algoritmo exacto se dispare. Consideramos que el algoritmo goloso es una muy buena opcion si se trata de aproximar soluciones optimas para grafos con densidad lineal con una cantidad de nodos considerablemente alta que produzca que el algoritmo exacto no sea viable.\\
 
+\vspace{0.5cm}
 
+\textbf{Algoritmo Goloso para grafos de densidad intermedia:}\\
+Para instancias de grafos con densidades intermedias de aristas, podemos ver como baja levemente el nivel de optimalidad a 86\% de aciertos respecto a la soluci\'on exacta. Tambien se incrementaron a  2.59\% la lejan\'ia promedio y a 9.7\% la desviacion estandar de la lejan\'ia. Sin embargo, sigue siendo una muy buena heur\'istica, porque en este caso si, puede apreciarse que el algoritmo exacto tarda un 250\% mas de tiempo en promedio para llegar a la soluci\'on. Teniendo en cuenta que la cantidad de nodos de los grafos generados va disminuyendo a medidad que aumentamos la densidad(por cuestiones pr\'acticas de realizar los tests en el hardware disponible), observamos que para densidades mas altas de aristas en los grafos testeados empieza a ser una muy buena alternativa la soluci\'on golosa, siempre y cuando el contexto de aplicaci\'on acepte los estimadores de lejan\'ia al optimo.
 
+\vspace{0.5cm}
 
+\textbf{Algoritmo Goloso para grafos de alta densidad:}\\
+Finalmente, para el caso mas complicado para el algoritmo exacto(recordemos que en la complejidad, el grado de los nodos es la cantidad de llamadas recursivas que realiza y si la densidad es alta el grado promedio va a ser alto dada la distribucion uniforme de las aristas sobre el grafo), la soluci\'on golosa disminuye muy levemente la efectividad con respecto al caso anterior, tiene un 83\% de aciertos a la soluci\'on \'optima, asimismo aumentan los estimadores de lejan\'ia, en promedio a un 4.99\% con una desviaci\'on de 18.17\%. Respecto al tiempo de ejecuci\'on, el algoritmo exacto tarda en promedio 4.28 veces mas de tiempo para obtener la soluci\'on exacta. Para ser el caso mas dificil de los casos de prueba que consideramos, pensamos que los resultados son muy buenos para las aplicaciones pr\'acticas.
 
+\vspace{0.5cm}
 
+\textbf{Algoritmo de Busqueda local para grafos de baja densidad:}\\
+Respecto a la heuristica de busqueda local, observamos un 30\% de efectividad, con una lejan\'ia promedio de 87.62\% y una desv. estandar en la lejan\'ia al optimo de 118.5\%, consideramos que 30\% es un numero muy bajo y junto a los indicadores de lejan\'ia, si nos interesa realmente una solucion cercana a la \'optima no elegiriamos esta heur\'istica(al menos no con dijkstra sobre $w_1$ como soluci\'on inicial. Ver Experimentacion de la solucion inicial en la secci\'on busqueda local). Como contraparte, toma aproximadamente la mitad de tiempo que el algoritmo exacto(recordemos que la medicion es por iteracion y para grafos lineales hay 1 iteracion promedio.), no consideramos que sea un buen tradeoff, la mitad del tiempo de ejecuci\'on para esta calidad de soluciones.\\
 
+\vspace{0.5cm}
 
-\subsubsection{Metaheuristica GRASP - Variacion de parametros}
+\textbf{Algoritmo de Busqueda local para grafos de densidad intermedia:}\\
+A medida que vamos aumentando la densidad de los grafos, la b\'usqueda local deber\'ia poder mejorar mas la soluci\'on, de hecho cuando analizamos la variaci\'on de la soluci\'on a medida que avanzan las iteraciones, el mejor caso era donde la densidad era m\'axima, lo que atribuiamos a una vecindad de mayor cardinal, pero cuando comparamos optimalidad promedio de la heur\'istica, nos da un numero baj\'isimo, 10\% de aciertos a la soluci\'on optima, con un promedio y dispersi\'on de lejan\'ia enormes. Atribuimos este bajo rendimiento a la soluci\'on inicial provista realizando dijkstra sobre $w_1$, mas adelante cuando analicemos GRASP, para ciertos valores del par\'ametro beta(bajos, para que se acerque la soluci\'on randomizada a la heur\'istica golosa pura), los experimentos representar\'an una b\'usqueda local alimentada inicialmente por un algoritmo de mayor optimalidad. Dado que la cantidad promedio de iteraciones para densidades intermedias nos dio cercano a 4 iteraciones, el tiempo de ejecuci\'on(por iteracion) multiplicado por 4, nos da como resultado que el algoritmo de b\'usqueda local tarda un tercio del tiempo que el algoritmo exacto, nuevamente, no consideramos que sea un tradeoff aceptable dada la calidad de las soluciones.
+
+\vspace{0.5cm}
+
+\textbf{Algoritmo de Busqueda local para grafos de alta densidad:}\\
+Este caso es casi id\'entico al anterior con respecto a la optimalidad de las soluciones, tal vez un poco peor, pero despreciable, lo \'unico que vari\'o considerablemente fue el tiempo de ejecucion del algoritmo exacto a 19571 microsegundos y la cantidad de iteraciones promedio de la b\'usqueda local a 5 iteraciones promedio con un tiempo por iteracion de 550 microsegundos. Veamos entonces que el algoritmo de b\'usqueda local se ejecuta aproximadamente 7 veces mas rapido que el algoritmo exacto. Las conclusiones son las mismas que en el caso de densidad intermedia, no consideramos que sea un buen tradeoff dado el \texttt{baj\'isimo} numero de aciertos a la soluci\'on optima y la enorme lejan\'ia al optimo.
+
+\vspace{0.5cm}
+
+Como conclusi\'on de b\'usqueda local consideramos que depende mucho de la soluci\'on inicial la calidad final de las soluciones obtenidas(nuevamente, ver seccion de variacion de soluciones iniciales en seccion busqueda local). Utilizar\'iamos un esquema de b\'usqueda local para refinar soluciones relativamente buenas obtenidas con algun otro m\'etodo inicial.
+
+\vspace{0.5cm}
+
+\subsubsection{Gr\'aficos de distribucion de las soluciones}
+\vspace{0.5cm}
+\textbf{Distribuci\'on de soluciones para grafos de alta densidad:}\\
+Podemos observar que las soluci\'ones de b\'usqueda local siempre estan lejos del \'optimo indicado por un + amarillo en el eje Y. Con respecto a GRASP, algoritmo goloso y algoritmo exacto se encuentran casi superpuestos, salvo casos particulares.
+
+\vspace{0.5cm}
+\textbf{Distribuci\'on de soluciones para grafos de densidad intermedia:}\\
+Se observa que los valores de las soluciones provistos por busqueda local estan sutilmente mas cerca de los demas algoritmos, igual siguen estando relativamente lejos, respecto a las otras heuristicas(Golosa y GRASP) comienzan a verse su "despegue" de la soluci\'on \'optima, mas que nada en la metaheuristica GRASP.
+
+\vspace{0.5cm}
+\textbf{Distribuci\'on de soluciones para grafos de baja densidad:}\\
+Finalmente aqui observamos que la soluci\'on de busqueda local sigue "lejos" del \'optimo. Asimismo, GRASP tampoco provee la soluci\'on \'optima ni una \texttt{muy cercana}, como si lo hace la heur\'istica golosa con su casi perfecto indice de aciertos respecto al algoritmo exacto.
 
 \subsection{Experimentacion pura entre heuristicas}
 En esta secci\'on experimentaremos para varios conjuntos aleatorios de grafos de diferentes densidades con las heur\'isticas implementadas,sin tener en cuenta la soluci\'on exacta, para poder realizar experimentos con una mayor cantidad de nodos y aristas en las instancias. Dados los resultados, analizaremos de las 3 heur\'isticas implementadas cual obtiene en promedio y con que desviacion estandar, las soluciones con peso $w_2$ menor, y de esta forma, mas cercanas a la exacta.\\
 
 Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un contador en la que corresponda si su peso $w_2$ es minimo, al final tendremos, para cada heuristica, cuantas veces dio la minima solucion, y la cantidad total de instancias testeadas, con estos datos podremos realizar los analisis estadisticos.
-
-
-
-3 familias de grafos, variando el beta si corresponde
-
-lineal, cuadratico e intermedio, para el intermedio poner 
-los calculos de porque la cuenta n(n-1)/x y n(n-1)/y es densidad intermedia para los valores de n entre k y j
