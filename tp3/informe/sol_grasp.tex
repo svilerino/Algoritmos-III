@@ -1,6 +1,6 @@
 \section{Metaheuristica GRASP: Solucion propuesta}
 
-Dado que la heur\'istica GRASP es una combinaci\'on entre una heur\'istica golosa aleatorizada y una b\'usqueda local, decidimos utilizar nuestras heur\'isticas previamente mencionadas, con algunas modificaciones.
+Dado que la metaheur\'istica GRASP es una combinaci\'on entre una heur\'istica golosa aleatorizada y una b\'usqueda local, decidimos utilizar nuestras heur\'isticas previamente mencionadas, con algunas modificaciones.
 
 \subsection{Modificaci\'on a la heur\'istica golosa}
 
@@ -189,11 +189,11 @@ Nota: la entrada $criterios$ se refiere a las variables:
 
 \subsection{An\'alisis de complejidad}
 
-A continuaci\'on realizaremos el an\'alisis de complejidad te\'orica de una iteraci\'on de la heur\'istica GRASP.
+A continuaci\'on realizaremos el an\'alisis de complejidad te\'orica de una iteraci\'on de la metaheur\'istica GRASP.
 \vspace{2mm}
 
 
- Dentro del ciclo principal, la primera instrucci\'on es generar una soluci\'on golosa aleatorizada inicial. La complejidad de la heur\'istica golosa determin\'istica es de $O(n^2 + m log n)$. La heur\'istica golosa aleatorizada difiere de la determin\'istica en la elecci\'on del nodo a desencolar, en caso de ser RCL por cantidad, extraer un elemento random de la cola cuesta $(avanzar\: el\: iterador\: de\: la \:cola \:\beta\:veces)+O(1) eliminar$, en caso de ser por valor, se filtra toda la cola, por lo que cuesta $O(n)$. El hecho de marcar los nodos y encolarlos una sola vez nos indica que el ciclo $while$ externo itera $n$ veces.
+ Dentro del ciclo principal, la primera instrucci\'on es generar una soluci\'on golosa aleatorizada inicial. La complejidad de la heur\'istica golosa determin\'istica es de $O(n^2 + m log n)$. La heur\'istica golosa aleatorizada difiere de la determin\'istica en la elecci\'on del nodo a desencolar, en caso de ser RCL por cantidad, extraer un elemento random de la cola cuesta $(avanzar\: el\: iterador\: de\: la \:cola \:min\{\beta, n\}\:veces)+O(1) eliminar$, en caso de ser por valor, se filtra toda la cola, por lo que cuesta $O(n)$. El hecho de marcar los nodos y encolarlos una sola vez nos indica que el ciclo $while$ externo itera $n$ veces.
 
 \vspace{2mm}
    
@@ -201,11 +201,89 @@ A continuaci\'on realizaremos el an\'alisis de complejidad te\'orica de una iter
 
 \vspace{2mm}
 
-Por lo tanto en caso de ser RCL por valor la complejidad es de: $O(n^2 + m * logn + \beta * n )$ y en caso de ser por valor es de $O(n^2 + m log n)$. El par\'ametro $\beta$ puede ser acotado por $n$, con lo cual la complejidad de la heur\'istica aleatorizada no difere de la determin\'istica.
+Por lo tanto en caso de ser RCL por valor la complejidad es de: $O(n^2 + m * logn + \beta * n )$ y en caso de ser por valor es de $O(n^2 + m log n)$. El par\'ametro $\beta$ puede ser acotado por $n$, dado que nunca va a poder armarse una RCL con m\'as de $n$ candidatos, ya que cada nodo est\'a en la cola a lo sumo una vez, con lo cual la complejidad de la heur\'istica aleatorizada no difere de la determin\'istica.
 
 
 \vspace{2mm}
 
 Acto seguido se valida si esta soluci\'on es factible, en tiempo constante, se declaran enteros y se procede a ejecutar la b\'usqueda local, cuya complejidad es de $O(k*n^2)$, siendo $k$ la cantidad de iteraciones hasta cumplida la condici\'on de terminaci\'on. Lo que resta son simplemente condicionales y asignaciones de tiempo constante, lo que nos da un resultado de $O(n^2 + m log n + k*(n^2)$.
 
+\subsection{Experimentacion: Mediciones de Performance}
 
+A continuacion presentamos los resultados de los experimentos, an\'alogos a los de los algoritmos anteriores, con la salvedad de que para las mismas instancias de grafos, analizaramos primero con RCL por cantidad, con $\beta=n$(peor caso), y luego con RCL por valor, con $\beta=$
+
+\subsubsection{Rendimiento para grafos con densidad cuadratica de aristas}
+\begin{itemize}
+	\item cant nodos min = $200$
+	\item cant nodos max = $350$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item step nodos = $25$
+	\item step aristas = $2500$
+	\item aristas minimas = $\frac{n*(n-1)}{8}$
+	\item aristas maximas = $\frac{n*(n-1)}{3}$
+\end{itemize}								
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_variation}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_square}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_cube}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_fourth}.png}
+\end{center}
+
+
+\subsubsection{Rendimiento para grafos con densidad lineal de aristas}
+\begin{itemize}
+	\item cant nodos min = $200$
+	\item cant nodos max = $2000$
+	\item peso maximo w1 = $200$
+	\item peso maximo w2 = $200$
+	\item step nodos = $200$
+	\item step aristas = $2500$
+	\item aristas minimas = $n-1$
+	\item aristas maximas = $10*n$
+\end{itemize}								
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_variation}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_square}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_cube}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_fourth}.png}
+\end{center}
