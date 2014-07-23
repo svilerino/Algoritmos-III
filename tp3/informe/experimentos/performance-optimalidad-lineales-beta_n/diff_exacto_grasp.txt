@@ -1,0 +1,8 @@
+Cantidad de tests realizados: 6
+Tiempo promedio microsegundos heuristica: 24931.405
+Tiempo promedio microsegundos exacto: 13965.000
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 83.333
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 7.850
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 17.5531
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 47.100

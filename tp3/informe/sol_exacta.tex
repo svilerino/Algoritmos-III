@@ -210,3 +210,60 @@ T(n) = (n - 1)! + (n + 1)\frac{n!}{(n-1)!} + (n)\frac{n!}{(n-2)!} + \cdots + 3\f
 \end{equation*}
 Quedandonos entonces que la funci\'on de recurrencia que se plante\'o pertenece a la clase de complejidad $O(n!)$
 
+\subsection{Experimentacion: Mediciones de Performance}
+En esta secci\'on se mostrar\'an resultados de complejidad temporal emp\'irica, veremos que los resultados coinciden razonablemente con el an\'alisis de complejidad te\'orica..
+Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas sobre grafos aleatorios de distintos tama\~nos(en cantidad de nodos), y por cada cantidad $n$ de nodos, variamos las densidades de aristas dentro de cierto rango alrededor de una funcion de $n$, las densidades elegidas fueron:
+\begin{itemize}
+	\item m = $a*n + b$. Es decir una cantidad lineal de aristas en base a los nodos. $a \in \mathbb{N}_{>1}$
+	\item m = $\frac{n*(n-1)}{2}$. Es decir grafos cercanos o iguales a cliques de n nodos.
+\end{itemize}
+
+
+\textbf{Nota: } Como mencionamos anteriormente, las funciones son variadas en un rango, es decir, por ejemplo, para el caso de cliques, los grafos generados tienen entre $\frac{n*(n-1)}{5}$ y $\frac{n*(n-1)}{2}$ aristas para aleatorizar mas la generacion de grafos densos.\\
+
+\textbf{Nota: } Los graficos que contienen puntos rojos y una curva verde, indican, para cada valor del eje X(cantidad de nodos), los puntos rojos son los tiempos de ejecucion para los diferentes valores de aristas en el rango de la familia, asimismo, la curva verde indica el promedio de estos puntos para cada X. \\
+
+
+\subsubsection{Rendimiento para grafos con densidad lineal de aristas}
+
+
+\subsubsection{Rendimiento para grafos con densidad cuadratica de aristas}
+
+\begin{itemize}
+	\item cant nodos min = $10$
+	\item cant nodos max = $600$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item step nodos = $50$
+	\item step aristas = $7000$
+	\item aristas minimas = $(n*(n-1))/10$
+	\item aristas maximas = $(n*(n-1))/2$
+\end{itemize}
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_cliques/{exacta.tmpplot_complexity_variation}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_cliques/{exacta.tmpplot_complexity_med_over_n}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_cliques/{exacta.tmpplot_complexity_med_over_n_square}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_cliques/{exacta.tmpplot_complexity_med_over_n_cube}.png}
+\end{center}
+
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_cliques/{exacta.tmpplot_complexity_med_over_n_fourth}.png}
+\end{center}
+

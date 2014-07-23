@@ -17,7 +17,10 @@ El tipo de ejecuci\'on por cantidad se basa en tomar la cola, y tomar los $\beta
 
 \vspace{2mm}
 
-Por otro lado, el invariante de Dijkstra nos asegura que tomando el mínimo en cada iteraci\'on, podemos sacarlo de la cola y estar seguros de que no volverá a ser actualizado (por principio de optimalidad de Bellman aplicado a caminos m\'inimos). El hecho tomar uno aleatorio no nos asegura esto, por lo tanto cada nodo puede ser visitado y encolado más de una vez. En particular cada nodo es encolado tantas veces como pueda ser mejorado por todos sus vecinos, y sin tener alguna tabla de nodos visitados, el algoritmo itera hasta no poder mejorar m\'as ning\'un nodo, momento en el que se vaci\'a la cola y de esa forma llega a la soluci\'on golosa determin\'istica. Notamos esto prematuramente en la experimentaci\'on al obtener resultados id\'enticos entre la heur\'stica golosa normal y aleatorizada en absolutamente todos los casos y decidimos solucionarlo marcando cada vez que un nodo ingresa en la cola de prioridad y restringirlo a una sola vez, mediante un $vector<bool>$. De esta forma nos aseguramos de esto, y una vez implementada esta mejora, comenzamos a obtener soluciones distintas entre ambos algoritmos, y pudimos ver distintos resultados al variar el par\'ametro $\betha$ (mientras m\'as pequeño, m\'as cercano al resultado determin\'stico), que mostraremos en la secci\'on de experimentaci\'on.
+Por otro lado, el invariante de Dijkstra nos asegura que tomando el mínimo en cada iteraci\'on, podemos sacarlo de la cola y estar seguros de que no volver\'a a ser actualizado (por principio de optimalidad de Bellman aplicado a caminos m\'inimos). El hecho tomar uno aleatorio no nos asegura esto, por lo tanto cada nodo puede ser visitado y encolado m\'as de una vez. En particular cada nodo es encolado tantas veces como pueda ser mejorado por todos sus vecinos, y sin tener alguna tabla de nodos visitados, el algoritmo itera hasta no poder mejorar m\'as ning\'un nodo, momento en el que se vaci\'a la cola y de esa forma llega a la soluci\'on golosa determin\'istica. Notamos esto prematuramente en la experimentaci\'on al obtener resultados id\'enticos entre la heur\'stica golosa normal y aleatorizada en absolutamente todos los casos y decidimos solucionarlo marcando cada vez que un nodo ingresa en la cola de prioridad y restringirlo a una sola vez, mediante un $vector<bool>$. De esta forma nos aseguramos de esto, y una vez implementada esta mejora, comenzamos a obtener soluciones distintas entre ambos algoritmos, y pudimos ver distintos resultados al variar el par\'ametro $\beta$ (mientras m\'as pequeno, m\'as se acerca al resultado determin\'istico).
+
+\vspace{2mm}
+
 \begin{algorithmic}
 
 \While{ $ !cola=\emptyset$ }
@@ -57,7 +60,7 @@ Hay dos criterios implementados:
 
 \begin{enumerate}
 \item Cantidad de iteraciones l\'imite (fijo o variable)
-\item Cantidad de iteraciones sin mejora
+\item Cantidad de iteraciones sin mejora consecutivas
 \end{enumerate}
 
 Cantidad de iteraciones l\'imite, como su nombre lo indica itera hasta un l\'imite dado, ya sea una constante, o una variable del problema, por ejemplo la cantidad de nodos del grafo. Cantidad iteraciones sin mejora corta la iteraci\'on cuando se haya alcanzado una cantidad de iteraciones m\'inimas sin que haya habido alguna mejora en el camino.
@@ -185,4 +188,24 @@ Nota: la entrada $criterios$ se refiere a las variables:
 
 
 \subsection{An\'alisis de complejidad}
+
+A continuaci\'on realizaremos el an\'alisis de complejidad te\'orica de una iteraci\'on de la heur\'istica GRASP.
+\vspace{2mm}
+
+
+ Dentro del ciclo principal, la primera instrucci\'on es generar una soluci\'on golosa aleatorizada inicial. La complejidad de la heur\'istica golosa determin\'istica es de $O(n^2 + m log n)$. La heur\'istica golosa aleatorizada difiere de la determin\'istica en la elecci\'on del nodo a desencolar, en caso de ser RCL por cantidad, extraer un elemento random de la cola cuesta $(avanzar\: el\: iterador\: de\: la \:cola \:\beta\:veces)+O(1) eliminar$, en caso de ser por valor, se filtra toda la cola, por lo que cuesta $O(n)$. El hecho de marcar los nodos y encolarlos una sola vez nos indica que el ciclo $while$ externo itera $n$ veces.
+
+\vspace{2mm}
+   
+   El ciclo $for$ interno no recibi\'o modificaciones excepto por un condicional que se ejecuta en tiempo constante. El peor de los casos se da cuando la cota $K$ es de mayor peso a cualquier camino simple del grafo y este condicional es siempre verdadero, por lo que el ciclo se vuelve an\'alogo al de Dijkstra y ejecuta en $O(mlogn)$ (sabemos que cada arista se analiza una vez porque marcamos los nodos).
+
+\vspace{2mm}
+
+Por lo tanto en caso de ser RCL por valor la complejidad es de: $O(n^2 + m * logn + \beta * n )$ y en caso de ser por valor es de $O(n^2 + m log n)$. El par\'ametro $\beta$ puede ser acotado por $n$, con lo cual la complejidad de la heur\'istica aleatorizada no difere de la determin\'istica.
+
+
+\vspace{2mm}
+
+Acto seguido se valida si esta soluci\'on es factible, en tiempo constante, se declaran enteros y se procede a ejecutar la b\'usqueda local, cuya complejidad es de $O(k*n^2)$, siendo $k$ la cantidad de iteraciones hasta cumplida la condici\'on de terminaci\'on. Lo que resta son simplemente condicionales y asignaciones de tiempo constante, lo que nos da un resultado de $O(n^2 + m log n + k*(n^2)$.
+
 
