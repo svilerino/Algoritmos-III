@@ -1,0 +1,11 @@
+mkdir test-cases
+mkdir test-results
+mkdir timings-out
+mkdir test-results/exacta
+mkdir test-results/golosa
+mkdir test-results/bqlocal
+mkdir test-results/grasp
+mkdir timings-out/exacta
+mkdir timings-out/golosa
+mkdir timings-out/bqlocal
+mkdir timings-out/grasp
