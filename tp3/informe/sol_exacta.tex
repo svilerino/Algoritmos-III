@@ -156,7 +156,7 @@ Si se implementa una \emph{matriz de adyacencia}, obtener los adyacentes se real
 Marcar un nodo y saber si esta marcado se puede implementar en $O(1)$ con un \emph{array}.
 La copia y asignaci\'on de una soluci\'on se puede realizar acot\'andolo por $O(n)$ teniendo un \emph{array} con todos los nodos que tiene el camino, siendo $n$ (total de nodos en el grafo) la cantidad de nodos m\'aximos que puede tener un camino simple.
 
-Se puede plantear una funci\'on de recurrencia para un grafo $K_n$, donde todos los nodos tienen $n - 1$ vecinos, y en cada llamada recursiva se est\'a quitando un vecino posible.
+Se puede plantear una funci\'on de recurrencia donde en cada llamada recursiva se est\'a quitando un nodo posible para visitar, y acotando la cantidad de vecinos posibles del nodo por $n - 1$, ya que $d(v) <= n -1$
 \begin{equation*}
 \begin{split}
 T(1) = 1 \\
@@ -166,7 +166,7 @@ T(n) = 2n' + (n-1)*T(n-1) + (n-1)*n' = \\
 T(n) = (n-1)*T(n-1) + (n+1)*n'
 \end{split}
 \end{equation*}
-Donde $n'$ es igual a la cantidad de nodos siempre, y $n$ representa la a cantidad de nodos disponibles que hay para visitar, inicialmente $n = n'$. Como el grafo es $K_n$, todos los nodos son adyacentes con todos. Cuando solo queda un nodo por visitar, no tiene vecinos a los que recorrer.
+Donde $n'$ es igual a la cantidad de nodos siempre, y $n$ representa la a cantidad de nodos disponibles que hay, inicialmente $n = n'$. En el caso base, cuando solo queda un nodo por visitar, no tiene vecinos a los que recorrer.
 
 El primer $2n'$ que aparece en la equaci\'on representa obtener todos los adyacentes del nodo y el guardar la soluci\'on final cuando se recorri\'o todos los adyacentes, $T(n-1)$ es la llamada recursiva que se realiza $(n-1)$ veces, y el \'ultimo $n'$ es el caso de estar mejorando la soluci\'on y en todas las llamadas tener que copiar siempre la soluci\'on, es decir, copiar $(n-1)$ veces la nueva soluci\'on de tama\~no acotado por $n'$.
 \begin{equation*}
