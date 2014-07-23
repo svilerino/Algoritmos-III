@@ -102,6 +102,8 @@ que son los grafos con mayor cantidad de aristas.
 
 En cada llamada recursiva, se itera sobre todos los nodos adyacentes a $u$, y se llama recursivamente si ese nodo ($z$) no fue ya marcado, es decir, si no esta ya dentro del camino que se est\'a calculando.
 
+Antes de ejecutar la recursi\'on, se ejecutan 3 funciones de camino m\'inimo \emph{Dijkstra}, pero al ser la funci\'on recursiva con una complejidad algor\'itmica mucho mayor, el an\'alisis se va a centrar en la funci\'on recursiva.
+
 Teniendo un grafo $K_n$, como todos los nodos tienen $n - 1$ aristas que lo conectan con el resto de los nodos del grafo, en cada llamada recursiva se est\'a quitando uno de los nodos que tiene disponible, por lo que reduce en 1 a la cantidad de vecinos a los que se va a volver a llamar recursivamente sea cual sea el nodo al que se avance. Ver la Figura \ref{exacto:arbol_llamadas}.
 
 \begin{figure}[htbp]
@@ -157,12 +159,15 @@ La copia y asignaci\'on de una soluci\'on se puede realizar acot\'andolo por $O(
 Se puede plantear una funci\'on de recurrencia para un grafo $K_n$, donde todos los nodos tienen $n - 1$ vecinos, y en cada llamada recursiva se est\'a quitando un vecino posible.
 \begin{equation*}
 \begin{split}
+T(1) = 1 \\
+\\
 T(n) = 2n' + (n-1)[T(n-1) + n'] = \\
 T(n) = 2n' + (n-1)*T(n-1) + (n-1)*n' = \\
 T(n) = (n-1)*T(n-1) + (n+1)*n'
 \end{split}
 \end{equation*}
-Donde $n'$ es igual a la cantidad de nodos siempre, y $n$ representa la a cantidad de nodos disponibles que hay para visitar, inicialmente $n = n'$. Como el grafo es $K_n$, todos los nodos son adyacentes con todos.
+Donde $n'$ es igual a la cantidad de nodos siempre, y $n$ representa la a cantidad de nodos disponibles que hay para visitar, inicialmente $n = n'$. Como el grafo es $K_n$, todos los nodos son adyacentes con todos. Cuando solo queda un nodo por visitar, no tiene vecinos a los que recorrer.
+
 El primer $2n'$ que aparece en la equaci\'on representa obtener todos los adyacentes del nodo y el guardar la soluci\'on final cuando se recorri\'o todos los adyacentes, $T(n-1)$ es la llamada recursiva que se realiza $(n-1)$ veces, y el \'ultimo $n'$ es el caso de estar mejorando la soluci\'on y en todas las llamadas tener que copiar siempre la soluci\'on, es decir, copiar $(n-1)$ veces la nueva soluci\'on de tama\~no acotado por $n'$.
 \begin{equation*}
 \begin{split}
@@ -205,7 +210,7 @@ Ahora expandimos la suma
 \begin{equation*}
 \begin{split}
 T(n) = (n - 1)! + (n + 1)\frac{n!}{(n-1)!} + (n)\frac{n!}{(n-2)!} + \cdots + 3\frac{n!}{1!} + 2\frac{n!}{0!} \\
-\implies T(n) \in O(n!)
+\implies T(n) \in O((n + 1)!)
 \end{split}
 \end{equation*}
 Quedandonos entonces que la funci\'on de recurrencia que se plante\'o pertenece a la clase de complejidad $O(n!)$
