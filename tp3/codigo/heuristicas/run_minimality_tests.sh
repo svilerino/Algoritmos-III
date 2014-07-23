@@ -65,7 +65,6 @@ if ls test-cases/*.in &> /dev/null; then
 			grasp_w2=$(head -1 tmp.solactual.grasp.optimalidad.txt | awk -F' ' '{print $1}')
 
 			minimo=$(../min $golosa_w2 $bqlocal_w2 $grasp_w2)
-			echo "$minimo"
 
 			if [ $minimo -eq $golosa_w2 ]
 			then
