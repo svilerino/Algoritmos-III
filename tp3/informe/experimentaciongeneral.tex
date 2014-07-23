@@ -5,37 +5,18 @@ En esta secci\'on analizaremos la calidad de las heuristicas mediante la compara
 
 \subsubsection{Generador de grafos aleatorios}
 El generador aleatorio de grafos es un binario aparte de los algoritmos, que recibe como parametros
-
 \begin{itemize}
-	\item cantidad de nodos
-	\item cantidad de aristas
-	\item peso maximo $w_1$
-	\item peso maximo $w_2$
-	\item limite $w_1$
+\item cantidad de nodos
+\item cantidad de aristas
+\item peso maximo $w_1$
+\item peso maximo $w_2$
+\item limite $w_1$
 \end{itemize}
-
-y devuelve por salida estandar una instancia del problema tal como esta especificado el formato de entrada en el enunciado de este TP.\\
-
-\textbf{Nota: }Los generadores de numeros aleatorios de este generador de grafos tienen distribucion uniforme(Usan random de C++11).\\
-
-La generaci\'on del grafo se realiza de la siguiente manera:\\
-Se eligen al azar, los nodos de origen y destino, con distribucion uniforme en el rango correspondiente a los numeros que identifican nodos en el grafo. Acto seguido se imprime la linea de cabecera a la salida estandar con todos los datos correspondientes.\\
-Para la generacion de las aristas.
-\vspace{3cm}
-
-
-
-
-
-
-			NICO: TODOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!!
-
-\vspace{10cm}
-
-
-
-
-
+y devuelve por salida estandar una instancia del problema tal como esta especificado el formato de entrada en el enunciado de este TP.
+\\ \textbf{Nota: }Los generadores de numeros aleatorios de este generador de grafos tienen distribucion uniforme(Usan random de C++11).
+\\ La generaci\'on del grafo se realiza de la siguiente manera:
+\\ Se eligen al azar, los nodos de origen y destino, con distribucion uniforme en el rango correspondiente a los numeros que identifican nodos en el grafo. Acto seguido se imprime la linea de cabecera a la salida estandar con todos los datos correspondientes.
+\\ Para la generacion de las aristas, lo que se realiza es elegir al azar con distribuci\'on unifirme 2 nodos, y se le asigna un peso aleatorio con distribuci\'on uniforme $\omega_1$ y $\omega_2$ segun el rango seteado. Luego se vuelve a repetir hasta colocar la cantidad de aristas pedidas en los par\'ametros. Si en alguna iteraci\'on al buscar nodos para agregar aristas ya hab\'ia una arista entre los 2 nodos elegidos al azar, sean $i$ y $j$ los nodos elegidos, entonces se busca el $(i * j)$ iesimo elemento de la matriz de adyacencia que est\'e libre para colocar una arista.
 
 \subsubsection{Script generador de conjuntos de grafos}
 Se realizo un script el cual genera conjuntos de grafos usando el generador de la seccion anterior, basicamente, se setean dos rangos, de cantidad de nodos y cantidad de aristas, y los parametros fijos como limite $w_1$, limites de los pesos, etc. El script genera iterativamente el conjunto de grafos llamando repetidamente al generador, notemos que podemos(y es lo que hicimos en los experimentos), poner la cantidad de aristas en funcion de la cantidad de nodos y de esta forma poder determinar la densidad de los conjuntos de grafos generados.
