@@ -30,6 +30,8 @@ A su vez, antes de comenzar con todas las llamadas recursivas, se ejecuta \emph{
 Se agrega tambi\'en antes de comenzar con la recursi\'on, se obtienen los caminos m\'inimos (tanto de $\omega_1$ como de $\omega_2$) desde el nodo de destino $w$ al resto del grafo.
 Estando dentro de las llamadas recursivas, s\'olo avanza al siguiente nodo si el camino m\'inimo desde dicho nodo hacia $w$ cumple con la cota de $K$ en $\omega_1$ y que sea mejor en peso $\omega_2$ que el mejor camino ya calculado (como no son dirigidos los grafos, es igual al camino desde $w$ a ese nodo).
 
+Como lo que se busca son los caminos simples de $v$ a $w$, estando en un momento de la iteraci\'on y agregando un nodo $z$ al posible camino, ese nodo $z$ no debe aparecer m\'as adelante en el camino que se busca, por lo que no hay que pasar a volver a analizar el v\'ertice $z$ una vez que ya est\'a en el camino. Es por \'esto que en el algoritmo se marcan los nodos que se fueron visitando para no volver a pasar sobre ellos; si se pasasen, el camino tendr\'ia 2 veces el mismo nodo y ya no ser\'ia un camino simple.
+
 \subsubsection{Algoritmo}
 
 \begin{algorithm}[!h]
