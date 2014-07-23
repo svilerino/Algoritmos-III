@@ -98,7 +98,7 @@ Estando dentro de las llamadas recursivas, s\'olo avanza al siguiente nodo si el
 
 En el Algoritmo (\ref{exacto:pseudo}) se puede ver que depende de la cantidad de aristas de cada nodo (ya que para cada nodo, recorre todos los adyacentes), dados dos grafos
 con igual cantidad de nodos, el algoritmo realizar\'a m\'as iteraciones con el grafo que contenga m\'as aristas. Por ende, los peores casos son los grafos completos ($K_n$),
-que son los grafos con mayor cantidad de aristas.
+que son los grafos con mayor cantidad de vecinos en cada nodo.
 
 En cada llamada recursiva, se itera sobre todos los nodos adyacentes a $u$, y se llama recursivamente si ese nodo ($z$) no fue ya marcado, es decir, si no esta ya dentro del camino que se est\'a calculando.
 
