@@ -117,38 +117,38 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 \subsubsection{Grafos aleatorios de intermedia densidad de aristas}
 \textbf{Parametros del experimento:}
 \begin{itemize}
-	\item Cantidad de grafos analizados: 19
+	\item Cantidad de tests realizados: 255
 	\item Cantidad minima de nodos: 100
 	\item Cantidad maxima de nodos: 600
 	\item Rango peso $w_1$: [0..250]
 	\item Rango peso $w_2$: [0..400]
 	\item Cota de $w_1$: 200
-	\item Cantidad minima de aristas: $\frac{n * (n-1)}{10}$
-	\item Cantidad maxima de aristas: $\frac{n * (n-1)}{7}$
+	\item Cantidad minima de aristas: $ n * \sqrt n$
+	\item Cantidad maxima de aristas: $ 5 * n * \sqrt n$
 \end{itemize}
 
 \vspace{1cm}
 
 \textbf{Resultados del analisis (Golosa):}
 \begin{lstlisting}[frame=single]	
-	Tiempo promedio microsegundos heuristica: 21620.157
-	Tiempo promedio microsegundos exacto: 34888.421
-	Heuristica da la solucion optima: 78.947% de los casos
-	Lejania promedio de la heuristica a la solucion optima: 5.515%
-	Desv. estandar de la lejania entre las soluciones: 14.2486
+	Tiempo promedio microsegundos heuristica: 2700.713
+	Tiempo promedio microsegundos exacto: 6803.960
+	Heuristica da la solucion optima: 86.666% de los casos
+	Lejania promedio de la heuristica a la solucion optima: 2.590%
+	Desv. estandar de la lejania entre las soluciones: 9.77461
 	Minima lejania entre bqlocal y exacta: 0
-	Maxima lejania entre bqlocal y exacta: 53.100%
+	Maxima lejania entre bqlocal y exacta: 79.000%
 \end{lstlisting}
 
 \textbf{Resultados del analisis (Busqueda local):}
 \begin{lstlisting}[frame=single]	
-	Tiempo promedio microsegundos heuristica: 4847.706
-	Tiempo promedio microsegundos exacto: 34888.421
-	Heuristica da la solucion optima: 0% de los casos
-	Lejania promedio de la heuristica a la solucion optima: 1801.705%
-	Desv. estandar de la lejania entre las soluciones: 3424.39
-	Minima lejania entre bqlocal y exacta: 97.600
-	Maxima lejania entre bqlocal y exacta: 15540.000%
+	Tiempo promedio microsegundos heuristica: 529.705
+	Tiempo promedio microsegundos exacto: 6803.960
+	Heuristica da la solucion optima: 10.588% de los casos
+	Lejania promedio de la heuristica a la solucion optima: 726.246%
+	Desv. estandar de la lejania entre las soluciones: 904.16
+	Minima lejania entre bqlocal y exacta: 0
+	Maxima lejania entre bqlocal y exacta: 5900.000%
 \end{lstlisting}
 
 \vspace{2cm}
