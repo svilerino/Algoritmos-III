@@ -287,3 +287,27 @@ A continuacion presentamos los resultados de los experimentos, an\'alogos a los 
 	\textbf{$y = f(x)/x^4$}\\
 	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_fourth}.png}
 \end{center}
+
+\subsection{Metaheuristica GRASP - Variacion de parametros}
+
+3 familias de grafos(baja, alto, intermedio), variando el beta y el tipo de RCL
+concluir que el mejor beta es techo(n/128) porque todos los experimentos generales estan asi y porque da la posta!
+
+%--------------------------------------------------------------------------------------------------------------------------------
+%te dejo un poco de data aca
+%esto es en cliques:
+%(carpeta: informe/experimentos/performance-optimalidad-cliques_beta_n_over_128/)
+%el resto piolon, igual hace otros experimentos(tienen que ser distintos experimentos el 3d y el pto 4), pero conclui que el posta es n/128 
+%
+%Golosa:
+%	Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 83.018
+%	Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 4.990
+%	Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 18.1754
+%GRASP:
+%	Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 83.018
+%	Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 3.611
+%	Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 12.1007
+%
+%Da lo mismo que golosa en efectividad pero fijate que aca GRASP da mas cercano y con menor dispersion al optimo. :D :D :D
+%
+%--------------------------------------------------------------------------------------------------------------------------------

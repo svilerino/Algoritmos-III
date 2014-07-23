@@ -1,7 +1,7 @@
 \begin{abstract}
-El objetivo de este documento es describir el problema presentado, y las diversas soluciones que se fueron realizando utilizando distintas tecnicas de programaci\'on, para la solucion exacta, o diversas heur\'isticas para resolver el problema de forma polinomial, dado que no existe solucion exacta con complejidad polinomial.\\
+El objetivo de este documento es describir el problema presentado, y las diversas soluciones que se fueron realizando utilizando distintas tecnicas de programaci\'on, para la solucion exacta, o diversas heur\'isticas para resolver el problema de forma polinomial, dado que no se conoce algoritmo de  solucion exacta con complejidad polinomial.\\
 
-El problema que se nos presenta es, dado un grafo $G=(V, E)$, dos v\'ertices $u,v \in V$, dos funciones $w_1$ y $w_2$ de costo asociadas a las aristas del grafo, y un valor $K \in \mathbb{R}$, se pide resolver el problema de Camino Acotado de Costo Minimo (CACM), el cual consiste en encontrar un camino P entre $u, v$ tal que el costo del camino respecto a la funcion $w_2$ sea minimo y valga la condicion del costo del camino $w_1 \leq K$.\\
+El problema que se nos presenta es, dado un grafo $G=(V, E)$, dos v\'ertices $u,v \in V$, dos funciones $w_1$ y $w_2$ de costo asociadas a las aristas del grafo, y un valor $K \in \mathbb{R}$, se pide resolver el problema de Camino Acotado de Costo Minimo (CACM), el cual consiste en encontrar un camino P entre $u, v$ tal que el costo del camino respecto a la funcion $w_2$ sea minimo entre todos los caminos con $w_1 \leq K$ y valga la condicion del costo del camino $w_1 \leq K$.\\
 
 Se nos requiri\'o modelar situaciones de la vida real con CACM y luego implementar diversas soluciones para este problema, preferimos C y C++ como lenguajes de programaci\'on de este trabajo practico y en el fueron implementados los siguientes algoritmos:
 \begin{itemize}
@@ -12,9 +12,16 @@ Se nos requiri\'o modelar situaciones de la vida real con CACM y luego implement
 \end{itemize}
 
 Todas las soluciones listadas arriba fueron testeadas con diversos casos de testing y ser\'an claramente documentadas en las secciones de este documento.
-Para cada punto se detalla el algoritmo, se establece una cota teorica sobre la complejidad temporal, y se brindan ejemplos de funcionamiento.
-En el caso de la soluci\'on exacta ademas se realizaron pruebas de performance y son presentadas con graficos que acompan\~an dichos experimentos.
-Para las heur\'isticas golosas y de busqueda local se realizo un an\'alisis de las instancias para las cuales la soluci\'on obtenida es optima y para cuales no se alcanza dicho optimo, asimismo donde fue posible, se indico que tan mala puede ser la solucion obtenida respecto de la solucion optima.
-Finalmente se realiz\'o una experimentacion general indicando en todos los algoritmos la performance temporal obtenida segun el taman\~o de entrada y donde corresponda los parametros(GRASP por ejemplo), ademas fueron comparadas las soluciones obtenidas por el algoritmo exacto y cada una de las heur\'isticas desarrolladas. 
+Para cada punto se detalla el algoritmo, se realizan justificaciones acerca de su correcto funcionamiento donde sea necesario, se establece una cota teorica sobre la complejidad temporal, y se brindan ejemplos de funcionamiento.
+Ademas se realizaron benchmarks de performance sobre diferentes conjuntos de instancias distintas de entrada que afirman la complejidad teorica y son presentadas con graficos que acompan\~an dichos experimentos.
+Para las heur\'isticas golosas y de busqueda local se detallan familias o instancias malas de entradas donde la solucion provista no es la optima, se realizaron diversos analisis de optimalidad y variacion de parametros de las heuristicas detallados en cada seccion de cada heuristica.
+
+\vspace{0.5cm}
+
+Para la metaheuristica \texttt{GRASP} se ajustaron los parametros para obtener cierto tradeoff, y fueron fijadas en esos parametros para la seccion de experimentacion general.
+
+\vspace{0.5cm}
+
+Finalmente se realiz\'o una experimentacion general con respecto al rendimiento de las heuristicas respecto a exacta, las heuristicas solas entre ellas para entradas mas grandes de las que soporta el algoritmo exacto en la practica, los experimentos miden y comparan la cercania de las soluciones respecto a la solucion optima con diversos estimadores estadisticos, asi como tambien el tiempo insumido en obtener las soluciones para realizar un tradeoff entre porcentaje de efectividad de la heuristica y tiempo consumido por el algoritmo.
 \end{abstract}
 

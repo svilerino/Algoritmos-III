@@ -44,13 +44,6 @@ Podemos considerar una especie de puntuacion asignada a cada heuristica viendo e
 El script de optimalidad tambien realiza un grafico, en el cual puede verse en el eje X la cantidad de nodos de la instancia y en el eje Y, \texttt{un promedio de los pesos $w_2$ de soluciones para la variacion de aristas para esa cantidad de nodos} de cada algoritmo corrido, distintas referencias y colores indican para cada cantidad de nodos, el valor $w_2$ de las soluciones obtenidas, en este grafico podemos apreciar la distribucion de las soluciones sobre el eje Y a medida que var\'ia la cantidad de nodos.\\
 \textbf{Referencias del gr\'afico: } Los triangulos azules representan las soluciones de busqueda local, los signos + amarillos, representan las soluciones del algoritmo exacto, los cuadrados verdes simbolizan las soluciones del algoritmo goloso, y los asteriscos rojos representan las soluciones de GRASP.
 
-\subsubsection{Metaheuristica GRASP - Variacion de parametros}
-
-3 familias de grafos, variando el beta si corresponde
-
-lineal, cuadratico e intermedio, para el intermedio poner 
-los calculos de porque la cuenta n(n-1)/x y n(n-1)/y es densidad intermedia para los valores de n entre k y j
-
 \subsection{Calidad de las heuristicas respecto a la soluci\'on exacta}
 Se corrieron los scripts de optimalidad con diferentes conjuntos de instancias de grafos aleatorios, y se realizaron los gr\'aficos y el analisis estad\'istico correspondiente, a continuacion se presentan los resultados.
 \subsubsection{Comparacion Exacta-Golosa-Busqueda Local}
@@ -247,3 +240,5 @@ Finalmente aqui observamos que la soluci\'on de busqueda local sigue "lejos" del
 En esta secci\'on experimentaremos para varios conjuntos aleatorios de grafos de diferentes densidades con las heur\'isticas implementadas,sin tener en cuenta la soluci\'on exacta, para poder realizar experimentos con una mayor cantidad de nodos y aristas en las instancias. Dados los resultados, analizaremos de las 3 heur\'isticas implementadas cual obtiene en promedio y con que desviacion estandar, las soluciones con peso $w_2$ menor, y de esta forma, mas cercanas a la exacta.\\
 
 Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un contador en la que corresponda si su peso $w_2$ es minimo, al final tendremos, para cada heuristica, cuantas veces dio la minima solucion, y la cantidad total de instancias testeadas, con estos datos podremos realizar los analisis estadisticos.
+
+poner al menos 15000 nodos, sino no tiene sentido(by guido)
