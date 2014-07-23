@@ -223,8 +223,48 @@ Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas s
 
 \textbf{Nota: } Los graficos que contienen puntos rojos y una curva verde, indican, para cada valor del eje X(cantidad de nodos), los puntos rojos son los tiempos de ejecucion para los diferentes valores de aristas en el rango de la familia, asimismo, la curva verde indica el promedio de estos puntos para cada X. \\
 
+En esta primera secci\'on dividiremos las funciones por polinomios $n$, $n^2$, $n^3$ y $n^4$ con la mayor cantidad de nodos posible e intentaremos ver que la funci\'on se mantiene creciente. Dadas las limitaciones de nuestra computadora de benchmarking, el an\'alisis de divisi\'on por factorial se har\'a aparte con menos cantidad de nodos.
 
 \subsubsection{Rendimiento para grafos con densidad lineal de aristas}
+
+\begin{itemize}
+	\item cant nodos min = $10000$
+	\item cant nodos max = $12000$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item step nodos = $500$
+	\item step aristas = $1000$
+	\item aristas minimas = $(n-1)$
+	\item aristas maximas = $(10*n)$
+\end{itemize}
+
+\begin{center}
+	\textbf{Tiempo de ejecuci\'on en microsegundos para esta familia}\\
+	\textbf{$y = f(x)$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_lineales/{exacta.tmpplot_complexity_variation}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_lineales/{exacta.tmpplot_complexity_med_over_n}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^2$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_lineales/{exacta.tmpplot_complexity_med_over_n_square}.png}
+\end{center}
+
+\begin{center}
+	\textbf{$y = f(x)/x^3$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_lineales/{exacta.tmpplot_complexity_med_over_n_cube}.png}
+\end{center}
+
+
+\begin{center}
+	\textbf{$y = f(x)/x^4$}\\
+	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_lineales/{exacta.tmpplot_complexity_med_over_n_fourth}.png}
+\end{center}
+
 
 
 \subsubsection{Rendimiento para grafos con densidad cuadratica de aristas}
@@ -266,4 +306,5 @@ Para tener una mejor idea del comportamiento del algoritmo, realizamos pruebas s
 	\textbf{$y = f(x)/x^4$}\\
 	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_exacta_cliques/{exacta.tmpplot_complexity_med_over_n_fourth}.png}
 \end{center}
+
 
