@@ -60,6 +60,7 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 \subsubsection{Grafos aleatorios de baja densidad de aristas}
 \textbf{Parametros del experimento:}
 \begin{itemize}
+	\item Parametro Beta GRASP: $\frac{cantNodos}{128}$
 	\item Cantidad de grafos analizados: 71
 	\item Cantidad minima de nodos: 100
 	\item Cantidad maxima de nodos: 1800
@@ -94,6 +95,17 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 	Maxima lejania entre bqlocal y exacta: 662.700%
 \end{lstlisting}
 
+\textbf{Resultados del analisis (Metaheuristica GRASP):}
+\begin{lstlisting}[frame=single]	
+	Tiempo promedio microsegundos heuristica: 26709.723
+	Tiempo promedio microsegundos exacto: 16899.281
+	Heuristica da la solucion optima: 57.746% de los casos
+	Lejania promedio de la heuristica a la solucion optima: 33.373%
+	Desv. estandar de la lejania entre las soluciones: 70.8898
+	Minima lejania entre bqlocal y exacta: 0
+	Maxima lejania entre bqlocal y exacta: 453.300%
+\end{lstlisting}
+
 \vspace{2cm}
 
 \begin{center}	
@@ -106,6 +118,7 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 \subsubsection{Grafos aleatorios de intermedia densidad de aristas}
 \textbf{Parametros del experimento:}
 \begin{itemize}
+	\item Parametro Beta GRASP: $\frac{cantNodos}{128}$
 	\item Cantidad de tests realizados: 255
 	\item Cantidad minima de nodos: 100
 	\item Cantidad maxima de nodos: 600
@@ -140,6 +153,17 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 	Maxima lejania entre bqlocal y exacta: 5900.000%
 \end{lstlisting}
 
+\textbf{Resultados del analisis (Metaheuristica GRASP):}
+\begin{lstlisting}[frame=single]	
+	Tiempo promedio microsegundos heuristica: 3645.660
+	Tiempo promedio microsegundos exacto: 6803.960
+	Heuristica da la solucion optima: 34.901% de los casos
+	Lejania promedio de la heuristica a la solucion optima: 94.901%
+	Desv. estandar de la lejania entre las soluciones: 172.781
+	Minima lejania entre bqlocal y exacta: 0
+	Maxima lejania entre bqlocal y exacta: 1541.800%
+\end{lstlisting}
+
 \vspace{2cm}
 
 \begin{center}	
@@ -152,6 +176,7 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 \subsubsection{Grafos aleatorios de alta densidad de aristas}
 \textbf{Parametros del experimento:}
 \begin{itemize}
+	\item Parametro Beta GRASP: $\frac{cantNodos}{128}$
 	\item Cantidad de grafos analizados: 53
 	\item Cantidad minima de nodos: 10
 	\item Cantidad maxima de nodos: 280
@@ -184,6 +209,17 @@ Se eligieron, 3 diferentes densidades de grafos, y se corrieron los algoritmos c
 	Desv. estandar de la lejania entre las soluciones: 1153.29
 	Minima lejania entre bqlocal y exacta: 0
 	Maxima lejania entre bqlocal y exacta: 4473.000%
+\end{lstlisting}
+
+\textbf{Resultados del analisis (Metaheuristica GRASP):}
+\begin{lstlisting}[frame=single]	
+	Tiempo promedio microsegundos heuristica: 3637.888
+	Tiempo promedio microsegundos exacto: 19571.283
+	Heuristica da la solucion optima: 83.018% de los casos
+	Lejania promedio de la heuristica a la solucion optima:  3.611%
+	Desv. estandar de la lejania entre las soluciones: 12.1007
+	Minima lejania entre bqlocal y exacta: 0
+	Maxima lejania entre bqlocal y exacta: 73.300%
 \end{lstlisting}
 
 \vspace{2cm}
@@ -229,6 +265,20 @@ Este caso es casi id\'entico al anterior con respecto a la optimalidad de las so
 
 Como conclusi\'on de b\'usqueda local consideramos que depende mucho de la soluci\'on inicial la calidad final de las soluciones obtenidas(nuevamente, ver seccion de variacion de soluciones iniciales en seccion busqueda local). Utilizar\'iamos un esquema de b\'usqueda local para refinar soluciones relativamente buenas obtenidas con algun otro m\'etodo inicial.
 
+\vspace{0.5cm}
+
+\textbf{Algoritmo de Metaheuristica GRASP para grafos de baja densidad:}\\
+Notamos como primer observacion que la metaheuristica toma mas tiempo que el algoritmo exacto, y al tener un 57\% de porcentaje de aciertos con respecto a la soluci\'on \'optima, descartamos que sea una buena heur\'istica para este tipo de grafos, sin importar la lejania ni la dispersion de la lejan\'ia, en menos tiempo podemos obtener la solucion exacta.
+
+\vspace{0.5cm}
+
+\textbf{Algoritmo de Metaheuristica GRASP para grafos de densidad intermedia:}\\
+Observamos que la heuristica no es muy efectiva, con una alta lejania y dispersion de lejania respecto a la solucion optima, a pesar de que el tiempo que toma sea la mitad que el algoritmo exacto, no lo utilizariamos como heuristica para este tipo de grafos.
+
+\vspace{0.5cm}
+
+\textbf{Algoritmo de Metaheuristica GRASP para grafos de alta densidad:}\\
+Notemos que toma menos tiempo que el algoritmo goloso(y mucho menos tiempo que el algoritmo exacto), nos provee el mismo alto porcentaje de efectividad respecto a la solucion optima que el algoritmo goloso, y aun mejor, la lejan\'ia promedio y dispersion de esta, se disminuyeron respecto a la soluci\'on. Para este tipo de grafos, con alta densidad, encontramos que con este parametro beta, ocurrian este tipo de mejoras, si bien esto es el resultado de una muestra de toda la familia de grafos de alta densidad, podriamos considerar aplicar esta heuristica aun mas que la heuristica golosa para resolver el problema de manera aproximada.
 \vspace{0.5cm}
 
 \subsubsection{Gr\'aficos de distribucion de las soluciones}
