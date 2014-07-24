@@ -1,0 +1,6 @@
+Resultados
+Cantidad de instancias ejecutadas: 226
+Cantidad de instancias donde da el minimo w2:
+        Golosa: 0.969%
+        Busqueda local: 0.066%
+        Grasp: 0.331%
