@@ -295,6 +295,51 @@ Se observa que los valores de las soluciones provistos por busqueda local estan 
 Finalmente aqui observamos que la soluci\'on de busqueda local sigue "lejos" del \'optimo. Asimismo, GRASP tampoco provee la soluci\'on \'optima ni una \texttt{muy cercana}, como si lo hace la heur\'istica golosa con su casi perfecto indice de aciertos respecto al algoritmo exacto.
 
 \subsection{Experimentacion pura entre heuristicas}
-En esta secci\'on experimentaremos para varios conjuntos aleatorios de grafos de diferentes densidades con las heur\'isticas implementadas,sin tener en cuenta la soluci\'on exacta, para poder realizar experimentos con una mayor cantidad de nodos y aristas en las instancias. Dados los resultados, analizaremos de las 3 heur\'isticas implementadas cual obtiene en promedio y con que desviacion estandar, las soluciones con peso $w_2$ menor, y de esta forma, mas cercanas a la exacta.\\
+En esta secci\'on experimentaremos para varios conjuntos aleatorios de grafos de diferentes densidades con las heur\'isticas implementadas,sin tener en cuenta la soluci\'on exacta, para poder realizar experimentos con una mayor cantidad de nodos y aristas en las instancias. Dados los resultados, analizaremos de las 3 heur\'isticas implementadas cual obtiene las soluciones con peso $w_2$ menor, y de esta forma, mas cercanas a la solucion optima(que siempre es menor o igual al minimo de las 3 heuristicas, por definicion de solucion optima).\\
 
 Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un contador en la que corresponda si su peso $w_2$ es minimo, al final tendremos, para cada heuristica, cuantas veces dio la minima solucion, y la cantidad total de instancias testeadas, con estos datos podremos realizar los analisis estadisticos.
+
+\subsubsection{Grafos aleatorios de alta densidad de aristas}
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Parametro Beta GRASP: $\frac{cantNodos}{128}$
+	\item Cantidad de grafos analizados: 17
+	\item Cantidad minima de nodos: 10
+	\item Cantidad maxima de nodos: 340
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_2$: [0..400]
+	\item Cota de $w_1$: 200
+	\item Cantidad minima de aristas: $\frac{n * (n-1)}{3}$
+	\item Cantidad maxima de aristas: $\frac{n * (n-1)}{2}$
+\end{itemize}
+
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]	
+	Porcentaje de instancias donde da el minimo w2:
+        Golosa: 94.1%
+        Busqueda local: 17.6%
+        Grasp: 41.1%
+\end{lstlisting}
+
+
+\subsubsection{Grafos aleatorios de densidad intermedia de aristas}
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Parametro Beta GRASP: $\frac{cantNodos}{128}$
+	\item Cantidad de grafos analizados: 226
+	\item Cantidad minima de nodos: 100
+	\item Cantidad maxima de nodos: 600
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_2$: [0..400]
+	\item Cota de $w_1$: 200
+	\item Cantidad minima de aristas: $ n * \sqrt n$
+	\item Cantidad maxima de aristas: $ 5 * n * \sqrt n$
+\end{itemize}
+
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]	
+	Cantidad de instancias donde da el minimo w2:
+        Golosa: 96.9%
+        Busqueda local: 6.6%
+        Grasp: 33.1%
+\end{lstlisting}
