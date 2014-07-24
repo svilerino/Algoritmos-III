@@ -321,7 +321,6 @@ Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un co
         Grasp: 41.1%
 \end{lstlisting}
 
-
 \subsubsection{Grafos aleatorios de densidad intermedia de aristas}
 \textbf{Parametros del experimento:}
 \begin{itemize}
@@ -338,8 +337,33 @@ Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un co
 
 \textbf{Resultados del analisis:}
 \begin{lstlisting}[frame=single]	
-	Cantidad de instancias donde da el minimo w2:
+	Porcentaje de instancias donde da el minimo w2:
         Golosa: 96.9%
         Busqueda local: 6.6%
         Grasp: 33.1%
 \end{lstlisting}
+
+\subsubsection{Grafos aleatorios de densidad baja de aristas}
+\textbf{Parametros del experimento:}
+\begin{itemize}
+	\item Parametro Beta GRASP: $\frac{cantNodos}{128}$
+	\item Cantidad de grafos analizados: 7
+	\item Cantidad minima de nodos: 1500
+	\item Cantidad maxima de nodos: 3000
+	\item Rango peso $w_1$: [0..250]
+	\item Rango peso $w_2$: [0..400]
+	\item Cota de $w_1$: 200
+	\item Cantidad minima de aristas: $ 15*n$
+	\item Cantidad maxima de aristas: $ 20*n$
+\end{itemize}
+
+\textbf{Resultados del analisis:}
+\begin{lstlisting}[frame=single]	
+	Porcentaje de instancias donde da el minimo w2:
+		Golosa: 100%
+		Busqueda local: 0%
+		Grasp: 0%
+\end{lstlisting}
+
+Vemos que la heuristica golosa da mas veces la soluci\'on m\'inima a medida que va a disminuyendo la densidad de los grafos, lo que coincide con el decrecimiento del porcentaje de aciertos respecto al optimo a medida que aumenta la densidad en la secci\'on anterior.
+Con respecto a la busqueda local, como vimos en la seccion de busqueda local, la heuristica funciona mejor con alta densidad de grafos dado que esta relacionada la densidad del grafo con el cardinal de la vecindad. La metaheuristica GRASP disminuye su rendimiento a medida que decrece la densidad de los grafos, suponemos que se debe a que la heuristica golosa randomizada, a lo sumo da tan bien como la golosa pura, y la busqueda local sobre golosa no mejora la solucion, finalmente la heuristica golosa obtiene una mejor solucion.

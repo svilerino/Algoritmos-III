@@ -1,0 +1,6 @@
+Resultados
+Cantidad de instancias ejecutadas: 7
+Cantidad de instancias donde da el minimo w2:
+        Golosa: 1.000
+        Busqueda local: 0
+        Grasp: 0
