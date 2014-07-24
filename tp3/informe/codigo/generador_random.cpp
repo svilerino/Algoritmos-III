@@ -48,9 +48,9 @@ int main(int argc, char** argv){
 	cout << cant_nodos << " " << cant_aristas << " " << nodo_src << " " << nodo_dst << " " << limit_w1 << endl;
 
 	int permutations_number = aristas_maximas;//C(cant_nodos, 2)
-	uniform_int_distribution<int> dis(0, permutations_number);
 	vector<pair<int, int> >::iterator begin_iter = aristas.begin();
 	for(int i=0;i<permutations_number;i++){
+		uniform_int_distribution<int> dis(i, permutations_number);
 		int x = dis(gen);
 		iter_swap(begin_iter + i, begin_iter + x);
 	}
