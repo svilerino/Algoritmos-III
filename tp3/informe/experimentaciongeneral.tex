@@ -8,15 +8,23 @@ El generador aleatorio de grafos es un binario aparte de los algoritmos, que rec
 \begin{itemize}
 \item cantidad de nodos
 \item cantidad de aristas
+\item peso minimo $w_1$
 \item peso maximo $w_1$
+\item peso minimo $w_2$
 \item peso maximo $w_2$
 \item limite $w_1$
 \end{itemize}
-y devuelve por salida estandar una instancia del problema tal como esta especificado el formato de entrada en el enunciado de este TP.
-\\ \textbf{Nota: }Los generadores de numeros aleatorios de este generador de grafos tienen distribucion uniforme(Usan random de C++11).
-\\ La generaci\'on del grafo se realiza de la siguiente manera:
-\\ Se eligen al azar, los nodos de origen y destino, con distribucion uniforme en el rango correspondiente a los numeros que identifican nodos en el grafo. Acto seguido se imprime la linea de cabecera a la salida estandar con todos los datos correspondientes.
-\\ Para la generacion de las aristas, lo que se realiza es elegir al azar con distribuci\'on unifirme 2 nodos, y se le asigna un peso aleatorio con distribuci\'on uniforme $\omega_1$ y $\omega_2$ segun el rango seteado. Luego se vuelve a repetir hasta colocar la cantidad de aristas pedidas en los par\'ametros. Si en alguna iteraci\'on al buscar nodos para agregar aristas ya hab\'ia una arista entre los 2 nodos elegidos al azar, sean $i$ y $j$ los nodos elegidos, entonces se busca el $(i * j)$ iesimo elemento de la matriz de adyacencia que est\'e libre para colocar una arista.
+y devuelve por salida estandar una instancia del problema tal como esta especificado el formato de entrada en el enunciado de este TP.\\
+\textbf{Nota: }Los generadores de numeros aleatorios de este generador de grafos tienen distribucion uniforme(Usan random de C++11).
+
+\vspace{1cm}
+
+La generaci\'on del grafo se realiza de la siguiente manera: 
+Sean n=\{cantidad de nodos del grafo\} y m=\{cantidad de aristas\}, se inicializa un vector $aristas =  <(0, 1), ..., (0, n-1), (1, 2), ..., (1, n-1), ..., (n - 2, n-1)>$ conteniendo todas las aristas posibles en el grafo(notar que como no es digrafo, no se repiten aristas simetricas, ni tampoco de asignan self-loops).
+
+\vspace{1cm}
+
+Luego se mezcla aleatoriamente este vector usando el \texttt{Algoritmo de Shuffle de Knuth o Fisher Yates Shuffle} y se imprime la cabecera del grafo a la salida estandar conteniendo los nodos origen, destino y el parametro k generados como numeros aleatorios uniformes. Ahora basta tomar la cantidad m de aristas requeridas por par\'ametro y serializar la salida linea por linea, nuevamente generando numeros aleatorios con distribucion uniforme sobre los rangos de pesos $w_1$ y $w_2$ pasados por par\'ametro.
 
 \subsubsection{Script generador de conjuntos de grafos}
 Se realizo un script el cual genera conjuntos de grafos usando el generador de la seccion anterior, basicamente, se setean dos rangos, de cantidad de nodos y cantidad de aristas, y los parametros fijos como limite $w_1$, limites de los pesos, etc. El script genera iterativamente el conjunto de grafos llamando repetidamente al generador, notemos que podemos(y es lo que hicimos en los experimentos), poner la cantidad de aristas en funcion de la cantidad de nodos y de esta forma poder determinar la densidad de los conjuntos de grafos generados.
