@@ -364,3 +364,6 @@ Esto se realizara, para cada ejecucion de las 3 heuristicas, incrementando un co
 		Busqueda local: 0%
 		Grasp: 0%
 \end{lstlisting}
+
+Vemos que la heuristica golosa da mas veces la soluci\'on m\'inima a medida que va a disminuyendo la densidad de los grafos, lo que coincide con el decrecimiento del porcentaje de aciertos respecto al optimo a medida que aumenta la densidad en la secci\'on anterior.
+Con respecto a la busqueda local, como vimos en la seccion de busqueda local, la heuristica funciona mejor con alta densidad de grafos dado que esta relacionada la densidad del grafo con el cardinal de la vecindad. La metaheuristica GRASP disminuye su rendimiento a medida que decrece la densidad de los grafos, suponemos que se debe a que la heuristica golosa randomizada, a lo sumo da tan bien como la golosa pura, y la busqueda local sobre golosa no mejora la solucion, finalmente la heuristica golosa obtiene una mejor solucion.
