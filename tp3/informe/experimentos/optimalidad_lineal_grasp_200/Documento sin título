@@ -1,0 +1,29 @@
+Resultados:
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 28
+Tiempo promedio microsegundos heuristica: 42445.178
+Tiempo promedio microsegundos exacto: 31439.678
+Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 89.285
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 2.132
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 7.57807
+Minimo alejamiento porcentual entre golosa y exacta: 0
+Maximo alejamiento porcentual entre golosa y exacta: 39.000
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 28
+Tiempo promedio microsegundos heuristica: 26659.178
+Tiempo promedio microsegundos exacto: 31439.678
+Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): 10.714
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 189.432
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 163.5
+Minimo alejamiento porcentual entre bqlocal y exacta: 0
+Maximo alejamiento porcentual entre bqlocal y exacta: 608.900
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 28
+Tiempo promedio microsegundos heuristica: 63565.671
+Tiempo promedio microsegundos exacto: 31439.678
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 14.285
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 109.460
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 121.493
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 522.400
+
