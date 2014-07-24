@@ -316,5 +316,7 @@ En esta primera secci\'on dividiremos las funciones por polinomios $n$, $n^2$, $
 
 
 En el caso de los grafos con densidad de aristas cuadr\'atica, puede notarse que la curva se sigue manteniendo creciente siendo dividida por todos los polinomios de la experimentaci\'on. Si bien no es concluyente, es un indicio de que la complejidad se sit\'ua en un orden mayor. En los grafos con densidad de aristas lineal, la curva se convierte en constante en el orden cuadr\'atico y decreciente en los siguientes. Suponemos esto se debe a la gran reducc\'on del \'arbol de recursi\'on por la peque\~na cantidad de aristas, la disminuci\'on del grado de los nodos y la calidad de las podas.
+Notemos que en la complejidad del algoritmo exacto el grado de los nodos indica la cantidad de llamadas recursivas, al disminuir la densidad y estar distribuidas uniformemente las aristas, disminuye $\Delta(G)$ el grado maximo del grafo, dando una complejidad menor que la cota propuesta para el peor caso.
 
 \subsubsection{An\'alisis factorial}
+Podemos observar que para el caso de alta densidad de aristas en los grafos, al dividir la funcion que expresa el tiempo en funcion de la entrada por varios polinomios de grados 1,2,3,4, el grafo sigue con un algo nivel de crecimiento, intentamos dividir la funcion por factorial y realizar el grafico $f(x/x!)$ pero dados los numeros nos explotaba el generador de graficos con overflow.
