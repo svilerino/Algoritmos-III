@@ -41,17 +41,24 @@ if [ -e $file ]; then
 		echo "Ok"
 	fi
 
+	if [ $tipoGrafico -eq 10 ]
+	then	
+		echo -n "    * Graficando $file""_complexity_med_over_2_poweredto_n_.png..."
+		python plotter_factorial.py "$file"_complexity_med_over_2_poweredto_n_.png plot_"$file".out 1
+		echo "Ok"
+	fi
+
 	if [ $tipoGrafico -eq 20 ]
 	then	
-		echo -n "    * Graficando $file""_complexity_med_over_n_fourth.png..."
-		python plotter_factorial.py "$file"_complexity_med_over_n_fourth.png plot_"$file".out 2
+		echo -n "    * Graficando $file""_complexity_med_over_n_20.png..."
+		python plotter_factorial.py "$file"_complexity_med_over_n_20.png plot_"$file".out 2
 		echo "Ok"
 	fi
 
 	if [ $tipoGrafico -eq 30 ]
 	then	
-		echo -n "    * Graficando $file""_complexity_med_over_n_fourth.png..."
-		python plotter_factorial.py "$file"_complexity_med_over_n_fourth.png plot_"$file".out 3
+		echo -n "    * Graficando $file""_complexity_med_over_n_30.png..."
+		python plotter_factorial.py "$file"_complexity_med_over_n_30.png plot_"$file".out 3
 		echo "Ok"
 	fi
 
