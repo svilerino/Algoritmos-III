@@ -290,7 +290,10 @@ A continuacion presentamos los resultados de los experimentos, an\'alogos a los 
 
 \subsection{Experimentaci\'on de optimalidad}
 
-A continuaci\'on los experimentos de an\'alisis de soluci\'on de la metaheur\'istica, comparada con el algoritmo exacto y las dem\'as. Para estos experimentos adem\'as, fijando un costo $w_1$ m\'aximo a las aristas, variamos la cota $K$ de los grafos para verificar optimalidad-
+A continuaci\'on se muestran experimentos de an\'alisis de soluci\'on de la metaheur\'istica es decir, dados conjuntos de grafos aleatorios, vamos a examinar el porcentaje de soluciones optimas obtenidas por esta heuristica y realizaremos algunos calculos estad\'isticos acerca de la lejan\'ia promedio de las soluciones obtenidas con respecto a la solucion exacta en los grafos del conjunto de instancias de las muestras. Para esto, se presentaran varios experimentos, primero variando la cota $K$ de los grafos y analizando soluciones, luego variando el par\'ametro $\beta$.
+\textbf{Nota: }La lejan\'ia entre 2 soluciones se mide haciendo el siguiente calculo: 
+$ 100 *(\frac{solucionHeuristica}{solucionOptima} - 1)  $\\
+
 \subsubsection{Optimalidad para grafos lineales con $w1 = 120$}
 \begin{itemize}
 	\item cant nodos min = $200$
@@ -307,6 +310,19 @@ A continuaci\'on los experimentos de an\'alisis de soluci\'on de la metaheur\'is
 \begin{center}
 	\includegraphics[scale=0.7]{experimentos/optimalidad_lineal_grasp_120/{comparacion_optimalidad}.png}
 \end{center}
+
+
+\begin{lstlisting}[frame=single]
+Cantidad de tests realizados: 28
+Tiempo promedio microsegundos heuristica: 53290.671
+Tiempo promedio microsegundos exacto: 29453.678
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 19.455
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 41.852
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 93.201
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 173.798
+
+\end{lstlisting}
 
 \subsubsection{Optimalidad para grafos lineales con $w1 = 200$}
 \begin{itemize}
@@ -326,7 +342,7 @@ A continuaci\'on los experimentos de an\'alisis de soluci\'on de la metaheur\'is
 \end{center}
 
 \begin{lstlisting}[frame=single]
-Cantidad de tests realizados: 56
+Cantidad de tests realizados: 28
 Tiempo promedio microsegundos heuristica: 63565.671
 Tiempo promedio microsegundos exacto: 31439.678
 Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 14.285
@@ -337,13 +353,13 @@ Maximo alejamiento porcentual entre grasp y exacta: 522.400
 
 \end{lstlisting}
 
-\subsubsection{Optimalidad para grafos cuadr\'aticos con $w1 = 150$}
+\subsubsection{Optimalidad para grafos cuadr\'aticos con $w1 = 200$}
 \begin{itemize}
 	\item cant nodos min = $10$
 	\item cant nodos max = $260$
 	\item peso maximo w1 = $250$
 	\item peso maximo w2 = $400$
-	\item limit w1 = $150$
+	\item limit w1 = $200$
 	\item step nodos = $25$
 	\item step aristas = $5000$
 	\item aristas minimas = $(n * (n-1))=/12$
@@ -366,7 +382,7 @@ Maximo alejamiento porcentual entre grasp y exacta: 259.600
 \end{lstlisting}
 
 
-\subsubsection{Optimalidad para grafos cuadr\'aticos con $w1 = 120$}
+\subsubsection{Optimalidad para grafos cuadr\'aticos con $w1 = 150$}
 \begin{itemize}
 	\item cant nodos min = $10$
 	\item cant nodos max = $260$
@@ -444,12 +460,11 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 72.000
 \end{lstlisting}
 
-Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y aumenta la cantidad de aciertos.
-
+Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y aumenta la cantidad de aciertos. Nuestra suposici\'on es que a medida que se reduce el par\'ametro $\beta$, la heur\'istica golosa aleatoria se acerca a la heur\'istica golosa determin\\'istica, la cual mostr\'o un gran nivel de optimalidad de soluc\'ion. En los casos que no provee la soluci\'on exacta, mientras m\'as pequeño el $\beta$ m\'as se acerca a la \'optima, ya que es m\'as cercana a la determin\'istica y la b\'usqueda local puede refinar luego la soluci\'on parcial obtenida.
 \vspace{2mm}
 
 
-Para un experimento en particular $\beta = n/128$, vemos que iguala en cantidad de aciertos a la heur\'istica golosa y reduce el alejamiento de los no aciertos.
+Para un experimento en particular de $\beta = n/128$, vemos que iguala en cantidad de aciertos a la heur\'istica golosa y reduce el alejamiento de los no aciertos, lo cual fue interesante de notar, y suponemos se da gracias al refinamiento posterior que produce la b\'usqueda local.
 \begin{itemize}
 	\item cant nodos min = $10$
 	\item cant nodos max = $280$
@@ -461,7 +476,6 @@ Para un experimento en particular $\beta = n/128$, vemos que iguala en cantidad 
 	\item aristas minimas = $n$
 	\item aristas maximas = $n * (n-1))=/2$
 \end{itemize}
-
 
 
 \begin{lstlisting}[frame=single]
@@ -515,8 +529,13 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 17.000
 \end{lstlisting}
 
-Vemos como tambi\'en reducir el valor l\'mite causa que no s\'olo produzca m\'as aciertos sino que tambi\'en sus no aciertos se ajustan m\'as.
-%---------------	-----------------------------------------------------------------------------------------------------------------
+An\'aloga a la anterior experimentaci\'on, vemos como tambi\'en reducir el valor l\'mite de la RCL y por lo tanto acerc\'andose a la soluci\'on golosa, causa que no s\'olo produzca m\'as aciertos sino que tambi\'en sus no aciertos se ajustan m\'as al valor \'optimo.
+
+
+\subsubsection{Conclusi\'on}
+
+El an\'alisis realizado nos da la pauta de que GRASP tiene un comportamiento muy variable dominado por sus par\'ametros, en muchos casos, en el mejor caso la mejor soluci\'on que puede proveer es igual a la de la heur\'istica golosa. Pero en otros casos particulares, como RCL por cantidad y $\beta = n/128$ notamos que se acerca al comportamiento goloso pero hace uso de sus beneficios como el refinamiento de sus soluciones mediante b\'usqueda local y las sucesivas iteraciones para obtener una mejor soluci\'on, para poder acertar la misma cantidad de veces que la heur\'istica golosa y en los casos en que no acierta puede ajustar aun m\'as la soluci\'on y acercarse a la \'optima. Consideramos de que es una heur\'istica con mucho potencial pero que el ajuste de sus par\'ametros en relaci\'on a las instancias de ejecuci\'on no debe ser tomado a la ligera y se deben realizar sucesivos experimentos y variaciones para llegar a un resultado notable.
+
 %te dejo un poco de data aca
 %esto es en cliques:
 %(carpeta: informe/experimentos/performance-optimalidad-cliques_beta_n_over_128/)
