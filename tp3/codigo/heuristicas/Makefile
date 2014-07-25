@@ -38,10 +38,10 @@ graphics: tests
 	#./run_performance_tests.sh bqlocal
 	#./run_performance_tests.sh golosa
 	#./run_performance_tests.sh grasp
-	#./run_performance_tests.sh exacta
+	./run_performance_tests.sh exacta
 	#./run_optimality_tests.sh --use-exacta
 	#./run_optimality_tests.sh
-	./run_minimality_tests.sh
+	#./run_minimality_tests.sh
 
 clean:
 	$(MAKE) -C ../generar_grafos clean
