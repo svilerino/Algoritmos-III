@@ -503,7 +503,7 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 175.000
 \end{lstlisting}
 
-$beta = 0.8$
+$beta = 0.7$
 \begin{lstlisting}[frame=single]
 Cantidad de tests realizados: 14
 Tiempo promedio microsegundos heuristica: 4600.035
@@ -515,7 +515,7 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 17.000
 \end{lstlisting}
 
-$\beta = 0.6$
+$\beta = 0.4$
 
 \begin{lstlisting}[frame=single]
 \begin{}
@@ -534,26 +534,5 @@ An\'aloga a la anterior experimentaci\'on, vemos como tambi\'en reducir el valor
 
 \subsubsection{Conclusi\'on}
 
-El an\'alisis realizado nos da la pauta de que GRASP tiene un comportamiento muy variable dominado por sus par\'ametros, en muchos casos, en el mejor caso la mejor soluci\'on que puede proveer es igual a la de la heur\'istica golosa. Pero en otros casos particulares, como RCL por cantidad y $\beta = n/128$ notamos que se acerca al comportamiento goloso pero hace uso de sus beneficios como el refinamiento de sus soluciones mediante b\'usqueda local y las sucesivas iteraciones para obtener una mejor soluci\'on, para poder acertar la misma cantidad de veces que la heur\'istica golosa y en los casos en que no acierta puede ajustar aun m\'as la soluci\'on y acercarse a la \'optima. Consideramos de que es una heur\'istica con mucho potencial pero que el ajuste de sus par\'ametros en relaci\'on a las instancias de ejecuci\'on no debe ser tomado a la ligera y se deben realizar sucesivos experimentos y variaciones para llegar a un resultado notable.
+El an\'alisis realizado nos da la pauta de que GRASP tiene un comportamiento muy variable dominado por sus par\'ametros, en muchos casos, en el mejor caso la mejor soluci\'on que puede proveer es igual a la de la heur\'istica golosa. Pero en otros casos particulares, como RCL por cantidad y $\beta = n/128$ notamos que se acerca al comportamiento goloso pero hace uso de sus beneficios como el refinamiento de sus soluciones mediante b\'usqueda local y las sucesivas iteraciones para obtener una mejor soluci\'on, para poder acertar la misma cantidad de veces que la heur\'istica golosa y en los casos en que no acierta puede ajustar aun m\'as la soluci\'on y acercarse a la \'optima. En conclusi\'on vemos que es una ventaja reducir el tamaño de la RCL porque de esa forma se acerca al comportamiento goloso que nos dio excelentes resultados, pero tambi\'en tiene sus beneficios agregados. Consideramos de que es una metaheur\'istica con mucho potencial pero que el ajuste de sus par\'ametros en relaci\'on a las instancias de ejecuci\'on no debe ser tomado a la ligera y se deben realizar sucesivos experimentos y variaciones para llegar a un resultado notable y en casos superior a la golosa.
 
-%te dejo un poco de data aca
-%esto es en cliques:
-%(carpeta: informe/experimentos/performance-optimalidad-cliques_beta_n_over_128/)
-%el resto piolon, igual hace otros experimentos(tienen que ser distintos experimentos el 3d y el pto 4), pero conclui que el posta es n/128 
-%
-%Golosa:
-%	Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 83.018
-%	Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 4.990
-%	Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 18.1754
-%GRASP:
-%	Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 83.018
-%	Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 3.611
-%	Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 12.1007
-%
-%Da lo mismo que golosa en efectividad pero fijate que aca GRASP da mas cercano y con menor dispersion al optimo. :D :D :D
-%
-%--------------------------------------------------------------------------------------------------------------------------------
-
-
-%\subsection{Experimentacion: Variaci\'on evolutiva de mejora en cada iteracion y Variaci\'on absoluta de w2 en busqueda local}
-%En esta seccion se intentaron realizar los mismos dos tipos de analisis(evolucion absoluta y relativa de la funcion a minimizar) que en la busqueda %local, pero luego de realizar varias pruebas, con densidades bajas y altas de aristas en las instancias de test, vimos que no se obtienen mejoras con la busqueda local dada una solucion inicial golosa randomizada (aunque no sea lo mismo que greedy randomized, ver seccion de busqueda local con greedy como sol. inicial). Variamos tambien el parametro beta, pero no obtuvimos mejoras en iteraciones de GRASP.
