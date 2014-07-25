@@ -1,4 +1,4 @@
-\section{Metaheuristica GRASP: Solucion propuesta}
+ \section{Metaheuristica GRASP: Solucion propuesta}
 
 Dado que la metaheur\'istica GRASP es una combinaci\'on entre una heur\'istica golosa aleatorizada y una b\'usqueda local, decidimos utilizar nuestras heur\'isticas previamente mencionadas, con algunas modificaciones.
 
@@ -288,7 +288,26 @@ A continuacion presentamos los resultados de los experimentos, an\'alogos a los 
 	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_fourth}.png}
 \end{center}
 
-\subsection{Metaheuristica GRASP - Variacion de parametros}
+\subsection{Experimentaci\'on de optimalidad}
+
+A continuaci\'on los experimentos de an\'alisis de soluci\'on de la metaheur\'istica, comparadon con el algoritmo exacto y las dem\'as. Para estos experimentos adem\'as, fijando un costo $w_1$ m\'aximo a las aristas, variamos la cota $K$ de los grafos para verificar optimalidad-
+\subsubsection{Optimalidad para grafos lineales con $w1 = 120$}
+\begin{itemize}
+	\item cant nodos min = $200$
+	\item cant nodos max = $2000$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item limit w1 = $12$
+	\item step nodos = $100$
+	\item step aristas = $2500$
+	\item aristas minimas = $2*n$
+	\item aristas maximas = $20*n$
+\end{itemize}			
+
+\begin{center}
+	\includegraphics[scale=0.7]{experimentos/optimalidad_lineal_grasp_120/{comparacion_optimalidad}.png}
+\end{center}
+
 
 3 familias de grafos(baja, alto, intermedio), variando el beta y el tipo de RCL
 concluir que el mejor beta es techo(n/128) porque todos los experimentos generales estan asi y porque da la posta!
