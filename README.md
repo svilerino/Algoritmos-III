@@ -1,4 +1,3 @@
 Algoritmos-III
 ==============
-
-Algoritmos III
+This repository has been created to hold the practical works developed during this subject. The projects are oriented to solve optimization problems using backtracking and other techniques(tp1), later in tp2, dynamic programming was used to solve a given problem, and 2 problems were solved reducing them to a graph problem(minimum spanning trees and shortest path), finally in tp3 a NP-Hard problem on graphs was given and there were developed a series of solutions, a backtracking solution(non polynomial), a greedy polynomial heuristic approach, a local search polynomial heuristic approach, and a GRASP metaheuristic polynomial approach, all the solutions to the problems were analyzed in, among other things, timing performance as well in solutions quality performance and well documented in the documents presented with each project
