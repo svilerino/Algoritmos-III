@@ -1,4 +1,4 @@
- \section{Metaheuristica GRASP: Solucion propuesta}
+  \section{Metaheuristica GRASP: Solucion propuesta}
 
 Dado que la metaheur\'istica GRASP es una combinaci\'on entre una heur\'istica golosa aleatorizada y una b\'usqueda local, decidimos utilizar nuestras heur\'isticas previamente mencionadas, con algunas modificaciones.
 
@@ -393,16 +393,67 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 789.400
 \end{lstlisting}
 
-Estas pruebas fueron resueltas con el objetivo de analizar como vari\'an las soluciones de la heur\'istica segu\'n los caminos factibles que delimita la cota $K$. A continuaci\'on, fijaremos la cota $K$ en $120$ (que fue la que mostr\'o soluciones m\'as interesates en la pr\'actica) y variaremos el par\'ametro $\beta$, por cantidad y luego por valor. Condensaremos las familias de an\'alisis en un mismo gr\'afico.
+Estas pruebas fueron resueltas con el objetivo de analizar como vari\'an las soluciones de la heur\'istica segu\'n los caminos factibles que delimita la cota $K$. A continuaci\'on, fijaremos la cota $K$ en $120$ (que fue la que mostr\'o soluciones m\'as interesates en la pr\'actica) y variaremos el par\'ametro $\beta$, por cantidad y luego por valor. Condensaremos las familias de an\'alisis en un mismo gr\'afico, y las corremos sobre un mismo conjunto de instancias.
 
-\subsubsection{Optimalidad para grafos con RCL por cantidad y $\beta=n/4$
+\subsubsection{Optimalidad para grafos con RCL por cantidad}
+
+\begin{itemize}
+	\item cant nodos min = $10$
+	\item cant nodos max = $260$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item limit w1 = $150$
+	\item step nodos = $25$
+	\item step aristas = $20000$
+	\item aristas minimas = $n$
+	\item aristas maximas = $n * (n-1))=/2$
+\end{itemize}
 
 
+$\beta= n/4$
+\begin{lstlisting}[frame=single]
+Cantidad de tests realizados: 13
+Tiempo promedio microsegundos heuristica: 4781.004
+Tiempo promedio microsegundos exacto: 15248.461
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 38.461
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 68.915
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 116.131
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 396.900
+\end{lstlisting}
+$\beta=n/32$
+\begin{lstlisting}[frame=single]
+Cantidad de tests realizados: 13
+Tiempo promedio microsegundos heuristica: 4558.685
+Tiempo promedio microsegundos exacto: 14349.692
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 38.461
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 21.646
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 28.0819
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 78.100
+\end{lstlisting}
+$\beta=n/64$
+\begin{lstlisting}[frame=single]
+Cantidad de tests realizados: 13
+Tiempo promedio microsegundos heuristica: 4516.103
+Tiempo promedio microsegundos exacto: 14427.461
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 46.153
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 16.130
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 23.74
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 72.000
+\end{lstlisting}
+
+Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y la cantidad de aciertos.
+
+\vspace{2mm}
+
+Para un experimento en particular, 
 
 3 familias de grafos(baja, alto, intermedio), variando el beta y el tipo de RCL
 concluir que el mejor beta es techo(n/128) porque todos los experimentos generales estan asi y porque da la posta!
 
-%--------------------------------------------------------------------------------------------------------------------------------
+%---------------	-----------------------------------------------------------------------------------------------------------------
 %te dejo un poco de data aca
 %esto es en cliques:
 %(carpeta: informe/experimentos/performance-optimalidad-cliques_beta_n_over_128/)
