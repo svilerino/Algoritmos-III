@@ -51,7 +51,7 @@ void ejecutar_grasp(Grafo &g){
     //donde valor limite es  (parametro_beta + 1) * minimo.second.obtener_costo_w2();
     //si el tipo de golosa es RCL_POR_CANTIDAD, este parametro indica la cantidad min{cant_candidatos, parametro_beta} de soluciones a considerar en la lista
     //si el tipo es RCL_DETERMINISTICO, este parametro es ignorado por el metodo.    
-    double parametro_beta = ceil(g.obtener_cantidad_nodos()/(float)1);
+    double parametro_beta = ceil(g.obtener_cantidad_nodos()/(float)128);
     if(modo_golosa == RCL_POR_CANTIDAD){
         assert(parametro_beta >= 1);        
     }else if(modo_golosa == RCL_POR_VALOR){
