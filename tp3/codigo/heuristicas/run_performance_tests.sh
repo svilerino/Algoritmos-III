@@ -290,6 +290,7 @@ if ls test-cases/*.in &> /dev/null; then
 			./plot.sh "$heuristica".tmpplot 2
 			./plot.sh "$heuristica".tmpplot 3
 			./plot.sh "$heuristica".tmpplot 4
+			./plot.sh "$heuristica".tmpplot 10
 			./plot.sh "$heuristica".tmpplot 20
 			./plot.sh "$heuristica".tmpplot 30
 		#------------------------------------------------------------------------------------------------------------	
