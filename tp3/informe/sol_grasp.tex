@@ -444,14 +444,37 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 72.000
 \end{lstlisting}
 
-Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y la cantidad de aciertos.
+Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y aumenta la cantidad de aciertos.
 
 \vspace{2mm}
 
-Para un experimento en particular, 
 
-3 familias de grafos(baja, alto, intermedio), variando el beta y el tipo de RCL
-concluir que el mejor beta es techo(n/128) porque todos los experimentos generales estan asi y porque da la posta!
+\begin{itemize}
+	\item cant nodos min = $10$
+	\item cant nodos max = $280$
+	\item peso maximo w1 = $250$
+	\item peso maximo w2 = $400$
+	\item limit w1 = $150$
+	\item step nodos = $25$
+	\item step aristas = $20000$
+	\item aristas minimas = $n$
+	\item aristas maximas = $n * (n-1))=/2$
+\end{itemize}
+
+
+Para un experimento en particular $\beta = n/128$, vemos que iguala en cantidad de aciertos a la heur\'istica golosa y reduce el alejamiento de los no aciertos.
+
+\begin{lstlisting}[frame=single]
+Golosa:
+Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 83.018
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 4.990
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 18.1754
+GRASP:
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 83.018
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 3.611
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 12.1007
+\end{lstlisting}[frame=single]
+
 
 %---------------	-----------------------------------------------------------------------------------------------------------------
 %te dejo un poco de data aca
