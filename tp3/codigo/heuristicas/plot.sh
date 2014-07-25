@@ -41,6 +41,20 @@ if [ -e $file ]; then
 		echo "Ok"
 	fi
 
+	if [ $tipoGrafico -eq 20 ]
+	then	
+		echo -n "    * Graficando $file""_complexity_med_over_n_fourth.png..."
+		python plotter_factorial.py "$file"_complexity_med_over_n_fourth.png plot_"$file".out 2
+		echo "Ok"
+	fi
+
+	if [ $tipoGrafico -eq 30 ]
+	then	
+		echo -n "    * Graficando $file""_complexity_med_over_n_fourth.png..."
+		python plotter_factorial.py "$file"_complexity_med_over_n_fourth.png plot_"$file".out 3
+		echo "Ok"
+	fi
+
 	rm -f plot_"$file".out
 else
 	echo "[WARN] NO existe el archivo de datos para graficacion $file"

@@ -281,14 +281,17 @@ if ls test-cases/*.in &> /dev/null; then
 			done
 			popd
 			#curve fit para exacta
-			fitType=$((seq -s "*" 1 "$cantNodos" |bc))
+			#fitType=$((seq -s "*" 1 "$cantNodos" |bc))
+			fitType=-1
 			echo "$heuristica -> fitType=$fitType"
 
 			./plot.sh "$heuristica".tmpplot 0 "$fitType"
 			./plot.sh "$heuristica".tmpplot 1
 			./plot.sh "$heuristica".tmpplot 2
 			./plot.sh "$heuristica".tmpplot 3
-			./plot.sh "$heuristica".tmpplot 4		
+			./plot.sh "$heuristica".tmpplot 4
+			./plot.sh "$heuristica".tmpplot 20
+			./plot.sh "$heuristica".tmpplot 30
 		#------------------------------------------------------------------------------------------------------------	
 	else
 		echo "Modo invalido de ejecucion: ./run_performance_tests.sh <algoritmo> donde las opciones para algoritmo son: bqlocal - golosa - grasp"
