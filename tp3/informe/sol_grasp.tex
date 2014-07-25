@@ -288,6 +288,7 @@ A continuacion presentamos los resultados de los experimentos, an\'alogos a los 
 	\includegraphics[scale=0.7]{experimentos/resultados_tiempo_grasp_cliques/{grasp.tmpplot_complexity_med_over_n_fourth}.png}
 \end{center}
 
+Como puede verse en ambos casos, la curva divida por $n^3$ es decreciente, y la curva dividida por $n^2$ es creciente, con lo cual la complejidad se sit\'ua en un orden entre \'estos. El hecho de que la curva cuadr\'atica se muestre creciente muestra que a medida que crece $n$ crece $k$, las iteraciones que puede realizar la b\'usqueda local, lo cual coincide con nuestra complejidad te\'orica.
 \subsection{Experimentaci\'on de optimalidad}
 
 A continuaci\'on se muestran experimentos de an\'alisis de soluci\'on de la metaheur\'istica es decir, dados conjuntos de grafos aleatorios, vamos a examinar el porcentaje de soluciones optimas obtenidas por esta heuristica y realizaremos algunos calculos estad\'isticos acerca de la lejan\'ia promedio de las soluciones obtenidas con respecto a la solucion exacta en los grafos del conjunto de instancias de las muestras. Para esto, se presentaran varios experimentos, primero variando la cota $K$ de los grafos y analizando soluciones, luego variando el par\'ametro $\beta$.
@@ -460,7 +461,7 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 72.000
 \end{lstlisting}
 
-Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y aumenta la cantidad de aciertos. Nuestra suposici\'on es que a medida que se reduce el par\'ametro $\beta$, la heur\'istica golosa aleatoria se acerca a la heur\'istica golosa determin\\'istica, la cual mostr\'o un gran nivel de optimalidad de soluc\'ion. En los casos que no provee la soluci\'on exacta, mientras m\'as pequeño el $\beta$ m\'as se acerca a la \'optima, ya que es m\'as cercana a la determin\'istica y la b\'usqueda local puede refinar luego la soluci\'on parcial obtenida.
+Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por potencias de dos va a justando el alejamiento de los no aciertos y aumenta la cantidad de aciertos. Nuestra suposici\'on es que a medida que se reduce el par\'ametro $\beta$, la heur\'istica golosa aleatoria se acerca a la heur\'istica golosa determin\\'istica, la cual mostr\'o un gran nivel de optimalidad de soluc\'ion. En los casos que no provee la soluci\'on exacta, mientras m\'as peque\~no el $\beta$ m\'as se acerca a la \'optima, ya que es m\'as cercana a la determin\'istica y la b\'usqueda local puede refinar luego la soluci\'on parcial obtenida.
 \vspace{2mm}
 
 
@@ -487,7 +488,7 @@ GRASP:
 Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 83.018
 Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 3.611
 Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 12.1007
-\end{lstlisting}[frame=single]
+\end{lstlisting}
 
 Ahora variamos $\beta$ en RCL por valor
 
@@ -503,7 +504,7 @@ Minimo alejamiento porcentual entre grasp y exacta: 0
 Maximo alejamiento porcentual entre grasp y exacta: 175.000
 \end{lstlisting}
 
-$beta = 0.7$
+$\beta = 0.7$
 \begin{lstlisting}[frame=single]
 Cantidad de tests realizados: 14
 Tiempo promedio microsegundos heuristica: 4600.035
@@ -518,7 +519,6 @@ Maximo alejamiento porcentual entre grasp y exacta: 17.000
 $\beta = 0.4$
 
 \begin{lstlisting}[frame=single]
-\begin{}
 Cantidad de tests realizados: 14
 Tiempo promedio microsegundos heuristica: 4568.095
 Tiempo promedio microsegundos exacto: 13775.857
@@ -534,5 +534,5 @@ An\'aloga a la anterior experimentaci\'on, vemos como tambi\'en reducir el valor
 
 \subsubsection{Conclusi\'on}
 
-El an\'alisis realizado nos da la pauta de que GRASP tiene un comportamiento muy variable dominado por sus par\'ametros, en muchos casos, en el mejor caso la mejor soluci\'on que puede proveer es igual a la de la heur\'istica golosa. Pero en otros casos particulares, como RCL por cantidad y $\beta = n/128$ notamos que se acerca al comportamiento goloso pero hace uso de sus beneficios como el refinamiento de sus soluciones mediante b\'usqueda local y las sucesivas iteraciones para obtener una mejor soluci\'on, para poder acertar la misma cantidad de veces que la heur\'istica golosa y en los casos en que no acierta puede ajustar aun m\'as la soluci\'on y acercarse a la \'optima. En conclusi\'on vemos que es una ventaja reducir el tamaño de la RCL porque de esa forma se acerca al comportamiento goloso que nos dio excelentes resultados, pero tambi\'en tiene sus beneficios agregados. Consideramos de que es una metaheur\'istica con mucho potencial pero que el ajuste de sus par\'ametros en relaci\'on a las instancias de ejecuci\'on no debe ser tomado a la ligera y se deben realizar sucesivos experimentos y variaciones para llegar a un resultado notable y en casos superior a la golosa.
+El an\'alisis realizado nos da la pauta de que GRASP tiene un comportamiento muy variable dominado por sus par\'ametros, en muchos casos, en el mejor caso la mejor soluci\'on que puede proveer es igual a la de la heur\'istica golosa. Pero en otros casos particulares, como RCL por cantidad y $\beta = n/128$ notamos que se acerca al comportamiento goloso pero hace uso de sus beneficios como el refinamiento de sus soluciones mediante b\'usqueda local y las sucesivas iteraciones para obtener una mejor soluci\'on, para poder acertar la misma cantidad de veces que la heur\'istica golosa y en los casos en que no acierta puede ajustar aun m\'as la soluci\'on y acercarse a la \'optima. En conclusi\'on vemos que es una ventaja reducir el tama\~no de la RCL porque de esa forma se acerca al comportamiento goloso que nos dio excelentes resultados, pero tambi\'en tiene sus beneficios agregados. Consideramos de que es una metaheur\'istica con mucho potencial pero que el ajuste de sus par\'ametros en relaci\'on a las instancias de ejecuci\'on no debe ser tomado a la ligera y se deben realizar sucesivos experimentos y variaciones para llegar a un resultado notable y en casos superior a la golosa.
 
