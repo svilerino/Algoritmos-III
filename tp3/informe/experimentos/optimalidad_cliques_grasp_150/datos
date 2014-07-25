@@ -1,0 +1,30 @@
+Resultados:
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 26
+Tiempo promedio microsegundos heuristica: 2165.000
+Tiempo promedio microsegundos exacto: 5129.884
+Porcentaje de aciertos(cantidad de veces que GOLOSA da la sol exacta/cantidad de tests hechos): 96.153
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: .496
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre golosa y exacta: 2.38462
+Minimo alejamiento porcentual entre golosa y exacta: 0
+Maximo alejamiento porcentual entre golosa y exacta: 12.400
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 26
+Tiempo promedio microsegundos heuristica: 514.445
+Tiempo promedio microsegundos exacto: 5129.884
+Porcentaje de aciertos(cantidad de veces que BQLOCAL da la sol exacta/cantidad de tests hechos): 7.692
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 674.052
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre bqlocal y exacta: 788.153
+Minimo alejamiento porcentual entre bqlocal y exacta: 0
+Maximo alejamiento porcentual entre bqlocal y exacta: 2659.600
+----------------------------------------------------------------------------------------------
+Cantidad de tests realizados: 26
+Tiempo promedio microsegundos heuristica: 2877.366
+Tiempo promedio microsegundos exacto: 5129.884
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 42.307
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 50.108
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 69.2576
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 259.600
+
+
