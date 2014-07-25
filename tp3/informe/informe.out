@@ -68,12 +68,12 @@
 \BOOKMARK [2][-]{subsection.5.6}{Experimentacion: Mediciones de Performance}{section.5}% 68
 \BOOKMARK [3][-]{subsubsection.5.6.1}{Rendimiento para grafos con densidad cuadratica de aristas}{subsection.5.6}% 69
 \BOOKMARK [3][-]{subsubsection.5.6.2}{Rendimiento para grafos con densidad lineal de aristas}{subsection.5.6}% 70
-\BOOKMARK [2][-]{subsection.5.7}{Experimentaci\363n de optimalidad}{section.5}% 71
-\BOOKMARK [3][-]{subsubsection.5.7.1}{Optimalidad para grafos lineales con w1 = 120}{subsection.5.7}% 72
-\BOOKMARK [3][-]{subsubsection.5.7.2}{Optimalidad para grafos lineales con w1 = 200}{subsection.5.7}% 73
-\BOOKMARK [3][-]{subsubsection.5.7.3}{Optimalidad para grafos cuadr\341ticos con w1 = 150}{subsection.5.7}% 74
-\BOOKMARK [3][-]{subsubsection.5.7.4}{Optimalidad para grafos cuadr\341ticos con w1 = 120}{subsection.5.7}% 75
-\BOOKMARK [3][-]{subsubsection.5.7.5}{Optimalidad para grafos con RCL por cantidad}{subsection.5.7}% 76
+\BOOKMARK [3][-]{subsubsection.5.6.3}{Optimalidad para grafos lineales con w1 = 120}{subsection.5.6}% 71
+\BOOKMARK [3][-]{subsubsection.5.6.4}{Optimalidad para grafos lineales con w1 = 200}{subsection.5.6}% 72
+\BOOKMARK [3][-]{subsubsection.5.6.5}{Optimalidad para grafos cuadr\341ticos con w1 = 200}{subsection.5.6}% 73
+\BOOKMARK [3][-]{subsubsection.5.6.6}{Optimalidad para grafos cuadr\341ticos con w1 = 150}{subsection.5.6}% 74
+\BOOKMARK [3][-]{subsubsection.5.6.7}{Optimalidad para grafos con RCL por cantidad}{subsection.5.6}% 75
+\BOOKMARK [3][-]{subsubsection.5.6.8}{Conclusi\363n}{subsection.5.6}% 76
 \BOOKMARK [1][-]{section.6}{Experimentacion General}{}% 77
 \BOOKMARK [2][-]{subsection.6.1}{Generacion de conjuntos de grafos aleatorios}{section.6}% 78
 \BOOKMARK [3][-]{subsubsection.6.1.1}{Generador de grafos aleatorios}{subsection.6.1}% 79

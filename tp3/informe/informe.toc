@@ -69,12 +69,12 @@
 \contentsline {subsection}{\numberline {5.6}Experimentacion: Mediciones de Performance}{57}{subsection.5.6}
 \contentsline {subsubsection}{\numberline {5.6.1}Rendimiento para grafos con densidad cuadratica de aristas}{57}{subsubsection.5.6.1}
 \contentsline {subsubsection}{\numberline {5.6.2}Rendimiento para grafos con densidad lineal de aristas}{60}{subsubsection.5.6.2}
-\contentsline {subsection}{\numberline {5.7}Experimentaci\'on de optimalidad}{63}{subsection.5.7}
-\contentsline {subsubsection}{\numberline {5.7.1}Optimalidad para grafos lineales con $w1 = 120$}{63}{subsubsection.5.7.1}
-\contentsline {subsubsection}{\numberline {5.7.2}Optimalidad para grafos lineales con $w1 = 200$}{64}{subsubsection.5.7.2}
-\contentsline {subsubsection}{\numberline {5.7.3}Optimalidad para grafos cuadr\'aticos con $w1 = 150$}{65}{subsubsection.5.7.3}
-\contentsline {subsubsection}{\numberline {5.7.4}Optimalidad para grafos cuadr\'aticos con $w1 = 120$}{66}{subsubsection.5.7.4}
-\contentsline {subsubsection}{\numberline {5.7.5}Optimalidad para grafos con RCL por cantidad}{67}{subsubsection.5.7.5}
+\contentsline {subsubsection}{\numberline {5.6.3}Optimalidad para grafos lineales con $w1 = 120$}{63}{subsubsection.5.6.3}
+\contentsline {subsubsection}{\numberline {5.6.4}Optimalidad para grafos lineales con $w1 = 200$}{64}{subsubsection.5.6.4}
+\contentsline {subsubsection}{\numberline {5.6.5}Optimalidad para grafos cuadr\'aticos con $w1 = 200$}{65}{subsubsection.5.6.5}
+\contentsline {subsubsection}{\numberline {5.6.6}Optimalidad para grafos cuadr\'aticos con $w1 = 150$}{66}{subsubsection.5.6.6}
+\contentsline {subsubsection}{\numberline {5.6.7}Optimalidad para grafos con RCL por cantidad}{67}{subsubsection.5.6.7}
+\contentsline {subsubsection}{\numberline {5.6.8}Conclusi\'on}{70}{subsubsection.5.6.8}
 \contentsline {section}{\numberline {6}Experimentacion General}{71}{section.6}
 \contentsline {subsection}{\numberline {6.1}Generacion de conjuntos de grafos aleatorios}{71}{subsection.6.1}
 \contentsline {subsubsection}{\numberline {6.1.1}Generador de grafos aleatorios}{71}{subsubsection.6.1.1}
