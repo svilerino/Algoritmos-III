@@ -449,6 +449,7 @@ Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por poten
 \vspace{2mm}
 
 
+Para un experimento en particular $\beta = n/128$, vemos que iguala en cantidad de aciertos a la heur\'istica golosa y reduce el alejamiento de los no aciertos.
 \begin{itemize}
 	\item cant nodos min = $10$
 	\item cant nodos max = $280$
@@ -462,7 +463,6 @@ Vemos que variar el par\'ametro $\beta$ y dividi\'endolo sucesivamente por poten
 \end{itemize}
 
 
-Para un experimento en particular $\beta = n/128$, vemos que iguala en cantidad de aciertos a la heur\'istica golosa y reduce el alejamiento de los no aciertos.
 
 \begin{lstlisting}[frame=single]
 Golosa:
@@ -475,7 +475,47 @@ Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre g
 Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 12.1007
 \end{lstlisting}[frame=single]
 
+Ahora variamos $\beta$ en RCL por valor
 
+$\beta = 0.9$
+\begin{lstlisting}[frame=singl
+Cantidad de tests realizados: 14
+Tiempo promedio microsegundos heuristica: 4620.666
+Tiempo promedio microsegundos exacto: 13796.214
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 64.285
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 18.246
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 44.6027
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 175.000
+\end{lstlisting}[frame=single]
+
+$beta = 0.8$
+\begin{lstlisting}[frame=singl
+Cantidad de tests realizados: 14
+Tiempo promedio microsegundos heuristica: 4600.035
+Tiempo promedio microsegundos exacto: 14057.071
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 71.428
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 3.376
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 5.34277
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 17.000
+\end{lstlisting}[frame=single]
+
+$\beta = 0.6$
+
+\begin{lstlisting}[frame=singl
+\begin{}
+Cantidad de tests realizados: 14
+Tiempo promedio microsegundos heuristica: 4568.095
+Tiempo promedio microsegundos exacto: 13775.857
+Porcentaje de aciertos(cantidad de veces que GRASP da la sol exacta/cantidad de tests hechos): 78.571
+Porcentaje de alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 2.615
+Desviacion estandar del alejamiento de la heuristica a la solucion exacta promedio entre grasp y exacta: 5.04769
+Minimo alejamiento porcentual entre grasp y exacta: 0
+Maximo alejamiento porcentual entre grasp y exacta: 17.000
+\end{lstlisting}[frame=single]
+
+Vemos como tambi\'en reducir el valor l\'mite causa que no s\'olo produzca m\'as aciertos sino que tambi\'en sus no aciertos se ajustan m\'as.
 %---------------	-----------------------------------------------------------------------------------------------------------------
 %te dejo un poco de data aca
 %esto es en cliques:
